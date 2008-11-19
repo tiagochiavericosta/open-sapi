@@ -5,7 +5,7 @@
 Created the project page today. 
 Currently we have:
 
-   * SAPI 5.1 - Cobbled together and working but still unable to install under the latest version of WINE using the executable in the Speech SDK. Instructions on how to get this working can be found in the Wiki along with downloads.
+   * SAPI 5.1 - Cobbled together and working but still unable to install under the latest version of WINE using the executable in the Speech SDK. Instructions on how to get this working can be found in the Wiki along with downloads. Also tested is the speech recognition and that will take speech in but not recongnise my British accent. 
 
    * Middleware - I have managed to use freewrap to make an executable from the tcl/tk code that will say a phrase when executed in WINE.
 
