@@ -1,14 +1,5 @@
 #summary All the headlines from the project so far, read to be updated on project progress
 #labels Featured
-==News - 19/11/08==
+=News - 06/01/09=
 
-Created the project page today. 
-Currently we have:
 
-   * SAPI 5.1 - Cobbled together and working but still unable to install under the latest version of WINE using the executable in the Speech SDK. Instructions on how to get this working can be found in the Wiki along with downloads. Also tested is the speech recognition and that will take speech in but not recongnise my British accent. 
-
-   * Middleware - I have managed to use freewrap to make an executable from the tcl/tk code that will say a phrase when executed in WINE.
-
-   * Ubuntu 8.04 - Configured the system to used the Esound system which allows for mulitple sound source to be played simultaneously. Tested with WINE and Microsoft's text to speech examples. 
-
-   * Speech Dispatcher - Currently reading the documentation and working toward producing a command line interface to interact with the generic driver as a start.   
