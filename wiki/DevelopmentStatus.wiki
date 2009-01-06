@@ -12,7 +12,7 @@ Currently we have:
 
 =Still Todo=
 
-Server
+==Server==
     * Sound Icons
     * Config files
     * Error handling !!!
@@ -22,7 +22,7 @@ Server
     * Multi User Environmental
     * Command execution priority
 
-Client
+==Client==
     * Sound Icons
     * Config files
     * Error handling !!!
@@ -31,10 +31,10 @@ Client
     * Test performance, possible migration to native C
     * Wait for command confirmation
 
-server-GUI
+==server-GUI==
     * Research GTK & Orva & TCL & Gnome Accessibility 
 
-Installer
+==Installer==
    * Check / Install Wine
    * Add in the C++ runtime Library
    * Work around wine bug and Install Speech Engines
