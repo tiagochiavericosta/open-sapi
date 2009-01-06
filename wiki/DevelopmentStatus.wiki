@@ -1,4 +1,4 @@
-#summary The current status of each componemt with detail on the work needed on them.
+#summary The current status of each componemt with detail on the work still outstanding.
 =Status:=
 Currently we have:
 
