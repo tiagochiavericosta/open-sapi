@@ -1,0 +1,41 @@
+#summary The current status of each componemt with detail on the work needed on them.
+=Status:=
+Currently we have:
+
+   * SAPI 5.1 - A much smaller Text to speech installer has been found online that gives the basic three free English MS voices. This has been extracted and will now install without user interaction. A work around for the problem with WINE had been identified but now yet implemented. Lastly there is the need to create an installation script that will install the software correctly.  
+
+   * Middleware - The server is completed to the level that I required for the first release. Basic speech can be generated with uptu
+
+   * Ubuntu 8.10 - Tested and seems to work fine with PulseAudio, not sure about performance issues with the current PulseAudio implementation.  
+
+   * Speech Dispatcher - Starting work on a generic Speech Dispatcher driver for use through the command line interface.
+
+Todo
+
+Server
+    * Sound Icons
+    * Config files
+    * Error handling !!!
+    * Implement as a Service ?
+    * Sanity Checks (list length on text)
+    * Investigate commandline only execution 
+    * Multi User Environmental
+    * Command execution priority
+
+Client
+    * Sound Icons
+    * Config files
+    * Error handling !!!
+    * Sanity Checks  (list length on text)
+    * Server Control 
+    * Test performance, possible migration to native C
+    * Wait for command confirmation
+
+server-GUI
+    * Research GTK & Orva & TCL & Gnome Accessibility 
+
+Installer
+   * Check / Install Wine
+   * Add in the C++ runtime Library
+   * Work around wine bug and Install Speech Engines
+   * Install commandline and server Apps
