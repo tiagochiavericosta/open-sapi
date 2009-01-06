@@ -1,7 +1,10 @@
 #summary All the headlines from the project so far.
 #labels Featured
+
+See the DevelopmentStatus page for details on what is left to do.
+
 =News - 06/01/09=
 
 Completed the first stable release of the server and client today. So far implemented a single client server that support changes in speech engine, volume, rate, synchronous and asynchronous speech modes, XML mark-up even thought this is not available through the command line interface yet.
 
-See the DevelopmentProgress page for details on what is left to do.    
+    
