@@ -1,11 +1,12 @@
 #summary The current status of each componemt with detail on the work still outstanding.
+#labels Featured,Phase-Design
 =Current Status:=
 Currently the project is not available for download, as and when further progress is made to make the installtion easy and straight forward will there be an official release. 
 ----
 =Done=
    * SAPI 5.1 - A much smaller Text to speech installer has been found online that gives the basic three free English MS voices. This has been extracted and will now install without user interaction. A work around for the problem with WINE had been identified but now yet implemented. Lastly there is the need to create an installation script that will install the software correctly.  
 
-   * Middleware - The server is completed to the level that I required for the first release. Basic speech can be generated with uptu
+   * Middleware - The server is completed to the level that I required for the first release. Basic speech can be generated for a single client.
 
    * Ubuntu 8.10 - Tested and seems to work fine with PulseAudio, not sure about performance issues with the current PulseAudio implementation.  
 
@@ -19,7 +20,7 @@ Currently the project is not available for download, as and when further progres
     * Implement as a Service ?
     * Sanity Checks (list length on text)
     * Investigate commandline only execution 
-    * Multi User Environmental
+    * Multi User Server
     * Command execution priority
 
 ==Client==
@@ -29,10 +30,10 @@ Currently the project is not available for download, as and when further progres
     * Sanity Checks  (list length on text)
     * Server Control 
     * Test performance, possible migration to native C
-    * Wait for command confirmation
+    * Wait for command confirmation in debug mode
 
 ==server-GUI==
-    * Research GTK & Orva & TCL & Gnome Accessibility 
+    * Research GTK & Orca & TCL & Gnome Accessibility 
 
 ==Installer==
    * Check / Install Wine
