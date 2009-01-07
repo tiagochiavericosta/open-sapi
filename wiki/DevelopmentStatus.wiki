@@ -19,24 +19,25 @@ Currently the project is not available for download, as and when further progres
     * Error handling !!!
     * Implement as a Service ?
     * Sanity Checks (list length on text)
-    * Investigate commandline only execution 
-    * Multi User Server
+    * Investigate commandline only execution
     * Command execution priority
+    * Text option overrun check
 
+----
 ==Client==
     * Sound Icons
     * Config files
     * Error handling !!!
     * Sanity Checks  (list length on text)
-    * Server Control 
+    * Server Control - implement on wrapping
     * Test performance, possible migration to native C
-    * Wait for command confirmation in debug mode
-
+----
 ==server-GUI==
     * Research GTK & Orca & TCL & Gnome Accessibility 
-
+----
 ==Installer==
    * Check / Install Wine
    * Add in the C++ runtime Library
    * Work around wine bug and Install Speech Engines
    * Install commandline and server Apps
+----
