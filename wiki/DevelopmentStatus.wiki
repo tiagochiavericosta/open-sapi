@@ -7,9 +7,9 @@ Currently the project is not available for download, as and when further progres
 
    * Middleware - The server is completed to the level that I required for the first release. Basic speech can be generated for a single client.
 
-   * Ubuntu 8.10 - Tested and seems to work fine with PulseAudio, not sure about performance issues with the current PulseAudio implementation.  
+   * Ubuntu 8.10 - Tested and seems to work fine with PulseAudio, performance seems on a par if not better than the espeak synthesiser. 
 
-   * Speech Dispatcher - Starting work on a generic Speech Dispatcher driver for use through the command line interface.
+   * Speech Dispatcher - In part the Generic configuration is implemented enough to get Orca speaking.  
 ----
 =Still Todo=
 ==Server==
@@ -19,8 +19,8 @@ Currently the project is not available for download, as and when further progres
     * Implement as a Service ?
     * Sanity Checks (list length on text)
     * Investigate commandline only execution
-    * Command execution priority
     * Text option overrun check
+    * Implement voice per socket
 
 ----
 ==Client==
@@ -40,3 +40,7 @@ Currently the project is not available for download, as and when further progres
    * Work around wine bug and Install Speech Engines
    * Install commandline and server Apps
 ----
+==Speech Dispatcher==
+   * Implement SIGKILL on server after client disconnects
+   * Finish generic configuration file
+   * Investigate event notifications
