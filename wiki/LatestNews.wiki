@@ -3,6 +3,10 @@
 
 See the DevelopmentStatus page for details on what is left to do.
 
+=News - 18/01/09=
+
+The client and server are now working with Speech Dispatcher and Orca in Ubuntu 8.10. This seems to be quite responsive and on the most part stable. The next thing to do is get a simple install process and implement the last few requirements for the first general release.     
+
 =News - 06/01/09=
 
 Completed the first stable release of the server and client today. So far implemented a single client server that support changes in speech engine, volume, rate, synchronous and asynchronous speech modes, XML mark-up even thought this is not available through the command line interface yet.
