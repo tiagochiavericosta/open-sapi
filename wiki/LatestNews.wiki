@@ -2,17 +2,17 @@
 #labels Featured
 
 See the DevelopmentStatus page for details on what is left to do.
-
+----
 =News - 05/03/09=
 
 I have just updated details on the wiki of how to setup a DeveloperEnvironment for helping with the project. Stability and responsiveness are issues at the moment. I am planning to rework the server and client to exchange speech XML markup to try and lower the response times for the client and server. Stabiliity issues lie around pulseaudio on my system at the moment but i have not investigated newer releses yet. Lastly it may improve compatability to move to the latest version of wine available but again this is trial and error.
-
+----
 =News - 18/01/09=
 
 The client and server are now working with Speech Dispatcher and Orca in Ubuntu 8.10. This seems to be quite responsive and on the most part stable. The next thing to do is get a simple install process and implement the last few requirements for the first general release.     
-
+----
 =News - 06/01/09=
 
 Completed the first stable release of the server and client today. So far implemented a single client server that support changes in speech engine, volume, rate, synchronous and asynchronous speech modes, XML mark-up even thought this is not available through the command line interface yet.
-
+----
     
