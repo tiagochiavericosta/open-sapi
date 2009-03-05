@@ -1,11 +1,12 @@
 #summary A quick guide to setting up an environment to develop on open-sapi
-
+#labels Featured
+----
 = Introduction =
 
 Currently I am using Ubuntu 8.10. This is a standard installation using the default wine and pulse audio versions. Currently this setup wprks but is not perfect. I have had problem with pulseaudio crashing which freezes the desktop. This i blame on my lack of error handeling in my code so far and a little bit to do with wine and pulseaudio all togther. :)
 
 In theory any linux distribution should work as long as you can get wine working on it with sound. There is no requirement for pulseaudio just that you can get sound from wine. A more reliable audio system or an updated pulseaudio is highly recommend as this issue is a pain.
-
+----
 = Downloading the Source =
 
 You will need to download the sources from svn. Here are all the tools and scripts that are needed to create a working system and package for general distribution. Make sure you are in the directory where you want the files to be downloaded before running the svn command. If you want to help develop on the project please e-mail thomaslloyd at yahoo dot com and i can add you in as a developer. 
@@ -56,12 +57,14 @@ wget http://open-sapi.googlecode.com/files/winetricks
 }}}
 
 3. Run the winetricks installer. Note you may have have to make this file executable
+
 {{{
 ./winetricks sapi51 vcrun6
-}}
+}}}
 
-4. Download the SVN development files and they are configured in such a way that they will run the tcl script for both client and server. Ma
+4. Download the SVN development files and they are configured in such a way that they will run the scripts for both client and server without any setup.
  
 {{{
 
 }}}
+----
