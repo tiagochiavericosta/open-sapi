@@ -3,16 +3,20 @@
 =Current Status:=
 Currently the project is not available for download, as and when further progress is made to make the installtion easy and straight forward will there be an official release. 
 =Done=
-   * SAPI 5.1 - A much smaller Text to speech installer has been found online that gives the basic three free English MS voices. This has been extracted and will now install without user interaction. A work around for the problem with WINE had been identified but now yet implemented. Lastly there is the need to create an installation script that will install the software correctly.  
+   * SAPI 5.1 - A much smaller Text to speech installer has been found online that gives the basic three free English MS voices. This has been extracted and will now install without user interaction. A work around for the problem with WINE had been implemented. 
 
    * Middleware - The server is completed to the level that I required for the first release. Basic speech can be generated for a single client.
 
-   * Ubuntu 8.10 - Tested and seems to work fine with PulseAudio, performance seems on a par if not better than the espeak synthesiser. 
+   * Ubuntu 8.10 - The PulseAudio version in 8.10 randomly segfault at the moment and requires a ctrl-alt-del to reset, performance is poor at the moment and freezes the gui while synthesis takes place. 
 
-   * Speech Dispatcher - In part the Generic configuration is implemented enough to get Orca speaking.  
+   * Speech Dispatcher - A bug appears when your are speaking a line with a full stop in the middle. The client to speechD interactuon is not quite right. 
 ----
 =Still Todo=
+
 ==Server==
+    * SAPI XML Markup
+    * Performance issues
+    * Reliability issues
     * Sound Icons
     * Config files
     * Error handling !!!
@@ -24,6 +28,7 @@ Currently the project is not available for download, as and when further progres
 
 ----
 ==Client==
+    * SAPI XML Markup
     * Sound Icons
     * Config files
     * Error handling !!!
@@ -31,16 +36,11 @@ Currently the project is not available for download, as and when further progres
     * Server Control - implement on wrapping
     * Test performance, possible migration to native C
 ----
-==server-GUI==
+==Server-GUI==
     * Research GTK & Orca & TCL & Gnome Accessibility 
 ----
 ==Installer==
-   * Check / Install Wine
-   * Add in the C++ runtime Library
-   * Work around wine bug and Install Speech Engines
    * Install commandline and server Apps
 ----
 ==Speech Dispatcher==
-   * Implement SIGKILL on server after client disconnects
-   * Finish generic configuration file
-   * Investigate event notifications
+   * Investigate specific open sapi SD module 
