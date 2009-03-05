@@ -1,0 +1,46 @@
+#summary A quick guide to setting up an environment to develop on open-sapi
+
+= Introduction =
+
+Currently I am using Ubuntu 8.10. This is a standard installation using the default wine and pulse audio versions. Currently this setup wprks but is not perfect. I have had problem with pulseaudio crashing which freezes the desktop. This i blame on my lack of error handeling in my code so far and a little bit to do with wine and pulseaudio all togther. :)
+
+In theory any linux distribution should work as long as you can get wine working on it with sound. There is no requirement for pulseaudio just that you can get sound from wine. A more reliable audio system or an updated pulseaudio is highly recommend as this issue is a pain.
+
+= Required Components =
+
+You will need:
+
+Tcl for Linux 
+Wine for Linux
+A windows Tcl binary .exe aka tclkit
+A customised winetricks script hosted here.
+The MS SAPI 5.1 runtime installer hosted here.
+Speech Dispatcher
+Orca
+
+= How to install =
+
+These instructions are debian/ubuntu specific but you should not find it too hard to lookup the basics for another distro. I have not included steps for orca wget and tcl as these are installed already on ubuntu but have mentioned them for others that may need to install.
+
+1. Install all the packages, please note there is no problem with asking to install again as it will just ignore the ones that already exist on the system:
+
+{{{
+sudo apt-get install wine speech-dispatcher python-speechd wget tcl svn
+}}}
+
+2. Download the files that you need to setup wine using wget:
+
+{{{
+wget http://open-sapi.googlecode.com/files/winetricks
+}}}
+
+3. Run the winetricks installer. Note you may have have to make this file executable
+{{{
+./winetricks sapi51 vcrun6
+}}
+
+4. Download the SVN development files and they are configured in such a way that they will run the tcl script for both client and server. Ma
+ 
+{{{
+
+}}}
