@@ -6,19 +6,40 @@ Currently I am using Ubuntu 8.10. This is a standard installation using the defa
 
 In theory any linux distribution should work as long as you can get wine working on it with sound. There is no requirement for pulseaudio just that you can get sound from wine. A more reliable audio system or an updated pulseaudio is highly recommend as this issue is a pain.
 
-= Required Components =
+= Downloading the Source =
 
-You will need:
+You will need to download the sources from svn. Here are all the tools and scripts that are needed to create a working system and package for general distribution. Make sure you are in the directory where you want the files to be downloaded before running the svn command. If you want to help develop on the project please e-mail thomaslloyd at yahoo dot com and i can add you in as a developer. 
 
-Tcl for Linux 
-Wine for Linux
-A windows Tcl binary .exe aka tclkit
-A customised winetricks script hosted here.
-The MS SAPI 5.1 runtime installer hosted here.
-Speech Dispatcher
-Orca
+If you are not sure you have svn installed run.
 
-= How to install =
+{{{
+sudo aot-get install subversion
+}}}
+
+Then download the source files and tools from the project page.
+
+{{{
+svn checkout http://open-sapi.googlecode.com/svn/trunk/ open-sapi-read-only
+}}}
+
+This should leave you in a position where you ahve enverything ready to go about configuring the system for speech.
+----
+= How to install automatically - debian/ubuntu =
+
+If you are using ubuntu and possible debian derived distros you can use the automated script to install and configure the system. Please can people e-mail any instructions and experiences they get with other distributions.
+
+to start the installation navigate to the installer folder in the local svn repository on your system.
+
+In this folder you will find a script called osapi.run please execute this file.
+
+{{{
+./osapi.run
+}}}
+
+For the package installation it requires sudo access and will ask for your password and then proceed to download and configure your system. If you want to know what i does see the manual process below.
+
+----
+= How to install manually =
 
 These instructions are debian/ubuntu specific but you should not find it too hard to lookup the basics for another distro. I have not included steps for orca wget and tcl as these are installed already on ubuntu but have mentioned them for others that may need to install.
 
