@@ -1,11 +1,11 @@
 #summary The current status of each componemt with detail on the work still outstanding.
 #labels Featured,Phase-Design
 =Current Status:=
-Currently the project is only available for download through svn, as and when further progress is made to make the installtion easy and straight forward will there be an official release. 
+Currently the project is only available for download through svn see   	 DeveloperEnvironment for details of how to do this. We are someway off making a public release of the porject but keep watching. 
 =Done=
    * SAPI 5.1 - A much smaller Text to speech installer has been found online that gives the basic three free English MS voices. This has been extracted and will now install without user interaction. A work around for the problem with WINE had been implemented. 
 
-   * Middleware - The server is completed to the level that I required for the first release. Basic speech can be generated for a single client.
+   * Middleware - The server is and client are functioning and are semi reliable. Improvements to the performance need to be investigated.
 
    * Ubuntu 8.10 - The PulseAudio version in 8.10 randomly segfault at the moment and requires a ctrl-alt-del to reset, performance is poor at the moment and freezes the gui while synthesis takes place. 
 
@@ -24,7 +24,7 @@ Currently the project is only available for download through svn, as and when fu
     * Sanity Checks (list length on text)
     * Investigate commandline only execution
     * Text option overrun check
-    * Implement voice per socket
+    * Implement one voice per client
 
 ----
 ==Client==
