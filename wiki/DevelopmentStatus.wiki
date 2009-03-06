@@ -1,5 +1,6 @@
 #summary The current status of each componemt with detail on the work still outstanding.
 #labels Featured,Phase-Design
+<wiki:toc max_depth="1" />
 =Current Status:=
 Currently the project is only available for download through svn see   	 DeveloperEnvironment for details of how to do this. We are someway off making a public release of the porject but keep watching. 
 =Done=
