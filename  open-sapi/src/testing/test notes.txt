@@ -1,0 +1,3 @@
+Changing the speech flags during queued speech stops and purges all speech. Process all speech flags before starting speech output. 
+
+
