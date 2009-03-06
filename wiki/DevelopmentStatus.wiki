@@ -1,7 +1,7 @@
 #summary The current status of each componemt with detail on the work still outstanding.
 #labels Featured,Phase-Design
 =Current Status:=
-Currently the project is not available for download, as and when further progress is made to make the installtion easy and straight forward will there be an official release. 
+Currently the project is only available for download through svn, as and when further progress is made to make the installtion easy and straight forward will there be an official release. 
 =Done=
    * SAPI 5.1 - A much smaller Text to speech installer has been found online that gives the basic three free English MS voices. This has been extracted and will now install without user interaction. A work around for the problem with WINE had been implemented. 
 
