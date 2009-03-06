@@ -1,5 +1,6 @@
 #summary A quick guide to setting up an environment to develop on open-sapi
 #labels Featured
+<wiki:toc max_depth="1" />
 ----
 = Introduction =
 
@@ -29,7 +30,7 @@ This should leave you in a position where you have enverything ready to go about
 
 If you are using ubuntu and possible debian derived distros you can use the automated script to install and configure the system. Please can people e-mail any instructions and experiences they get with other distributions.
 
-to start the installation navigate to the installer folder in the local svn repository on your system.
+To start the installation using a terminal navigate to the installer folder in the local svn repository on your system.
 
 In this folder you will find a script called osapi.run please execute this file.
 
