@@ -23,7 +23,7 @@ Then download the source files and tools from the project page.
 svn checkout http://open-sapi.googlecode.com/svn/trunk/ open-sapi-read-only
 }}}
 
-This should leave you in a position where you ahve enverything ready to go about configuring the system for speech.
+This should leave you in a position where you have enverything ready to go about configuring the system for speech.
 ----
 = How to install automatically - debian/ubuntu =
 
