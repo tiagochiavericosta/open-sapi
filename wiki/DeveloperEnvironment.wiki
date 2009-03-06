@@ -3,7 +3,7 @@
 ----
 = Introduction =
 
-Currently I am using Ubuntu 8.10. This is a standard installation using the default wine and pulse audio versions. Currently this setup wprks but is not perfect. I have had problem with pulseaudio crashing which freezes the desktop. This i blame on my lack of error handeling in my code so far and a little bit to do with wine and pulseaudio all togther. :)
+Currently I am using Ubuntu 8.10. This is a standard installation using the default wine and pulseaudio versions. Currently this setup works but is not perfect. I have had problem with pulseaudio crashing which freezes the desktop. This i blame on my lack of error handeling in my code so far and a little bit to do with wine and pulseaudio all togther. :)
 
 In theory any linux distribution should work as long as you can get wine working on it with sound. There is no requirement for pulseaudio just that you can get sound from wine. A more reliable audio system or an updated pulseaudio is highly recommend as this issue is a pain.
 ----
