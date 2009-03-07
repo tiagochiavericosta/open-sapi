@@ -10,7 +10,7 @@ Currently the project is only available for download through svn see   	 Develop
 
    * Ubuntu 8.10 - The PulseAudio version in 8.10 randomly segfault at the moment and requires a ctrl-alt-del to reset, performance is poor at the moment and freezes the gui while synthesis takes place. 
 
-   * Speech Dispatcher - A bug appears when your are speaking a line with a full stop in the middle. The client to speechD interactuon is not quite right. 
+   * Speech Dispatcher - A bug appears when your are speaking a line with a full stop in the middle. The client to speechD interactuon is not quite right. Only really tested the pulseaudio system to date. 
 ----
 =Still Todo=
 
