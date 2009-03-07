@@ -42,6 +42,7 @@ Currently the project is only available for download through svn see   	 Develop
 ----
 ==Installer==
    * Install commandline and server Apps
+   * Test with different sound servers and see results of an incorrect config
 ----
 ==Speech Dispatcher==
    * Investigate specific open sapi SD module 
