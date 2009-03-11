@@ -26,7 +26,7 @@ svn checkout http://open-sapi.googlecode.com/svn/trunk/open-sapi-read-only
 
 This should leave you in a position where you have everything ready to go about configuring the system for speech.
 ----
-= How to install automatically - Debian / Ubuntu =
+=Installing automatically - Debian / Ubuntu =
 
 If you are using Ubuntu and possibly Debian derived distros you can use the automated script to install and configure the system. Please can people e-mail any instructions and experiences they get with other distributions.
 
@@ -41,7 +41,7 @@ In this folder you will find a script called osapi.run please execute this file.
 For the package installation it requires sudo access and will ask for your password and then proceed to download and configure your system. If you want to know what i does see the manual process below.
 
 ----
-= How to install manually =
+=Installing manually =
 
 These instructions are debian/ubuntu specific but you should not find it too hard to lookup the basics for another distro. I have not included steps for orca wget and tcl as these are installed already on ubuntu but have mentioned them for others that may need to install.
 
