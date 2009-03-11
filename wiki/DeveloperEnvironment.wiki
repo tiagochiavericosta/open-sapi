@@ -21,14 +21,14 @@ sudo aot-get install subversion
 Then download the source files and tools from the project page.
 
 {{{
-svn checkout http://open-sapi.googlecode.com/svn/trunk/ open-sapi-read-only
+svn checkout http://open-sapi.googlecode.com/svn/trunk/open-sapi-read-only
 }}}
 
-This should leave you in a position where you have enverything ready to go about configuring the system for speech.
+This should leave you in a position where you have everything ready to go about configuring the system for speech.
 ----
-= How to install automatically - debian/ubuntu =
+= How to install automatically - Debian / Ubuntu =
 
-If you are using ubuntu and possible debian derived distros you can use the automated script to install and configure the system. Please can people e-mail any instructions and experiences they get with other distributions.
+If you are using Ubuntu and possibly Debian derived distros you can use the automated script to install and configure the system. Please can people e-mail any instructions and experiences they get with other distributions.
 
 To start the installation using a terminal navigate to the installer folder in the local svn repository on your system.
 
