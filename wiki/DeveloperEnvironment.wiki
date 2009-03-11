@@ -15,7 +15,7 @@ You will need to download the sources from svn. Here are all the tools and scrip
 If you are not sure you have svn installed run.
 
 {{{
-sudo aot-get install subversion
+sudo apt-get install subversion
 }}}
 
 Then download the source files and tools from the project page.
