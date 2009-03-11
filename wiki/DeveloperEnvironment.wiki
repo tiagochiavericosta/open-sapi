@@ -6,7 +6,7 @@
 
 Currently I am using Ubuntu 8.10. This is a standard installation using the default wine and pulseaudio versions. Currently this setup works but is not perfect. I have had problem with pulseaudio crashing which freezes the desktop. This i blame on my lack of error handeling in my code so far and a little bit to do with wine and pulseaudio all togther. :)
 
-In theory any linux distribution should work as long as you can get wine working on it with sound. There is no requirement for pulseaudio just that you can get sound from wine. A more reliable audio system or an updated pulseaudio is highly recommend as this issue is a pain.
+In theory any Linux distribution should work as long as you can get wine working on it with sound. There is no requirement for pulseaudio just that you can get sound from wine. A more reliable audio system or an updated pulseaudio is highly recommend as this issue is a pain.
 ----
 = Downloading the Source =
 
@@ -30,7 +30,7 @@ Please note Google Code is not the fastest at downloading and takes about ten mi
 
 This should leave you in a position where you have everything ready to go about configuring the system for speech.
 ----
-=Installing automatically - Debian / Ubuntu-=
+=Automatic Installation - Debian / Ubuntu=
 
 If you are using Ubuntu and possibly Debian derived distros you can use the automated script to install and configure the system. Please can people e-mail any instructions and experiences they get with other distributions.
 
@@ -45,7 +45,7 @@ In this folder you will find a script called osapi.run please execute this file.
 For the package installation it requires sudo access and will ask for your password and then proceed to download and configure your system. If you want to know what i does see the manual process below.
 
 ----
-=Installing manually =
+=Manual Installation - All Operating Systems=
 
 These instructions are Debian / Ubuntu specific but you should not find it too hard to lookup the basics for another distro. Please add comments about your experiences and if possible post instructions.
 
@@ -92,5 +92,7 @@ For a custom configuration file:
 
 2. If you are running a customised speech dispatcher with your own configuration then i recommend using a patch that can be found in the packages/speechd/ folder in the svn. First file your 
 
-   
+{{{
+
+}}}   
 ----
