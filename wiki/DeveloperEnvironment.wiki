@@ -4,7 +4,7 @@
 ----
 = Introduction =
 
-Currently I am using Ubuntu 8.10. This is a standard installation using the default wine and pulseaudio versions. Currently this setup works but is not perfect. I have had problem with pulseaudio crashing which freezes the desktop. This i blame on my lack of error handeling in my code so far and a little bit to do with wine and pulseaudio all togther. :)
+Currently I am using Ubuntu 8.10. This is a standard installation using the default wine and pulseaudio versions. Currently this setup works but is not perfect. I have had problem with pulseaudio crashing which freezes the desktop. This i blame on my lack of error handling in my code so far and a little bit to do with wine and pulseaudio all together. :)
 
 In theory any Linux distribution should work as long as you can get wine working on it with sound. There is no requirement for pulseaudio just that you can get sound from wine. A more reliable audio system or an updated pulseaudio is highly recommend as this issue is a pain.
 ----
@@ -74,25 +74,7 @@ Please note that if you plan to become an active developer and do not have svn e
  
 {{{
 svn checkout http://open-sapi.googlecode.com/svn/trunk/open-sapi
-}}}ersion 
-
-5. Lastly you need to decide how to configure speech dispatcher.
-
-1. If you run a standard speech dispatcher version 0.67 with no modification then you can copy the files directly to the local config directory or specify the configuration directory on the command line for speech dispatcher in the open-sapi svn folder.
-
-for local install:
-{{{
-
 }}}
 
-For a custom configuration file:
-{{{
-
-}}}
-
-2. If you are running a customised speech dispatcher with your own configuration then i recommend using a patch that can be found in the packages/speechd/ folder in the svn. First file your 
-
-{{{
-
-}}}   
+This completes your setup please see the DeveloperStartup page for details on starting speech dispatcher, configuring wine, running the server, client and their options.     
 ----
