@@ -10,7 +10,12 @@ In theory any Linux distribution should work as long as you can get wine working
 ----
 = Downloading the Source =
 
-You will need to download the sources from svn. Here are all the tools and scripts that are needed to create a working system and package for general distribution. Make sure you are in the directory where you want the files to be downloaded before running the svn command. If you want to help develop on the project please e-mail thomaslloyd at yahoo dot com and i can add you in as a developer. 
+If you are keen to help out and want to contribute please visit the JoiningIn page on the wiki. There it gives details on how to become a project member and how to setup the SVN for a project member.
+
+
+For everyone else you can continue to download the svn in read only mode.
+
+You will need to download the sources from svn. This will provide you with all the tools and scripts that are needed to create a working development system. Make sure you are in the directory where you want the files to be downloaded before running the svn command.
 
 If you are not sure you have svn installed run.
 
@@ -44,6 +49,7 @@ In this folder you will find a script called osapi.run please execute this file.
 
 For the package installation it requires sudo access and will ask for your password and then proceed to download and configure your system. If you want to know what i does see the manual process below.
 
+This completes your setup please see the DeveloperStartup page for details on starting speech dispatcher, configuring wine, running the server, client and their options. 
 ----
 =Manual Installation - All Operating Systems=
 
