@@ -5,7 +5,7 @@ These commands assume the location of the open-sapi svn directory is in your hom
 
 Speech Dispatcher - Startup speech dispatcher with custom configuration file from svn.
 {{{
-speech-dispatcher -C ~/open-sapi/packages/
+speech-dispatcher -C ~/open-sapi/packages/open-sapi/
 
 }}}
 
