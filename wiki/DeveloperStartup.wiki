@@ -3,27 +3,54 @@
 = Quick Reference Commands & Examples =
 These commands assume the location of the open-sapi svn directory is in your home folder. 
 
-Speech Dispatcher - Startup speech dispatcher with custom configuration file from svn.
+== Speech Dispatcher ==
+Startup speech dispatcher with custom configuration file from svn.
 {{{
 speech-dispatcher -C ~/open-sapi/packages/open-sapi/
-
 }}}
 
-Server Startup
+== Server Startup ==
+Wine gives lots of warnings and errors on the STDERR so i redirect these to the null device as we are not interested in the wine output most of the time. Remove the 2> /dev/null to see the eine errors. 
 {{{
-
+wine ~/open-sapi/tools/tcl/bin/tclsh85.exe ~/open-sapi/src/unstable/osapi-srv.tcl 2> /dev/null
 }}}
-Client Test
+
+== Client Simple text test ==
 {{{
-
+~/open-sapi/src/unstable/osapi-cli.tcl -t This is a test of the Open Sapi project @@
 }}}
 
-Add your content here.
+== Client pipe mode test ==
+{{{
+who | ~/open-sapi/src/unstable/osapi-cli.tcl --pipemode
+}}}
 
+= Advanced Server Notes =
 
-= Details =
+= Advanced Client Notes =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+At the moment the verbose output option is enabled on the server by default and not on the cient the output for any query using a ? for available engines volume rate and devices will appear on STDOUT of the terminal you have run your server from. 
+
+Usage output for the client:
+
+Open-SAPI Commandline Interface v0.1 Alpha
+
+Usage: osapi-cli ...[swithches] -adihloprsvx -t "message"
+A command line interface providing access to the text to speech (TTS) capabilities of the Microsoft Speech Engine (SAPI)
+
+Optional switches:
+	 -t, --text <text>      : Text to be spoken
+	 -l, --volume <value>   : Sets Volume Level. Range Min 0 - 100 Max
+	 -r, --rate  <value>    : Sets Speech Rate. Range Min 0 - 20 Max
+	 -p, --person <value>   : Sets Default Person
+	 -d, --device <value>   : Sets Audio Device
+	 -i, --icon <file>      : Sound Icon to play
+	 -v, --verbose         : Verbose output
+	 -h, --help            : This message
+
+*** Using ? instead of a numerical value will return the server setting ***
+
+For updates, guides and help please refer to the project page found at:
+http://code.google.com/p/open-sapi/w/list
+For bugs, comments and support please contact thomaslloyd@yahoo.com.
+
