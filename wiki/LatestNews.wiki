@@ -6,7 +6,7 @@ See the DevelopmentStatus page for details on what is left to do.
 <wiki:toc max_depth="1" />
 =News - 17/03/09=
 
-The required minimum to get a working system has been uploaded to SVN and added to the wiki pages to allow those intreted to download the progress so far. There has been no progress on the last headline as i have been working to tranfer the project online sonce then so the last healine is still relavant. 
+The required minimum to get a working system has been uploaded to SVN and added to the wiki pages to allow those intreted to download the progress so far. There has been no progress on from the last headline as i have been working to tranfer the project online since then so the last healine is still relavant. 
 
 =News - 05/03/09=
 
