@@ -1,5 +1,5 @@
 #summary This page provides information, hints & tips on running Orca with Speech Dispatcher and open-sapi.
-Please not this information is not complet, please ask questions in the disussion group to help me add more relavant content.  
+Please note this information is not complet, please ask questions in the disussion group to help me add more relavant content.  
 <wiki:toc max_depth="2" />
 ----
 = Quick Reference Commands & Examples =
