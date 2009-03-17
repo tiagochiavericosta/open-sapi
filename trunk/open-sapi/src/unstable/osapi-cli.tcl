@@ -38,7 +38,7 @@ proc helpMe {} {
    puts "\t -d, --device <value>   : Sets Audio Device"
 #   puts "\t -x, --xml              : Turns on XML markup processing"
 #   puts "\t     --xml-global       : Enable XML markup globally"
-   puts "\t -i, --icon <file>      : Sound Icon to play"
+#   puts "\t -i, --icon <file>      : Sound Icon to play"
 #   puts "\t -a, --async            : Ayncronous Playback"
 #   puts "\t     --purge            : Remove & replace all queued speech"
 #   puts "\t -c, --config <file>    : Specify configuration file"
@@ -46,8 +46,9 @@ proc helpMe {} {
 #   puts "\t -s, --server <action>  : Server Actions - start, restart, stop"
 #   puts "\t     --port <value>     : Server listing port. Default 5491"
 #   puts "\t -t, --test             : Tests components are present and configured"
-    puts "\t -v, --verbose         : Verbose output"
-    puts "\t -h, --help            : This message\n"
+   puts "\t -v, --verbose          : Verbose output"
+   puts "\t --pipemode             : Pipemode takes input on stdin to speak"
+   puts "\t -h, --help             : This message\n"
    
    puts "*** Using ? instead of a numerical value will return the server setting ***\n"
    puts "For updates, guides and help please refer to the project page found at:" 
@@ -146,7 +147,7 @@ proc sapiRead {sock} {
  set sock [socket localhost $port]
  bugMe "Client: Connected to $sock"
  
-fconfigure $sock -buffering line -blocking 1 
+fconfigure $sock -buffering line -blocking 0 
 fconfigure stdin -buffering line -blocking 0
 
 
