@@ -44,13 +44,13 @@ A command line interface providing access to the text to speech (TTS) capabiliti
 
 Optional switches:
 	 -t, --text text        : Text to be spoken
-	 -l, --volume value     : Sets Volume Level. Range Min 0 - 100 Max
-	 -r, --rate value       : Sets Speech Rate. Range Min 0 - 20 Max
-	 -p, --person value     : Sets Default Person
-	 -d, --device value     : Sets Audio Device
-	 -v, --verbose          : Verbose output
-	 --pipemode             : Pipemode takes input on stdin to speak
-	 -h, --help             : This message
+         -l, --volume value     : Sets Volume Level. Range Min 0 - 100 Max
+         -r, --rate value       : Sets Speech Rate. Range Min 0 - 20 Max
+         -p, --person value     : Sets Default Person
+         -d, --device value     : Sets Audio Device
+         -v, --verbose          : Verbose output
+         --pipemode             : Pipemode takes input on stdin to speak
+         -h, --help             : This message
 
 *** Using ? instead of a numerical value will return the server setting ***
 
