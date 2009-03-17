@@ -44,7 +44,7 @@ A command line interface providing access to the text to speech (TTS) capabiliti
 
 Optional switches:
 
-         * -t, --text text        : Text to be spoken
+         * -t, --text text        : Text to be spoken terminal with @@
          * -l, --volume value     : Sets Volume Level. Range Min 0 - 100 Max
          * -r, --rate value       : Sets Speech Rate. Range Min 0 - 20 Max
          * -p, --person value     : Sets Default Person
@@ -57,4 +57,4 @@ Optional switches:
 
 For updates, guides and help please refer to the project page found at:
 http://code.google.com/p/open-sapi/w/list
-For bugs, comments and support please contact thomaslloyd@yahoo.com.
+For bugs, comments and support please contact thomaslloyd@yahoo.com.nospam
