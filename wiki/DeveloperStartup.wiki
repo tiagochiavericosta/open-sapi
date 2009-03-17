@@ -1,5 +1,7 @@
 #summary This page provides information, hints & tips on running Orca with Speech Dispatcher and open-sapi.
 
+Please not this information is incompleted, please ask questions in the disussion group to help me add more relavant content.  
+
 = Quick Reference Commands & Examples =
 These commands assume the location of the open-sapi svn directory is in your home folder. 
 
@@ -27,6 +29,8 @@ who | ~/open-sapi/src/unstable/osapi-cli.tcl --pipemode
 
 = Advanced Server Notes =
 
+At the moment the verbose output option is enabled on the server by default and not on the cient the output for any query using a ? for available engines volume rate and devices will appear on STDOUT of the terminal you have run your server from. 
+
 = Advanced Client Notes =
 
 At the moment the verbose output option is enabled on the server by default and not on the cient the output for any query using a ? for available engines volume rate and devices will appear on STDOUT of the terminal you have run your server from. 
@@ -44,13 +48,12 @@ Optional switches:
 	 -r, --rate  <value>    : Sets Speech Rate. Range Min 0 - 20 Max
 	 -p, --person <value>   : Sets Default Person
 	 -d, --device <value>   : Sets Audio Device
-	 -i, --icon <file>      : Sound Icon to play
-	 -v, --verbose         : Verbose output
-	 -h, --help            : This message
+	 -v, --verbose          : Verbose output
+	 --pipemode             : Pipemode takes input on stdin to speak
+	 -h, --help             : This message
 
 *** Using ? instead of a numerical value will return the server setting ***
 
 For updates, guides and help please refer to the project page found at:
 http://code.google.com/p/open-sapi/w/list
 For bugs, comments and support please contact thomaslloyd@yahoo.com.
-
