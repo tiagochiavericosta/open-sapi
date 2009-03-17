@@ -1,7 +1,7 @@
 #summary This page provides information, hints & tips on running Orca with Speech Dispatcher and open-sapi.
-
-Please not this information is incompleted, please ask questions in the disussion group to help me add more relavant content.  
-
+Please not this information is not complet, please ask questions in the disussion group to help me add more relavant content.  
+<wiki:toc max_depth="2" />
+----
 = Quick Reference Commands & Examples =
 These commands assume the location of the open-sapi svn directory is in your home folder. 
 
@@ -26,11 +26,11 @@ wine ~/open-sapi/tools/tcl/bin/tclsh85.exe ~/open-sapi/src/unstable/osapi-srv.tc
 {{{
 who | ~/open-sapi/src/unstable/osapi-cli.tcl --pipemode
 }}}
-
+----
 = Advanced Server Notes =
 
 At the moment the verbose output option is enabled on the server by default and not on the cient the output for any query using a ? for available engines volume rate and devices will appear on STDOUT of the terminal you have run your server from. 
-
+----
 = Advanced Client Notes =
 
 At the moment the verbose output option is enabled on the server by default and not on the cient the output for any query using a ? for available engines volume rate and devices will appear on STDOUT of the terminal you have run your server from. 
