@@ -1,8 +1,10 @@
 #summary The current status of each componemt with detail on the work still outstanding.
 #labels Featured,Phase-Design
 <wiki:toc max_depth="1" />
+----
 =Current Status:=
 Currently the project is only available for download through svn see   	 DeveloperEnvironment for details of how to do this. We are someway off making a public release of the porject but keep watching. 
+----
 =Done=
    * SAPI 5.1 - A much smaller Text to speech installer has been found online that gives the basic three free English MS voices. This has been extracted and will now install without user interaction. A work around for the problem with WINE had been implemented. 
 
@@ -27,7 +29,6 @@ Currently the project is only available for download through svn see   	 Develop
     * Text option overrun check
     * Implement one voice per client
 
-----
 ==Client==
     * SAPI XML Markup
     * Sound Icons
@@ -36,13 +37,13 @@ Currently the project is only available for download through svn see   	 Develop
     * Sanity Checks  (list length on text)
     * Server Control - implement on wrapping
     * Test performance, possible migration to native C
-----
+
 ==Server-GUI==
     * Research GTK & Orca & TCL & Gnome Accessibility 
-----
+
 ==Installer==
    * Install commandline and server Apps
    * Test with different sound servers and see results of an incorrect config
-----
+
 ==Speech Dispatcher==
    * Investigate specific open sapi SD module 
