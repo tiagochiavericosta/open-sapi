@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sudo apt-get install wine speech-dispatcher python-speechd wget 
+sudo apt-get install wine speech-dispatcher python-speechd wget tcl
 
 mkdir $HOME/.winetrickscache
 cd $HOME/.winetrickscache
