@@ -5,35 +5,40 @@ Please note this information is not complete, please ask questions in the disuss
 = Quick Reference Commands & Examples =
 These commands assume the location of the open-sapi svn directory is in your home folder. 
 
-== Speech Dispatcher ==
-Startup speech dispatcher with custom configuration file from svn.
-
-Code:
-{{{
-speech-dispatcher -C ~/open-sapi/packages/speech-dispatcher/
-}}}
-
 == Server Startup ==
 Wine gives lots of warnings and errors on the STDERR so i redirect these to the null device as we are not interested in the wine output most of the time. Remove the 2> /dev/null to see the eine errors. 
+
+When the server is first run it should say in the default voice "Ready" if you do not hear this then you have a configuration problem see the TroubleShooting page.
 
 Code:
 {{{
 wine ~/open-sapi/tools/tcl/bin/tclsh85.exe ~/open-sapi/src/unstable/osapi-srv.tcl 2> /dev/null
 }}}
 
-== Client Simple text test ==
+== Running Client Simple text test ==
 
 Code:
 {{{
 ~/open-sapi/src/unstable/osapi-cli.tcl -t This is a test of the Open Sapi project @@
 }}}
 
-== Client pipe mode test ==
+== Running Client pipe mode test ==
 
 Code:
 {{{
 who | ~/open-sapi/src/unstable/osapi-cli.tcl --pipemode
 }}}
+
+== Running Speech Dispatcher ==
+Startup speech dispatcher with custom configuration file from svn. This custom file is set to use Pulseaudio but as far as i know does not affect the output as wine handels the audio at the moment.
+
+Code:
+{{{
+speech-dispatcher -C ~/open-sapi/packages/speech-dispatcher/
+}}}
+
+After this has been confirmed to work then your ready to fire up Orca.
+
 ----
 = Advanced Server Notes =
 
