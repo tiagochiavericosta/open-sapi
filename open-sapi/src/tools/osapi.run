@@ -1,0 +1,18 @@
+#!/bin/sh
+
+sudo apt-get install wine speech-dispatcher python-speechd wget tcl
+
+mkdir $HOME/.winetrickscache
+cd $HOME/.winetrickscache
+
+wget http://code.google.com/p/open-sapi/source/browse/trunk/open-sapi/installer/winetricks
+chmod 770 winetricks
+./winetricks sapi51
+
+wget http://code.google.com/p/open-sapi/source/browse/trunk/open-sapi/installer/msvcp60.dll
+cp msvcp60.dll $HOME/.wine/drive_c/windows/system32/
+rm -f *
+cd ..
+rmdir $HOME/.winetrickscache  
+
+exit 
