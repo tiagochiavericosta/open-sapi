@@ -32,6 +32,9 @@ who | ~/open-sapi/src/unstable/osapi-cli.tcl --pipemode
 == Running Speech Dispatcher ==
 Startup speech dispatcher with custom configuration file from svn. This custom file is set to use Pulseaudio but as far as i know does not affect the output as wine handels the audio at the moment.
 
+* Note:
+If you have chosen to use a custom location to store the SVN files then it is important to modify the open-sapi/packages/speech-dispatcher/modules/open-sapi-generic.conf file at line 24. The client location is hardcoded at the moment and you must change to the new location of the client. This is temproray until we migrate the tools into /usr/lobal/bin.
+
 Code:
 {{{
 speech-dispatcher -C ~/open-sapi/packages/speech-dispatcher/
