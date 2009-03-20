@@ -3,7 +3,7 @@ Please note this information is not complete, please ask questions in the disuss
 <wiki:toc max_depth="2" />
 ----
 = Quick Reference Commands & Examples =
-These commands assume the location of the open-sapi svn directory is in your home folder. 
+These commands assume the location of the open-sapi svn directory is in your home folder. If you ahve chosen a different location then okease read the notes and change code examples to mirror your locations.  
 
 == Server Startup ==
 Wine gives lots of warnings and errors on the STDERR so i redirect these to /dev/nill as we are not interested in the wine output most of the time. Remove the 2> /dev/null to see the wine errors get annoying. Tcl also compains on STDERR so if for any reason your setup has failed then you will miss these errors.   
