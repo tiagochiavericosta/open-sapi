@@ -43,8 +43,9 @@ To start the installation using a terminal navigate to the installer folder in t
 
 In this folder you will find a script called osapi.run please execute this file.
 
+Code:
 {{{
-./osapi.run
+~/open-sapi/installer/./osapi.run
 }}}
 
 For the package installation it requires sudo access and will ask for your password and then proceed to download and configure your system. If you want to know what i does see the manual process below.
