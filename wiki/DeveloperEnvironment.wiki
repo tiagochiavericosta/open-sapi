@@ -12,7 +12,6 @@ In theory any Linux distribution should work as long as you can get wine working
 
 If you are keen to help out and want to contribute please visit the JoiningIn page on the wiki. There it gives details on how to become a project member and how to setup the SVN for a project member.
 
-
 For everyone else you can continue to download the svn in read only mode.
 
 You will need to download the sources from svn. This will provide you with all the tools and scripts that are needed to create a working development system. Make sure you are in the directory where you want the files to be downloaded before running the svn command.
@@ -58,21 +57,34 @@ These instructions are Debian / Ubuntu specific but you should not find it too h
 
 1. Install all the packages, please note there is no problem with asking to install again as it will just ignore the packages that already exist on the system:
 
+code:
 {{{
-sudo apt-get install wine speech-dispatcher python-speechd wget tcl svn orca wget
+sudo apt-get install wine speech-dispatcher python-speechd wget tcl orca
 }}}
 
-2. Download the files that you need to setup wine using wget:
+2. Download :
 
+code:
 {{{
-wget http://code.google.com/p/open-sapi/source/browse/trunk/open-sapi/installer/winetricks
+wget http://open-sapi.googlecode.com/files/wineinit.exe
+wine wineinit.exe
 }}}
 
 3. Run the winetricks installer. Note you may have have to make this file executable
 
+Code:
 {{{
-chmod 770 winetricks
-./winetricks sapi51 vcrun6
+wget http://open-sapi.googlecode.com/files/winetricks.sh
+chmod 770 winetricks.sh
+./winetricks.sh sapi51
+}}}
+
+4. Download the C++ runtime library
+
+Code:
+{{{
+wget http://open-sapi.googlecode.com/files/msvcp60.dll
+cp -f msvcp60.dll $HOME/.wine/drive_c/windows/system32/
 }}}
 
 4. If you have not already downloaded the source files please do now. They are configured in such a way that they will run the scripts for both client and server without any more setup.
