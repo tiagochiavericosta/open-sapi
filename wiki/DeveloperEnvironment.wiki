@@ -4,9 +4,9 @@
 ----
 = Introduction =
 
-Currently I am using Ubuntu 8.10. This is a standard installation using the default wine and pulseaudio versions. Currently this setup works but is not perfect. I have had problem with pulseaudio crashing which freezes the desktop. This i blame on my lack of error handling in my code so far and a little bit to do with wine and pulseaudio all together. :)
+Currently I am using Ubuntu 8.10. This is a standard installation using the default wine and pulseaudio versions. Currently this setup works but is not perfect. I have had problems with pulseaudio crashing which freezes the desktop. This i blame on my lack of error handling in my code a little bit to do with wine and pulseaudio and my ati HDMI audio drivers all together. :)
 
-In theory any Linux distribution should work as long as you can get wine working on it with sound. There is no requirement for pulseaudio just that you can get sound from wine. A more reliable audio system or an updated pulseaudio is highly recommend as this issue is a pain.
+In theory any Linux distribution should work as long as you can get wine working on it with sound. There is no requirement for pulseaudio just that you can get sound from wine. 
 ----
 = Downloading the Source =
 
@@ -57,7 +57,7 @@ This completes your setup please see the DeveloperStartup page for details on st
 
 These instructions are Debian / Ubuntu specific but you should not find it too hard to lookup the basics for another distro. Please add comments about your experiences and if possible post instructions.
 
-1. Install all the packages, please note there is no problem with asking to install again as it will just ignore the packages that already exist on the system:
+1. Install required packages, please note there is no problem with asking reinstall existing software as it will just ignore the packages that already exist on the system:
 
 Code:
 {{{
@@ -72,7 +72,7 @@ wget http://open-sapi.googlecode.com/files/wineinit.exe
 wine wineinit.exe
 }}}
 
-3. Dowwnload & run the winetricks installer. Note you may have have to make this file executable.
+3. Download & run winetricks, a helper script to get SAPI installed . Note you may have have to make this file executable.
 
 Code:
 {{{
@@ -89,7 +89,7 @@ wget http://open-sapi.googlecode.com/files/msvcp60.dll
 cp -f msvcp60.dll $HOME/.wine/drive_c/windows/system32/
 }}}
 
-4. If you have not already downloaded the source files please so do now. They are configured in such a way that they will run the scripts for both client and server without any more setup.
+4. If you have not already downloaded the source files please so do now. They are configured in such a way that they will run the scripts for both client and server without any more setup or compilation.
 
 Please note that if you plan to become an active developer then i recommend you register on the project first obtain a username and password before proceeding with an svn download. Please mail thomas lloyd at yahoo dot com to register.
  
@@ -97,5 +97,5 @@ Please note that if you plan to become an active developer then i recommend you 
 svn checkout http://open-sapi.googlecode.com/svn/trunk/open-sapi
 }}}
 
-This completes your setup please see the DeveloperStartup page for details on starting speech dispatcher, configuring wine, running the server, client and their options.     
+This completes your setup please see the DeveloperStartup page for details on starting speech dispatcher, configuring wine, running the server and client applications.     
 ----
