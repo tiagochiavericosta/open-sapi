@@ -18,6 +18,7 @@ You will need to download the sources from svn. This will provide you with all t
 
 If you are not sure you have svn installed run.
 
+Code:
 {{{
 sudo apt-get install subversion
 }}}
@@ -25,7 +26,8 @@ sudo apt-get install subversion
 Then download the source files and tools from the project page.
 
 Please note that if you plan to become an active developer and do not have svn experience then i recommend you register on the project first obtain a username and password before proceeding with an svn download. Please mail thomas lloyd at yahoo dot com to register.
- 
+
+Code: 
 {{{
 svn checkout http://open-sapi.googlecode.com/svn/trunk/open-sapi
 }}}
@@ -57,20 +59,20 @@ These instructions are Debian / Ubuntu specific but you should not find it too h
 
 1. Install all the packages, please note there is no problem with asking to install again as it will just ignore the packages that already exist on the system:
 
-code:
+Code:
 {{{
-sudo apt-get install wine speech-dispatcher python-speechd wget tcl orca
+sudo apt-get install wine speech-dispatcher python-speechd wget tcl orca cabextract
 }}}
 
-2. Download :
+2. Download run the wineinit app. Only necessary for fresh wine installs, always run if unsure.
 
-code:
+Code:
 {{{
 wget http://open-sapi.googlecode.com/files/wineinit.exe
 wine wineinit.exe
 }}}
 
-3. Run the winetricks installer. Note you may have have to make this file executable
+3. Dowwnload & run the winetricks installer. Note you may have have to make this file executable.
 
 Code:
 {{{
@@ -79,7 +81,7 @@ chmod 770 winetricks.sh
 ./winetricks.sh sapi51
 }}}
 
-4. Download the C++ runtime library
+4. Download the C++ runtime library and move it into wine. 
 
 Code:
 {{{
@@ -87,9 +89,9 @@ wget http://open-sapi.googlecode.com/files/msvcp60.dll
 cp -f msvcp60.dll $HOME/.wine/drive_c/windows/system32/
 }}}
 
-4. If you have not already downloaded the source files please do now. They are configured in such a way that they will run the scripts for both client and server without any more setup.
+4. If you have not already downloaded the source files please so do now. They are configured in such a way that they will run the scripts for both client and server without any more setup.
 
-Please note that if you plan to become an active developer and do not have svn experience then i recommend you register on the project first obtain a username and password before proceeding with an svn download. Please mail thomas lloyd at yahoo dot com to register.
+Please note that if you plan to become an active developer then i recommend you register on the project first obtain a username and password before proceeding with an svn download. Please mail thomas lloyd at yahoo dot com to register.
  
 {{{
 svn checkout http://open-sapi.googlecode.com/svn/trunk/open-sapi
