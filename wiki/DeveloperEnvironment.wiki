@@ -89,6 +89,13 @@ wget http://open-sapi.googlecode.com/files/msvcp60.dll
 cp -f msvcp60.dll $HOME/.wine/drive_c/windows/system32/
 }}}
 
+4. Run speech dispatcher user based configuration. Specify pulse for audio output method all other options can be left as default values.. 
+
+Code:
+{{{
+spd-conf -u
+}}}
+
 4. If you have not already downloaded the source files please so do now. They are configured in such a way that they will run the scripts for both client and server without any more setup or compilation.
 
 Please note that if you plan to become an active developer then i recommend you register on the project first obtain a username and password before proceeding with an svn download. Please mail thomas lloyd at yahoo dot com to register.
