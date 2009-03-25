@@ -42,7 +42,7 @@ If you are using Ubuntu and possibly Debian derived distros you can use the auto
 
 To start the installation using a terminal navigate to the installer folder in the local svn repository on your system.
 
-In this folder you will find a script called osapi.run please execute this file.
+You will find a script called osapi.run please execute this file. Please note that downloads are slow from Google and can take up to ten minutes.
 
 Code:
 {{{
