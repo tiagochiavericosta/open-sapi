@@ -615,9 +615,9 @@ load_dirac08() {
 
 #----------------------------------------------------------------
 load_sapi51() {
-    download . http://code.google.com/p/open-sapi/source/browse/trunk/open-sapi/installer/sapi.msi
+    download . http://open-sapi.googlecode.com/files/sapi.msi
     set_winver win2k
-    try $WINE msiexec /i "$WINETRICKS_CACHE"/sapi.msi
+    try $WINE msiexec /i $WINETRICKS_CACHE/sapi.msi
     unset_winver
 }
 #----------------------------------------------------------------
