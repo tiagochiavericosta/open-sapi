@@ -31,7 +31,7 @@ Please note that if you plan to become an active developer and do not have svn e
 svn checkout http://open-sapi.googlecode.com/svn/trunk/open-sapi
 }}}
 
-Please note Google Code is not the fastest at downloading and takes about ten minutes to get the whole project, (approx 14 Megabytes). 
+Please note Google Code is not the fastest at downloading and takes about ten minutes to get the whole project, (approx 37 Megabytes). 
 
 This should leave you in a position where you have everything ready to go about configuring the system for speech.
 ----
