@@ -9,10 +9,10 @@ cd $HOME/.winetrickscache
 # Wine does not create it's directory structure/registry until its first run.
 # Winetricks fails unless this structure exisits first.
 
-wget http://code.google.com/p/open-sapi/source/browse/trunk/open-sapi/installer/wineinit.exe
+wget --ignore-length --quiet http://code.google.com/p/open-sapi/source/browse/trunk/open-sapi/installer/wineinit.exe
 wine wineinit.exe
  
-wget http://code.google.com/p/open-sapi/source/browse/trunk/open-sapi/installer/winetricks
+wget --ignore-length http://code.google.com/p/open-sapi/source/browse/trunk/open-sapi/installer/winetricks
 chmod 770 winetricks
 ./winetricks sapi51
 
