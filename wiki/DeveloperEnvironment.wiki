@@ -61,7 +61,7 @@ These instructions are Debian / Ubuntu specific but you should not find it too h
 
 Code:
 {{{
-sudo apt-get install wine speech-dispatcher python-speechd wget tcl orca cabextract
+sudo apt-get install wine speech-dispatcher python-speechd wget tcl gnome-orca cabextract
 }}}
 
 2. Download run the wineinit app. Only necessary for fresh wine installs, always run if unsure.
