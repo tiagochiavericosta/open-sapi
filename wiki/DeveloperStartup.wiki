@@ -1,4 +1,5 @@
 #summary This page provides information, hints & tips on running Orca with Speech Dispatcher and open-sapi.
+#labels Featured
 Please note this information is not complete, please ask questions in the disussion group to help me add more relavant content.  
 <wiki:toc max_depth="2" />
 ----
@@ -6,7 +7,7 @@ Please note this information is not complete, please ask questions in the disuss
 These commands assume the location of the open-sapi svn directory is in your home folder. If you ahve chosen a different location then please read the notes on speech-dispacher below and change code examples to mirror your locations.  
 
 == Server Startup ==
-Wine gives lots of warnings and errors on the STDERR so i redirect these to /dev/nill as we are not interested in the wine output most of the time. Remove the 2> /dev/null to see the wine errors. Tcl also compains on STDERR so if for any reason your setup has failed then you will miss these errors.   
+Wine gives lots of warnings and errors on the STDERR so i redirect these to /dev/null as we are not interested in the wine output most of the time. Remove the 2> /dev/null to see the wine errors. Tcl also complains on STDERR so if for any reason your setup has failed then you will miss these errors.   
 
 When the server is first run it should say in the default voice "Ready" if you do not hear this then you have a configuration problem see the TroubleShooting page. Try removing the 2> /dev/null part of the command to get all error output. This will help when you look at the TroubleShooting Page.  
 
