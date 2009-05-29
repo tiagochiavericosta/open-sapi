@@ -49,9 +49,8 @@ global voice
 # Returns:
 #-------------------------------------------------------------------------------
 proc getVol {voice} {
-
-    return [$voice Volume]
-    
+   
+   return [$voice Volume]    
 }
 #-------------------------------------------------------------------------------
 # Proceedure Name: setVolume
@@ -61,8 +60,7 @@ proc getVol {voice} {
 #-------------------------------------------------------------------------------
 proc setVol {voice volume} {
 
-    $voice Volume $volume
-    
+   $voice Volume $volume    
 }
 #-------------------------------------------------------------------------------
 # Proceedure Name: getRate
@@ -72,10 +70,10 @@ proc setVol {voice volume} {
 #-------------------------------------------------------------------------------
 proc getRate {voice} {
 
-    return [$voice Rate] 
-    
+   return [$voice Rate] 
+
 }
-##-------------------------------------------------------------------------------
+##------------------------------------------------------------------------------
 # Proceedure Name: setRate
 # Description:
 #
@@ -83,8 +81,8 @@ proc getRate {voice} {
 #-------------------------------------------------------------------------------
 proc setRate {voice rate} {
 
-    $voice Rate $rate
-    
+   $voice Rate $rate
+
 }
 #-------------------------------------------------------------------------------
 # Proceedure Name: getEngineArray
@@ -94,7 +92,11 @@ proc setRate {voice rate} {
 #-------------------------------------------------------------------------------
 proc getEngineArray {voice} {
 
-    set list [$voice GetVoices]
+   #set list [$voice GetVoices]
+    if { [catch {set list [$voice GetVoices] } errmsg ]  } {
+       puts "No Speech Engines Available - $errmsg"
+       return
+    }
     set howmany [$list Count]
     for {set i 0} {$i < $howmany} {incr i} {
         set engine [$list Item $i]
@@ -111,8 +113,9 @@ return [array get engineArray]
 # Returns: Nothing
 #-------------------------------------------------------------------------------
 proc setEngine {voice engine} {
-
- $voice Voice $engine
+ 
+   $voice Voice $engine
+   puts "set engine"
  
 }
 #-------------------------------------------------------------------------------
@@ -122,7 +125,12 @@ proc setEngine {voice engine} {
 #-------------------------------------------------------------------------------
 proc getSoundDeviceArray {voice} {
 
- set devices [$voice GetAudioOutputs]
+ #set devices [$voice GetAudioOutputs]
+ if { [catch {set devices [$voice GetAudioOutputs] } errmsg] } {
+       puts "Only One Sound Device Available - $errmsg"
+       return
+    } else {
+    }
  set howmany [$devices Count]
  for {set i 0} {$i < $howmany} {incr i} {
      set thisdevice [$devices Item $i]
@@ -139,9 +147,9 @@ proc getSoundDeviceArray {voice} {
 # Returns: Nothing
 #-------------------------------------------------------------------------------
 proc setSoundDevice {voice device} {
-
- $voice AudioOutput $device
-
+   
+   $voice AudioOutput $device
+   
 }
 # ------------------------------------------------------------------------------
 # ProcName : sapiServer 
@@ -156,8 +164,14 @@ proc sapiServer {port} {
  set sock [socket -server sapiAccept $port]
  fconfigure $sock -buffering line -blocking 0
  bugMe "SAPI Server Listening for connections on port:$port" $sock
- puts "SAPI Server Ready"
- $voice Speak "Ready" 1      
+ 
+ 
+ if { [catch { $voice Speak "Ready" 1 } errmsg ] } {
+       puts "Speech initialisation failed - $errmsg"
+       exit
+    }
+ 
+ puts "SAPI Server Ready"  
 }
 # ------------------------------------------------------------------------------
 # ProcName : sapiAccept 
@@ -197,6 +211,9 @@ proc sapiRead {sock} {
  set pitch 0
  set clientSock $sock
  
+ ::tcom::bind $voice voiceEvent
+ $voice EventInterests 4
+ 
  if { [gets $sock message] == -1 } {
      catch {close $sock} err
      bugMe "Connection closed from $sock - $err" $sock
@@ -219,25 +236,25 @@ proc sapiRead {sock} {
                    
                getVolume { 
                    set volume [getVol $voice] 
-               #   bugMe "Get volume $volume" $sock
+                   bugMe "Get volume $volume" $sock
                }
            
                setVolume {
                    set volume [lindex $message [expr $x + 1]]
                    setVol $voice $volume
-               #   bugMe "Set volume $volume" $sock
+                   bugMe "Set volume $volume" $sock
                    set skip 1
                }
            
                getRate {
                    set rate [getRate $voice] 
-               #    bugMe "Get rate $rate" $sock
+                   bugMe "Get rate $rate" $sock
                }
            
                setRate {
                    set rate [lindex $message [expr $x + 1]]
                    setRate $voice $rate
-                #  bugMe "Set speech rate $rate" $sock
+                   bugMe "Set speech rate $rate" $sock
                    set skip 1
                }
            
@@ -262,7 +279,7 @@ proc sapiRead {sock} {
                    set engineNum [lindex $message [expr $x + 1]]
                    set voiceHandle $voicesArray($engineNum,handle)
                    setEngine $voice $voiceHandle
-               #   bugMe "Set Voice $voicesArray($engineNum,name)" $sock
+                   bugMe "Set Voice $voicesArray($engineNum,name)" $sock
                    set skip 1
                }
            
@@ -273,7 +290,7 @@ proc sapiRead {sock} {
                    total entrites of the hash table 
                    set arraySize [expr $arraySize / 2]
                    while {$i < $arraySize} {
-                #      bugMe "Engine $i = $deviceArray($i,name)" $sock
+                       bugMe "Engine $i = $deviceArray($i,name)" $sock
                        incr i   
                    }
                }
@@ -282,13 +299,13 @@ proc sapiRead {sock} {
                    set deviceNum [lindex $message [expr $x + 1]]
                    set deviceHandle $deviceArray($deviceNum,handle)
                    setSoundDevice $voice $deviceHandle
-               #   bugMe "Set device $deviceArray($deviceNum,name)" $sock
+                   bugMe "Set device $deviceArray($deviceNum,name)" $sock
                    set skip 1
                }
            
                setFlags {
                    set speechFlags [lindex $message [expr $x + 1]]
-               #   bugMe "Set speechFlags to $speechFlags" $sock
+                   bugMe "Set speechFlags to $speechFlags" $sock
                    set skip 1
                }
            
@@ -361,7 +378,7 @@ proc sapiRead {sock} {
          set text "<pitch absmiddle=\"$pitch\"> $text </pitch><pitch \
          absmiddle=\"0\"/>"
      }
-     
+     puts "what i am speaking : $text"
      $voice Speak $text $speechFlags
  }
  
@@ -375,9 +392,12 @@ proc sapiRead {sock} {
 proc voiceEvent { event args } {
 
 global clientSock
+global voice
+ puts "Voice events - $event"
  if {$event == "EndStream"} {
      catch { close $clientSock } err
-     bugMe "Voice events $err" $clientSock
+     bugMe "Voice events - $event : $err" $clientSock
+     ::tcom::unbind $voice
  }
 
 }
@@ -396,8 +416,7 @@ global clientSock
  
  # ::tcom::configure -concurrency multithreaded
  set voice [::tcom::ref createobject Sapi.SpVoice]
- ::tcom::bind $voice voiceEvent
- $voice EventInterests 4
+ 
  
  # Grab the list of SAPI engines and sound devices to save duplicated effort
  set engineList [getEngineArray $voice]
