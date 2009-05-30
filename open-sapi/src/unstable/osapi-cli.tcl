@@ -147,8 +147,8 @@ proc sapiRead {sock} {
  set sock [socket localhost $port]
  bugMe "Client: Connected to $sock"
  
-fconfigure $sock -buffering line -blocking 0 
-fconfigure stdin -buffering line -blocking 0
+fconfigure $sock -buffering line -blocking 0 -encoding utf-8
+fconfigure stdin -buffering line -blocking 0 -encoding utf-8
 
 
  
