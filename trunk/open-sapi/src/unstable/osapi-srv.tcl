@@ -162,7 +162,7 @@ proc sapiServer {port} {
  global sock
       
  set sock [socket -server sapiAccept $port]
- fconfigure $sock -buffering line -blocking 0
+ fconfigure $sock -buffering line -blocking 0 
  bugMe "SAPI Server Listening for connections on port:$port" $sock
  
  
@@ -195,6 +195,8 @@ global voice
 #-------------------------------------------------------------------------------
 proc sapiRead {sock} {
  
+ 
+ 
  bugMe "sapiRead" $sock
  
  global voice
@@ -210,6 +212,9 @@ proc sapiRead {sock} {
  set pipemode 1 
  set pitch 0
  set clientSock $sock
+ 
+ fconfigure $clientSock -encoding utf-8
+ 
  
  ::tcom::bind $voice voiceEvent
  $voice EventInterests 4
@@ -379,6 +384,8 @@ proc sapiRead {sock} {
          absmiddle=\"0\"/>"
      }
      puts "what i am speaking : $text"
+     set $text [encoding convertfrom utf-8 $text]
+     puts "after conversion : $text"
      $voice Speak $text $speechFlags
  }
  
@@ -393,7 +400,6 @@ proc voiceEvent { event args } {
 
 global clientSock
 global voice
- puts "Voice events - $event"
  if {$event == "EndStream"} {
      catch { close $clientSock } err
      bugMe "Voice events - $event : $err" $clientSock
