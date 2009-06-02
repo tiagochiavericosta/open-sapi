@@ -101,8 +101,7 @@ return $sock
 #-----------------------------------------------------------------------------------
 proc sapiRead {sock} {
    
-   global echo
-   
+   puts "SapiRead"
    if { [gets $sock message] == -1 || [eof $sock] } {
         exit
    } else {
