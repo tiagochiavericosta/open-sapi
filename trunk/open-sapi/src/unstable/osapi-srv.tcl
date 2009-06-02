@@ -183,7 +183,7 @@ proc sapiAccept {sock addr port} {
 global voice
 
  bugMe "New connection on $sock" $sock
- $voice Speak " " 3
+# $voice Speak " " 3
  fileevent $sock readable [list sapiRead $sock]
 
 }
@@ -216,16 +216,19 @@ proc sapiRead {sock} {
  fconfigure $clientSock -encoding utf-8
  
  
- ::tcom::bind $voice voiceEvent
- $voice EventInterests 4
+ 
  
  if { [gets $sock message] == -1 } {
      catch {close $sock} err
      bugMe "Connection closed from $sock - $err" $sock
 #     $voice Skip Sentence $maxint
+     ::tcom::unbind $voice
      $voice Speak " " 3
      return        
  } else {
+     
+     ::tcom::bind $voice voiceEvent
+     $voice EventInterests 4
      
      bugMe "Message from $sock" $sock
      
@@ -400,10 +403,13 @@ proc voiceEvent { event args } {
 
 global clientSock
 global voice
- if {$event == "EndStream"} {
+puts " All Events - Voice events - $event : $args "
+
+ if {$event == "EndStream" && [$voice WaitUntilDone 100] } {
+     puts "close client"
      catch { close $clientSock } err
      bugMe "Voice events - $event : $err" $clientSock
-     ::tcom::unbind $voice
+    ::tcom::unbind $voice
  }
 
 }
