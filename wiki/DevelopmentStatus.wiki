@@ -13,6 +13,8 @@ Currently the project is only available for download through svn see   	 Develop
    * Ubuntu 9.04 - The PulseAudio updated version from repository works very smoothly. Still experiencing ramdon GUI system freezes. This seems dpecific to my system and setup still hunting for this bug on my system. 
 
    * Speech Dispatcher - Seems buggy as a [akcage when not using a standard english install. Other small glitches have been noticed by speechD but i am ruling out that open-saou is not to blame. 
+
+   * UTF-8 and UNICODE have been implemented to support European languages. Other languages are untested as yet. 
 ----
 =Still Todo=
 
