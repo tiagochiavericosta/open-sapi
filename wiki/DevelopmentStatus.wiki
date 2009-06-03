@@ -8,11 +8,11 @@ Currently the project is only available for download through svn see   	 Develop
 =Done=
    * SAPI 5.1 - A much smaller Text to speech installer has been found online that gives the basic three free English MS voices. This has been extracted and will now install without user interaction. A work around for the problem with WINE had been implemented. 
 
-   * Middleware - The server is and client are functioning and are semi reliable. Improvements to the performance need to be investigated.
+   * Middleware - The server is and client are bahaving as expected. Differing distributions seems to be throwing up bugs as tested come on board. 
 
-   * Ubuntu 8.10 - The PulseAudio version in 8.10 randomly segfault at the moment and requires a ctrl-alt-del to reset, performance is poor at the moment and freezes the gui while synthesis takes place. 
+   * Ubuntu 9.04 - The PulseAudio updated version from repository works very smoothly. Still experiencing ramdon GUI system freezes. This seems dpecific to my system and setup still hunting for this bug on my system. 
 
-   * Speech Dispatcher - A bug appears when your are speaking a line with a full stop in the middle. The client to speechD interactuon is not quite right. Only really tested the pulseaudio system to date. 
+   * Speech Dispatcher - Seems buggy as a [akcage when not using a standard english install. Other small glitches have been noticed by speechD but i am ruling out that open-saou is not to blame. 
 ----
 =Still Todo=
 
@@ -26,7 +26,6 @@ Currently the project is only available for download through svn see   	 Develop
     * Implement as a Service ?
     * Sanity Checks (list length on text)
     * Investigate commandline only execution
-    * Text option overrun check
     * Implement one voice per client
 
 ==Client==
