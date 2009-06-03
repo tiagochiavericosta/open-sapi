@@ -4,6 +4,12 @@
 See the DevelopmentStatus page for details on what is left to do.
 ----
 <wiki:toc max_depth="1" />
+=News - 03/06/09=
+
+After some heavy bug hunting with many fixes applied, we are getting close to the first stable release of open-sapi for the first development phase. Recently I have been concentrating on the testing of different encoding systems and so far have a working system for european languages. Others are untested at this time.
+
+I have fixed the speech-dispatcher to open-sapi synchronisation problem and now seem to be encountering bugs from the other packages. Having just request help from other testers I am awaiting more bugs to be reported.  
+
 =News - 17/03/09=
 
 The required minimum to get a working system has been uploaded to SVN and added to the wiki pages to allow those intreted to download the progress so far. There has been no progress on from the last headline as i have been working to tranfer the project online since then so the last healine is still relavant. 
