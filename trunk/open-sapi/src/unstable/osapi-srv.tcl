@@ -170,6 +170,7 @@ proc sapiServer {port} {
        puts "Speech initialisation failed - $errmsg"
        exit
     }
+
  
  puts "SAPI Server Ready"  
 }
@@ -213,22 +214,25 @@ proc sapiRead {sock} {
  set pitch 0
  set clientSock $sock
  
- fconfigure $clientSock -encoding utf-8
+ fconfigure $clientSock -encoding utf-8 -blocking 0 -buffering line
  
  
  
  
- if { [gets $sock message] == -1 } {
+ if { [gets $sock message] == -1 || [eof $sock] } {
+     catch {flush $sock} err2
      catch {close $sock} err
-     bugMe "Connection closed from $sock - $err" $sock
-#     $voice Skip Sentence $maxint
+     bugMe "Connection kill by client - $err" $sock
+
      ::tcom::unbind $voice
-     $voice Speak " " 3
+#     $voice Speak " " 3
+     $voice Skip Sentence $maxint
+     bugMe "Purge Speech!!" $sock
      return        
  } else {
      
+     
      ::tcom::bind $voice voiceEvent
-     $voice EventInterests 4
      
      bugMe "Message from $sock" $sock
      
@@ -380,17 +384,16 @@ proc sapiRead {sock} {
  }; # End of socket else
 
  
- if {$text == ""} { return } else {
+# if {$tbugMe "Connection kill by client - $err" $sockext == ""} { return } else {
+     
      if {$pitch < 0 || $pitch > 0} {
          bugMe "setting pitch on message" $sock
          set text "<pitch absmiddle=\"$pitch\"> $text </pitch><pitch \
          absmiddle=\"0\"/>"
      }
-     puts "what i am speaking : $text"
      set $text [encoding convertfrom utf-8 $text]
-     puts "after conversion : $text"
      $voice Speak $text $speechFlags
- }
+# }
  
 }
 # ------------------------------------------------------------------------------
@@ -403,10 +406,11 @@ proc voiceEvent { event args } {
 
 global clientSock
 global voice
-puts " All Events - Voice events - $event : $args "
 
- if {$event == "EndStream" && [$voice WaitUntilDone 100] } {
-     puts "close client"
+ if {$event == "EndStream" && [$voice WaitUntilDone 500] } {
+     puts "Speech Output ended : close clientSock"
+     puts $clientSock "eos"
+#    flush $clientSock
      catch { close $clientSock } err
      bugMe "Voice events - $event : $err" $clientSock
     ::tcom::unbind $voice
@@ -425,10 +429,9 @@ puts " All Events - Voice events - $event : $args "
  set sock 0
  set clientSock 0  
  # Create the default voice object 
- 
- # ::tcom::configure -concurrency multithreaded
+ ::tcom::configure -concurrency multithreaded
  set voice [::tcom::ref createobject Sapi.SpVoice]
- 
+ $voice EventInterests 4
  
  # Grab the list of SAPI engines and sound devices to save duplicated effort
  set engineList [getEngineArray $voice]

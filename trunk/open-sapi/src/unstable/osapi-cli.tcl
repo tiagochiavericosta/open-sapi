@@ -100,11 +100,19 @@ return $sock
 # Called By:
 #-----------------------------------------------------------------------------------
 proc sapiRead {sock} {
-   
-   puts "SapiRead"
+puts "Data Received"   
    if { [gets $sock message] == -1 || [eof $sock] } {
+        puts "Server closing client:socket closed"
+        flush $sock
+        close $sock
         exit
    } else {
+       if {$message == "eos"} {
+           puts "Server closing client:eos"
+           flush $sock
+           close $sock
+           exit
+       }
        bugMe "Server: $message"
    }
        
@@ -143,8 +151,12 @@ proc sapiRead {sock} {
      bugMe "Client: Looking for server on localhost port 5491 by default"
  }
 
- set sock [socket localhost $port]
- bugMe "Client: Connected to $sock"
+ if { [catch {set sock [socket localhost $port] } err] } {
+ puts "300"
+ bugMe "Client: Critical - Unable to establish connection with server : Exitting"
+ after 1000 [ exit 300 ]
+ }
+ bugMe "Client: Connected on $sock"
  
 fconfigure $sock -buffering line -blocking 0 -encoding utf-8
 fconfigure stdin -buffering line -blocking 0 -encoding utf-8
@@ -297,7 +309,10 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
               set skip 1
               }
 
-	      -s {
+	      -s {puts "Server closing client"
+        flush $sock
+        close $sock
+        exit
                   set action [lindex $argv [expr $x + 1]]
                   set sock [serverControl $action $sock]
                   bugMe "Client: Requesting server to $action"
