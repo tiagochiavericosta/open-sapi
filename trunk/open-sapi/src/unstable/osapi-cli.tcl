@@ -387,7 +387,8 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
                 
                --punct {
                   set flag [expr $flag | 64]
-                  bugMe "Client: Speech Flag: $flag - All Punctuation" 
+               set engineList [getEngineArray $voice]
+ array set voicesArray $engineList   bugMe "Client: Speech Flag: $flag - All Punctuation" 
               }
 
               --config {
