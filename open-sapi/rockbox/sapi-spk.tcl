@@ -17,29 +17,42 @@
  #******************************************************************************
 
 # ------------------------------------------------------------------------------
-#Application Name: Open SAPI Voice Clip Generator v0.1 Alpha for Rockbox Utulity
+#Application Name: Open SAPI Clip Generator v0.1 Alpha for Rockbox Utulity
 # ------------------------------------------------------------------------------
 
 package require tcom
 
 set verboseText 1
 
+# ------------------------------------------------------------------------------
+# ProcName : initAudioFormats
+# Args : None
+# Usage : Supplies the user with usage information when called through stdout
+# Accepts: None
+# Returns: None
+# Called By: Main
+#-------------------------------------------------------------------------------
+
 proc helpMe {} {
    
-   puts "Open SAPI Voice Clip Generator v0.1 Alpha for Rockbox Utulity\n"
+   puts "Open SAPI Clip Generator v0.1 Alpha for Rockbox Utulity\n"
 
-   puts "Usage: osapi-cli ...\[swithches\] -ehlortvx -t \"message\" @@ "
-   puts "A command line interface providing access to the Microsoft Speech Engine)\n"
+   puts "Usage: sapi-spk ...\[swithches\] -ehlortvx -t \"message\" @@ "
+   puts "A command line interface providing access to the Microsoft Speech \
+   Engine)\n"
    
-   puts "Optional switches:"
+   puts "Switches:"
    puts "\t -o <dir/filename.ext>  : Location & filename of output file"
    puts "\t -t, --text <text>      : Text to be spoken terminate with @@ "
    puts "\t -l, --volume <value>   : Sets Volume Level. Range Min 0 - 100 Max"
-   puts "\t -r, --rate  <value>    : Sets Speech Rate. Range Min 0 - 20 Max"
-   puts "\t -e, --engine <value>   : Sets Default Person"
+   puts "\t -r, --rate  <value>    : Sets Speech Rate. Range Min -10 - 10 Max"
+   puts "\t --pitch <value>        : Sets Speech Rate. Range Min -10 - 10 Max"
+   puts "\t --wavformat  <value>   : Sets Audio Format. ? for current list"
+
+    puts "\t -e, --engine <value>   : Sets Default Engine"
 #   puts "\t -d, --device <value>   : Sets Audio Device"
 #   puts "\t -x, --noxml            : Turns on XML markup processing"
-#   puts "\t     --xml-global       : Enable XML markup globally"
+#   puts "\t --xml-global           : Enable XML markup globally"
 #   puts "\t -i, --icon <file>      : Sound Icon to play"
 #   puts "\t -a, --async            : Ayncronous Playback"
 #   puts "\t     --purge            : Remove & replace all queued speech"
@@ -52,11 +65,21 @@ proc helpMe {} {
 #  puts "\t --pipemode             : Pipemode takes input on stdin to speak"
    puts "\t -h, --help             : This message\n"
    
-   puts "*** Using ? instead of a numerical value will return the server setting ***\n"
-   puts "For updates, guides and help please refer to the project page found at:" 
-   puts "http://code.google.com/p/open-sapi/w/list"
+   puts "*** Using ? instead of a numerical value will return the current\
+    setting***\n"
+   puts "For updates, guides and help please refer to the project page:" 
+   puts "http://www.rockbox.org"
    puts "For bugs, comments and support please contact thomaslloyd@yahoo.com." 
 }
+
+# ------------------------------------------------------------------------------
+# ProcName : initAudioFormats
+# Args : None
+# Usage : Used to generate full list of SAPI supported audio formats
+# Accepts: None
+# Returns: $audioFormats (list)
+# Called By: Main on supported aduio formats request
+#-------------------------------------------------------------------------------
 
 proc initAudioFormats {} {
 
@@ -156,9 +179,6 @@ proc setRate {voice rate} {
 #-------------------------------------------------------------------------------
 proc getEngineArray {voice} {
 
-
-
-   #set list [$voice GetVoices]
     if { [catch {set list [$voice GetVoices] } errmsg ]  } {
        puts "No Speech Engines Available - $errmsg"
        return
