@@ -61,6 +61,21 @@ proc helpMe {} {
 #
 # Returns: Nothing
 #----------------------------------------------------------------
+proc monitorMe {event timeout} {
+
+set event [after $timeout {
+    bugMe "$event timeout - exit"
+    exit
+    }]
+
+return $event
+}
+#----------------------------------------------------------------
+# Proceedure Name: serverControl
+# Description: Performs Global changes to the servers behaviour
+#
+# Returns: Nothing
+#----------------------------------------------------------------
 proc serverControl {action sock} {
 # Will needed reinplementing when Wrapped as final app
  switch -exact -- $action {
@@ -140,9 +155,13 @@ puts "Data Received"
      if { $element == "-h" || $element == "--help" } { helpMe ; exit }
      if { $element == "--port"} {
          set port [lindex $argv [expr $x + 1] ]
-         if { $port  == "?"} { 
-             puts "Error: You can not query the  server port number from the client. Running osapi-srv -v may help"
-         } else { bugMe "Client: Server Port is set to: $port"}      
+         if { $port  == "?" || $port == 0} { 
+             puts "Error: You can not query the server port number from the \
+             client."
+         } else {
+             set port 5491 
+             bugMe "Client: Server Port is set to: $port by default"
+         }      
      } 
  incr x
  }
@@ -174,16 +193,17 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
 	        
              -a {
                  set flag [expr $flag | 1]
-                 bugMe "Client: Speech Flag: $flag - async" 
+                 bugMe "Client: Option - async  - flag : $flag" 
               }
 
               --async {
                   set flag [expr $flag | 1]
-                  bugMe "Client: Speech Flag: $flag - async"
+                  bugMe "Client: Option - async - flag : $flag"
               }
 
 	      -d {
                   # Requires a regexpression to check for valid input here
+                  
                   set device [lindex $argv [expr $x + 1] ]
                   if { $device == "?"} {
                       set command "$command getDevice" 
@@ -387,8 +407,7 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
                 
                --punct {
                   set flag [expr $flag | 64]
-               set engineList [getEngineArray $voice]
- array set voicesArray $engineList   bugMe "Client: Speech Flag: $flag - All Punctuation" 
+                  bugMe "Client: Speech Flag: $flag - All Punctuation" 
               }
 
               --config {
@@ -422,7 +441,8 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
                   set command "$command pipeMode"
               }
                 
-              default { puts "Unknown Option $element. Please type -h for usage help"
+              default { 
+                  puts "Unknown Option $element. Please type -h for usage help"
               }
          	
          } ; # End switch

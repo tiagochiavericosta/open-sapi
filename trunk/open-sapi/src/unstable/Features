@@ -1,0 +1,44 @@
+Features:
+
+Dumb Client Closes after long timeout of waiting for close from Server
+
+Simple monitoring client that checks resposiveness and take actions
+    * Loaded at Server Launch
+    * Expects a 200 OK response
+    * Takes action on other responses (Might require a Server on a thread or actions that block on the thread)
+    * No response restart Server - killall for both client and Server kill client when server is responsive again
+    * Hold server back until monitoring client has connected and given a GO
+    * Audio feedback of restart
+    * Possible monitoring and restart of SpeechD
+    * On Correct Server close exit monitor
+    
+Client must implement global & transaction timeouts
+
+Sever must reply to client with meaningful information
+
+
+
+
+Smart Server generates timeouts based on the task and closes the client if  the
+server begins fails.
+
+Hand over monitoring to another thread
+
+Senario 1
+
+Can not communicate with client
+    * Server - force close socket
+    * Rely on client timeout?
+
+Server unresponsive - event loop is frozen
+    * Setup thread to connect into server to ping to check for reponsiveness
+    * If the server is unresponsive then kiil the server and restart. check for
+      new server then exit thread
+      
+Wine stops running
+    * Client should monitor in this senario
+    * Does the monitoring thread become unresponsive?
+    
+
+
+ 

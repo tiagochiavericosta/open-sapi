@@ -1,0 +1,26 @@
+--- rbutil/rbutilqt/base/tts.cpp	(revision 21266)
++++ rbutil/rbutilqt/base/tts.cpp	(working copy)
+@@ -36,8 +36,11 @@
+     ttsList["espeak"] = "Espeak TTS Engine";
+     ttsList["flite"] = "Flite TTS Engine";
+     ttsList["swift"] = "Swift TTS Engine";
++    ttsList["sapi-spk"] = "Open-Sapi TTS CLI";
++    
+ #if defined(Q_OS_WIN)
+     ttsList["sapi"] = "Sapi TTS Engine";
++    
+ #endif
+ #if defined(Q_OS_LINUX)
+     ttsList["festival"] = "Festival TTS Engine";
+@@ -100,8 +103,8 @@
+ 
+     m_TemplateMap["espeak"] = "\"%exe\" %options -w \"%wavfile\" \"%text\"";
+     m_TemplateMap["flite"] = "\"%exe\" %options -o \"%wavfile\" -t \"%text\"";
+-    m_TemplateMap["swift"] = "\"%exe\" %options -o \"%wavfile\" \"%text\"";
+-
++    m_TemplateMap["swift"] = "\"%exe\" %options -o \"%wavfile\" \"%text\""; 
++    m_TemplateMap["sapi-spk"] = "\"%exe\" -o \"%wavfile\" -t \"%text\" \"@@\"";
+ }
+ 
+ void TTSExes::generateSettings()
+
