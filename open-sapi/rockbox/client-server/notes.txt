@@ -1,0 +1,58 @@
+just add it to the list at top of tts.cpp and add a template string at ~ line 104
+
+if you change the DEFINES += QT_NO_DEBUG_OUTPUT  in rbutilqt.pro to DEFINES -= QT_NO_DEBUG_OUTPUT and rebuild, it will output the exact names of the files it wants to generate in the console, maybe that could help ?
+
+notlistening> humm the problems i have is that it will go through the whole process but not all at the same time
+<notlistening> I have the myusic folder on my 3200 with differring folders and files in
+<domonoky> what do you mean with "not all at the same time?"
+<notlistening> *e200
+<notlistening> well i ask for it to do files and dirs is errors out
+<notlistening> I ask it to do all files and it does them
+<notlistening> just all folders then it fails at encoding stage
+<notlistening> on certain folders
+<domonoky> so there is probably a folder (or more) for which the voicing silently fails.
+<notlistening> i then ask it to do that folder and one level up filees and coice it works again
+<notlistening> one folder has a hyphen in it , but other do too and it fails on that when I ask for files and folders but if i choose then only do files or folder names it works :P
+<domonoky> strange :-) 
+<notlistening> not even sure where to start looking 
+<domonoky> if you change the DEFINES += QT_NO_DEBUG_OUTPUT  in rbutilqt.pro to DEFINES -= QT_NO_DEBUG_OUTPUT and rebuild, it will output the exact names of the files it wants to generate in the console, maybe that could help ? 
+<notlistening> but hopefully you have some time in the new few weeks to cast your eyes over it
+<domonoky> when i find time, i surely will take a look.
+<notlistening> yeah thats a good start
+<domonoky> do any of the folders/files contain non-ascii chars ?
+<domonoky> i know that current svn voicing may also fail on some strange characters. 
+<notlistening> not the ones it is failing on
+<notlistening> bloody espeak does it fine :D
+<domonoky> then that points to your tts exe :-)  
+<notlistening> and 99% of the time so does mine
+<notlistening> yeah guess espeak might be a bit more robust
+<domonoky> maybe the wav file is not always ready after the the tts exe returned.
+<notlistening> can i stop the cleanup from happening aswell on a failed encoding 
+<domonoky> by modifing the code yes. :-) 
+<domonoky> for talkfiles this would be talkfile.c
+<notlistening> okay will have a look at that will allow me to examine
+<domonoky> either remove the cleanup() call from doAbort() or make the cleanup() function empty.
+<notlistening> the problem is only occuring with dir names
+<notlistening> are the dirname and talk files used the same way?
+<domonoky> dirnames are handled a bit different. as they are renamed to _dirname.talk on target. but for the tts it should behave the same.
+<domonoky> we let the tts generate a <foldername>.wav with <foldername> spoken in it. it then gets encoded, and in the end copied to the target as <foldername>\_dirname.talk
+<notlistening> and with debug on i will see where it is failing right?
+<domonoky> as i read the code, i notice one problem: what happens with identical foldernames ?
+<domonoky> yes debug on will print many infos, hopefully it should give some clues.
+<notlistening> well i can see that it fails at the encoding stange at the moment 
+<domonoky> its very likely encoding fails because the wav file doesnt exist.
+<notlistening> but changing the options is doing funny things, and also removing the "-" from the filename or one renaming and putting a space back into the name sorted the problem
+* domonoky sees what happens with identical foldernames: they are generated multible times, and in the end one the last one gets copied to all places where the are identical names, so no problem :-)
+<notlistening> sure my file name handling is causing issues
+<notlistening> what encoding system does rbutil use unicode?
+<domonoky> internal it uses utf8 (as all Qt program does) interfacing with external tools is where it gets difficult. 
+<domonoky> but it shouldnt be a encoding problem, when espeak is fine. espeak uses the same tts interface in rbutil as your tool.
+<domonoky> the randomness of this error points to timing issues.but i am not sure.
+<notlistening> yeah well mine is running utf8 to unicode for SAPI
+<notlistening> it is not random i will supply the folders that are cauding me issue in a tar and the code to reproduce it
+<notlistening> same folders everytime
+<domonoky> ah. yes put it on the tracker or somewhere and i will try.
+<notlistening> but very strange that changing the options in what is generated sorted the issue
+<domonoky> yes, thats strange
+<notlistening> that could be a slight discrepancy my code is sensitive to 
+<notlistening> but i am a bit stuck till i find the reason for the failure anyways enjoy your time away

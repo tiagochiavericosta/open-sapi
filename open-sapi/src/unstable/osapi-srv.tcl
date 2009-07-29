@@ -223,9 +223,7 @@ proc sapiRead {sock} {
      catch {flush $sock} err2
      catch {close $sock} err
      bugMe "Connection kill by client - $err" $sock
-
-     ::tcom::unbind $voice
-#     $voice Speak " " 3
+#    $voice Speak " " 3
      $voice Skip Sentence $maxint
      bugMe "Purge Speech!!" $sock
      return        
@@ -331,13 +329,18 @@ proc sapiRead {sock} {
                    set word [lindex $message [expr $x + $i]]
                    set text "$text $word"
                    incr i
-                   while {$word != "@@"} {
-	               set word [lindex $message [expr $x + $i]]
-	               if {$word != "@@"} {set text "$text $word"}
-	                   incr i
-	               }
-	               set skip [expr $i -1]   
-                   }
+                   
+                   while {$word != "@@" || $i > [llength $message] } {
+	                    set word [lindex $message [expr $x + $i]]
+	                    puts "i = $i : mess = [llength $message]"
+	                    if {$word != "@@"} {
+	                        set text "$text $word"
+	                        
+	                    }
+	                incr i
+	                }
+	                set skip [expr $i -1]   
+               }
                    
                saveConfig {
                    bugMe "Save Config" $sock
@@ -384,7 +387,7 @@ proc sapiRead {sock} {
  }; # End of socket else
 
  
-# if {$tbugMe "Connection kill by client - $err" $sockext == ""} { return } else {
+
      
      if {$pitch < 0 || $pitch > 0} {
          bugMe "setting pitch on message" $sock
@@ -393,7 +396,7 @@ proc sapiRead {sock} {
      }
      set $text [encoding convertfrom utf-8 $text]
      $voice Speak $text $speechFlags
-# }
+
  
 }
 # ------------------------------------------------------------------------------

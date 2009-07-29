@@ -1,0 +1,28 @@
+# Server external config file
+
+Debug Method: File Stderr
+Debug Log File:
+Temp Directory:
+Default Port:
+Default Rate:
+Default Pitch:
+Default Volume:
+Default Wav Format:
+Default Voice:
+Default timeout:
+
+Todo:
+
+wav format location:
+helpMe for server usage:
+User Specified timeouts
+Adjust the retry amount for the length of the restart timer
+Retry to load server
+
+Linux find a process and kill it Win a Linux
+
+Meaningful comments file
+Meaningful bugMe Statements
+
+
+

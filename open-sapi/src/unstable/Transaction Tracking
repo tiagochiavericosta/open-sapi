@@ -1,0 +1,5 @@
+Each command execution on the server must be monitored and confirmed on the client
+Expected list of return codes from the server must be generated
+This list must depreciate as the server returns Status Codes
+Client must contain the codes for sucess and or failure
+

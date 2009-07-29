@@ -1,0 +1,5 @@
+#!/usr/bin/tclsh
+
+exec /home/tom/open-sapi/tools/tcl/bin/./tclsh85.exe /home/tom/open-sapi/rockbox/client-server/server.tcl -v
+
+exit
