@@ -36,6 +36,12 @@ Please note Google Code is not the fastest at downloading and takes about ten mi
 
 This should leave you in a position where you have everything ready to go about configuring the system for speech.
 ----
+=Do not skip update Wine=
+During testing there have been issues identified in the older wine releases current shipped with most Distributions. This has ben confirmed in Ubuntu but i am sure it applies to other. I highly recommend for stability to use the latest binary available from WineHQ for your distribution. Details on how to do this can be found at the link below. This will update your package source for wine briging it to the latest stable release for your distribution.
+
+http://www.winehq.org/download
+
+----
 =Automatic Installation - Debian / Ubuntu=
 
 If you are using Ubuntu and possibly Debian derived distros you can use the automated script to install and configure the system. Please can people e-mail any instructions and experiences they get with other distributions.
