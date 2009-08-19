@@ -1,8 +1,9 @@
-Features:
+Ideas:
 
-Dumb Client Closes after long timeout of waiting for close from Server
+Client Closes after long timeout of waiting for close from Server - Should stop SD from freezing the desktop
+Client must implement global & transaction timeouts
 
-Simple monitoring client that checks resposiveness and take actions
+Simple monitoring client that checks resposiveness and take actions pn the server
     * Loaded at Server Launch
     * Expects a 200 OK response
     * Takes action on other responses (Might require a Server on a thread or actions that block on the thread)
@@ -12,17 +13,13 @@ Simple monitoring client that checks resposiveness and take actions
     * Possible monitoring and restart of SpeechD
     * On Correct Server close exit monitor
     
-Client must implement global & transaction timeouts
-
-Sever must reply to client with meaningful information
 
 
-
+Sever must reply to client with meaningful information ie what fails or suceeds
 
 Smart Server generates timeouts based on the task and closes the client if  the
-server begins fails.
+server begin fails. Should stop SD from freezing the desktop
 
-Hand over monitoring to another thread
 
 Senario 1
 
