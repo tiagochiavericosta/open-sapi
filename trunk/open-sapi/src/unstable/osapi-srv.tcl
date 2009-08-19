@@ -232,7 +232,7 @@ proc sapiRead {sock} {
      
      ::tcom::bind $voice voiceEvent
      
-     bugMe "Message from $sock" $sock
+     bugMe "Message from $sock : $message" $sock
      
      set message [split $message " "]
      
@@ -244,16 +244,21 @@ proc sapiRead {sock} {
                    set skip 1
                }
                    
-               getVolume { 
+               getVolume {
+                   set eventID [lindex $message [expr $x + 1]]
                    set volume [getVol $voice] 
                    bugMe "Get volume $volume" $sock
+                   puts $sock "eventFeedback getVolume $eventID cancel"
+                   set skip 1
                }
            
                setVolume {
                    set volume [lindex $message [expr $x + 1]]
+                   set eventID [lindex $message [expr $x + 2]]
                    setVol $voice $volume
                    bugMe "Set volume $volume" $sock
-                   set skip 1
+                   puts $sock "eventFeedback setVolume $eventID cancel"
+                   set skip 2
                }
            
                getRate {
@@ -330,7 +335,7 @@ proc sapiRead {sock} {
                    set text "$text $word"
                    incr i
                    
-                   while {$word != "@@" || $i > [llength $message] } {
+                   while {$word != "@@" ^ $i > [llength $message] } {
 	                    set word [lindex $message [expr $x + $i]]
 	                    puts "i = $i : mess = [llength $message]"
 	                    if {$word != "@@"} {
@@ -428,6 +433,7 @@ global voice
 #-------------------------------------------------------------------------------   
  global sock
  set port 5491
+ set speechFlags 0
  
  set sock 0
  set clientSock 0  

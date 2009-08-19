@@ -4,31 +4,31 @@
 #    $argv - list of the arguments.
 #    $argv0 - name of the script.
 
-# ----------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # ProcName : bugMe 
 # Args : $message to be output $logfile to be used for output, $verbose on or off
-# Usage : If verbose output is on this function will output debug info to stdout 
-# or logfile  
+# Usage : If verbose output is on this function will output debug info to log 
 # Called By: Any debug statement
-#-----------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 proc bugMe {message} { 
 global verbose
 if {$verbose} { puts stderr "$message" } 
 }
 
-# ----------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # ProcName : helpMe 
 # Args : None
 # Usage : Displays help and usage information to stdout  
 # Called By: main
-#-----------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 proc helpMe {} {
    
    puts "Open-SAPI Commandline Interface v0.1 Alpha\n"
 
    puts "Usage: osapi-cli ...\[swithches\] -adihloprsvx -t \"message\""
-   puts "A command line interface providing access to the text to speech \(TTS\) capabilities of the Microsoft Speech Engine \(SAPI\)\n"
+   puts "A command line interface providing access to the text to speech\
+   \(TTS\) capabilities of the Microsoft Speech Engine \(SAPI\)\n"
    
    puts "Optional switches:"
    puts "\t -t, --text <text>      : Text to be spoken"
@@ -55,20 +55,31 @@ proc helpMe {} {
    puts "http://code.google.com/p/open-sapi/w/list"
    puts "For bugs, comments and support please contact thomaslloyd@yahoo.com." 
 }
-#----------------------------------------------------------------
-# Proceedure Name: serverControl
-# Description: Performs Global changes to the servers behaviour
-#
-# Returns: Nothing
-#----------------------------------------------------------------
-proc monitorMe {event timeout} {
 
-set event [after $timeout {
-    bugMe "$event timeout - exit"
-    exit
-    }]
+#-------------------------------------------------------------------------------
+# Proceedure Name: monitorMe
+# Description: Set and Cancel timeout events for events that can fail on the 
+#              server
+# Returns: Generated eventID for tracking and passing to the server
+#-------------------------------------------------------------------------------
+proc monitorMe {eventName timeout eventID} {
 
-return $event
+global eventArray
+
+    if {$timeout == "cancel"} {
+        after cancel $eventArray($eventName,$eventID)
+        bugMe "Event : $eventName - $eventArray($eventName,$eventID) : OK "
+        return
+    }
+     
+    set eventID [after $timeout {
+        bugMe "Client timeout - exit"
+        exit
+        }]
+
+    set eventArray($eventName,eventID) $eventID
+
+return $eventID
 }
 #----------------------------------------------------------------
 # Proceedure Name: serverControl
@@ -115,22 +126,46 @@ return $sock
 # Called By:
 #-----------------------------------------------------------------------------------
 proc sapiRead {sock} {
-puts "Data Received"   
+puts "Data Received"
+set skip 0
+set x 0
+   
    if { [gets $sock message] == -1 || [eof $sock] } {
         puts "Server closing client:socket closed"
-        flush $sock
+      # flush $sock
         close $sock
         exit
    } else {
-       if {$message == "eos"} {
-           puts "Server closing client:eos"
-           flush $sock
-           close $sock
-           exit
-       }
-       bugMe "Server: $message"
-   }
-       
+   
+       set message [split $message " "]
+   
+       foreach element $message {
+           if {$skip == 0} {
+               switch -exact -- $element {
+                 
+                   closeClient {
+                       bugMe "Server asked us to close"
+                    #  flush $sock
+                       close $sock
+                       exit
+                   }
+                 
+                   eventFeedback {
+                       set eventName [lindex $message [expr $x + 1]]
+                       set eventID [lindex $message [expr $x + 2]]
+                       set eventStatus [lindex $message [expr $x + 3]]
+                       bugMe "eventFeedback : $eventName - $eventID - $eventStatus"
+                       monitorMe $eventName cancel eventID
+                       set skip 3
+                   }
+            
+               }; # End of Switch 
+           } else { set skip [expr $skip - 1] }; # End of If 
+       incr x 
+       }; # End of foreach
+     bugMe "Server Callback: $message" 
+     } ; # End of Else
+ 
 }
 # ----------------------------------------------------------------------------------
 # ProcName : Script Init (run once)
@@ -145,6 +180,7 @@ puts "Data Received"
  global command
  global verbose
  global sock
+ global eventArray
  set flag 0
  set verbose 0
  set x 0
@@ -193,7 +229,7 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
 	        
              -a {
                  set flag [expr $flag | 1]
-                 bugMe "Client: Option - async  - flag : $flag" 
+                 bugMe "Client: Option - async  - flag : $flag"
               }
 
               --async {
@@ -203,7 +239,6 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
 
 	      -d {
                   # Requires a regexpression to check for valid input here
-                  
                   set device [lindex $argv [expr $x + 1] ]
                   if { $device == "?"} {
                       set command "$command getDevice" 
@@ -215,7 +250,7 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
 	          set skip 1 
               }
                 
-              --device {
+         --device {
                   # Requires a regexpression to check for valid input here
                   set device [lindex $argv [expr $x + 1] ]
                   if { $device == "?"} {
@@ -241,22 +276,28 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
                   # Requires a regexpression to check for valid input here 
                   set volume [lindex $argv [expr $x + 1] ]
                   if { $volume == "?"} {
-                      bugMe "Client: Sending getVolume" 
-                      set command "$command getVolume"} else {
+                      set eventID [monitorMe getVolume 5000 0]
+                      bugMe "Client: Sending getVolume : $eventID" 
+                      set command "$command getVolume $eventID"} else {
+                      
                       if { $volume < 0 } {set volume 0
-                          puts "Volume Range 0-100. Negative value detected, correcting to min 0"}
+                          puts "Volume Range 0-100. Negative value detected, correcting to min 0"
+                      }
                       if { $volume > 100 } { set volume 100
-                          puts "Volume Range 0-100. Value too high, correcting to max 100"}
-                      bugMe "Client: set Server Volume to $volume"
-                      set command "$command setVolume $volume"
+                          puts "Volume Range 0-100. Value too high, correcting to max 100"
+                      }
+                      set eventID [monitorMe setVolume 5000 0]
+                      bugMe "Client: set Server Volume to $volume - $eventID"
+                      set command "$command setVolume $volume $eventID"
                   }
 	          set skip 1
-              }
+         }
 
-              --volume {
+         --volume {
                   # Requires a regexpression to check for valid input here 
                   set volume [lindex $argv [expr $x + 1] ]
                   if { $volume == "?"} {
+                      set eventID [monitorMe getVolume 500 0]
                       bugMe "Client: Sending getVolume" 
                       set command "$command getVolume"} else {
                       if { $volume < 0 } {set volume 0
@@ -264,10 +305,11 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
                       if { $volume > 100 } { set volume 100
                           puts "Volume Range 0-100. Value too high, correcting to max 100"}
                       bugMe "Client: set Server Volume to $volume"
+                      set eventID [monitorMe setVolume 500 0]
                       set command "$command setVolume $volume"
                   }
 	          set skip 1
-              }
+         }
 
 	      -o {bugMe "Client: save settings"
 	          set skip 1
@@ -355,9 +397,10 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
 	          set word [lindex $argv [expr $x + $i]]
 	          set text $word
 	          incr i
-	          while {$word != "@@"} {
+	          while {$word != "@@" ^ $i > $argc} {
 	              set word [lindex $argv [expr $x + $i]]
 	              set text "$text $word"
+	              puts "i = $i : mess = $argc"
 	              incr i
 	          }
 	          set command "$command say $text"
@@ -370,12 +413,12 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
 	          set word [lindex $argv [expr $x + $i]]
 	          set text $word
 	          incr i
-	          while {$word != "@@" ||} {
+	          while {$word != "@@" ^ $i > $argc} {
 	              set word [lindex $argv [expr $x + $i]]
 	              set text "$text $word"
 	              incr i
 	          }
-                  set command "$command say $text"
+             set command "$command say $text"
 	          bugMe "Client: Send for speech  - $text"
 	          set skip [expr $i - 1]
               }
@@ -442,7 +485,7 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
               }
                 
               default { 
-                  puts "Unknown Option $element. Please type -h for usage help"
+                  puts stdout "Unknown Option $element. Please type -h for usage help !!"
               }
          	
          } ; # End switch
@@ -453,7 +496,7 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
  set command "$command setFlags $flag"
 
 # bugMe "Client: command = $command"
- if {!$pipeMode} {  
+ if {!$pipeMode} {
     puts $sock $command
     exit
  }
@@ -502,6 +545,8 @@ proc stdinRead { sock command } {
 global verbose
 global sock
 global command
+
+monitorMe globalClient 5000 0
 
 if {$argc > 0} { init } else {helpMe; exit }
 vwait forever
