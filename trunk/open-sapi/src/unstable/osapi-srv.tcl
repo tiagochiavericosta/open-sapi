@@ -262,19 +262,25 @@ proc sapiRead {sock} {
                }
            
                getRate {
+                   set eventID [lindex $message [expr $x + 1]]
                    set rate [getRate $voice] 
                    bugMe "Get rate $rate" $sock
+                   puts $sock "eventFeedback getRate $eventID cancel"
+                   set skip 1
                }
            
                setRate {
                    set rate [lindex $message [expr $x + 1]]
+                   set eventID [lindex $message [expr $x + 2]]
                    setRate $voice $rate
                    bugMe "Set speech rate $rate" $sock
-                   set skip 1
+                   puts $sock "eventFeedback setRate $eventID cancel"
+                   set skip 2
                }
            
                getVoice {
                   set i 0
+                  set eventID [lindex $message [expr $x + 1]]
                   set arraySize [array size voicesArray]
                   # Needed with Multi Dimentional Arrays as size counts the \
                    total entrites of the hash table 
@@ -288,18 +294,23 @@ proc sapiRead {sock} {
                       incr i                      
                   }
                   setEngine $voice $currentVoice
+                  puts $sock "eventFeedback getVoice $eventID cancel"
+                  set skip 1
                }
            
                setVoice {
                    set engineNum [lindex $message [expr $x + 1]]
+                   set eventID [lindex $message [expr $x + 2]]
                    set voiceHandle $voicesArray($engineNum,handle)
                    setEngine $voice $voiceHandle
                    bugMe "Set Voice $voicesArray($engineNum,name)" $sock
-                   set skip 1
+                   puts $sock "eventFeedback setVoice $eventID cancel"
+                   set skip 2
                }
            
                getDevice {
                    set i 0
+                   set eventID [lindex $message [expr $x + 1]]
                    set arraySize [array size deviceArray]
                    # Needed with Multi Dimentional Arrays as size counts the \
                    total entrites of the hash table 
@@ -308,14 +319,18 @@ proc sapiRead {sock} {
                        bugMe "Engine $i = $deviceArray($i,name)" $sock
                        incr i   
                    }
+                   puts $sock "eventFeedback getDevice $eventID cancel"
+                   set skip 1
                }
            
                setDevice {
                    set deviceNum [lindex $message [expr $x + 1]]
+                   set eventID [lindex $message [expr $x + 2]]
                    set deviceHandle $deviceArray($deviceNum,handle)
                    setSoundDevice $voice $deviceHandle
                    bugMe "Set device $deviceArray($deviceNum,name)" $sock
-                   set skip 1
+                   puts $sock "eventFeedback setDevice $eventID cancel"
+                   set skip 2
                }
            
                setFlags {
@@ -330,6 +345,7 @@ proc sapiRead {sock} {
                }
            
                say {
+                   
                    set i 1
                    set word [lindex $message [expr $x + $i]]
                    set text "$text $word"
@@ -344,7 +360,10 @@ proc sapiRead {sock} {
 	                    }
 	                incr i
 	                }
-	                set skip [expr $i -1]   
+	                
+	                set sayEventID [lindex $message [expr $i - 1]]
+	                bugMe "eventID - Speaking : $text" $sock
+	                set skip [expr $i]   
                }
                    
                saveConfig {
@@ -366,13 +385,17 @@ proc sapiRead {sock} {
                }
                    
                getPitch {
-                   bugMe "Pitch = $pitch" $sock 
+                   set eventID [lindex $message [expr $x + 1]]
+                   bugMe "Pitch = $pitch" $sock
+                   puts $sock "eventFeedback getPitch $eventID cancel"
+                   set skip 1
                }
                    
                setPitch {
                   set pitch [lindex $message [expr $x + 1]]
-               #  bugMe "setPitch = $pitch" $sock 
-                  set skip 1
+                  set eventID [lindex $message [expr $x + 2]]
+                  bugMe "setPitch = $pitch" $sock 
+                  set skip 2
                }
                    
                pipeMode { 
@@ -400,7 +423,10 @@ proc sapiRead {sock} {
          absmiddle=\"0\"/>"
      }
      set $text [encoding convertfrom utf-8 $text]
-     $voice Speak $text $speechFlags
+     if {$text != ""} { 
+         $voice Speak $text $speechFlags
+         puts $sock "eventFeedback say $sayEventID cancel"
+     }
 
  
 }
