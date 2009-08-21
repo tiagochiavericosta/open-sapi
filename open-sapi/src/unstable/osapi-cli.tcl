@@ -220,6 +220,9 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
  
  set x 0
  set skip 0
+ set eventTimeout 5000
+ # Maybe this timeout value needs to be dependant on the current rate?  
+ set averageWordTime 4000
  set command "appName osapi-cli"
  set pipeMode 0
  
@@ -230,84 +233,91 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
              -a {
                  set flag [expr $flag | 1]
                  bugMe "Client: Option - async  - flag : $flag"
-              }
+             }
 
-              --async {
-                  set flag [expr $flag | 1]
-                  bugMe "Client: Option - async - flag : $flag"
-              }
+             --async {
+                 set flag [expr $flag | 1]
+                 bugMe "Client: Option - async - flag : $flag"
+             }
 
-	      -d {
+	          -d {
                   # Requires a regexpression to check for valid input here
                   set device [lindex $argv [expr $x + 1] ]
                   if { $device == "?"} {
-                      set command "$command getDevice" 
-                      bugMe "Client: getDevice"
+                      set eventID [monitorMe getDevice $eventTimeout 0]
+                      set command "$command getDevice $eventID" 
+                      bugMe "$eventID - Client: getDevice"
                  } else {
-                      bugMe "Client: setDevice to $device"
-                      set command "$command setDevice $device"
-                  } 
-	          set skip 1 
-              }
+                      set eventID [monitorMe setDevice $eventTimeout 0]
+                      bugMe "$eventID - Client: setDevice to $device"
+                      set command "$command setDevice $device $eventID"
+                 } 
+	              set skip 1 
+             }
                 
          --device {
                   # Requires a regexpression to check for valid input here
                   set device [lindex $argv [expr $x + 1] ]
                   if { $device == "?"} {
-                      set command "$command getDevice"
-                      bugMe "Client: getDevice"
+                      set eventID [monitorMe getDevice $eventTimeout 0]
+                      set command "$command getDevice $eventID"
+                      bugMe "$eventID - Client: getDevice"
                } else {
-                      bugMe "Client: setDevice to $device"
-                      set command "$command setDevice $device
+                      set eventID [monitorMe setDevice $eventTimeout 0]
+                      bugMe "$eventID - Client: setDevice to $device"
+                      set command "$command setDevice $device $eventID"
                   } 
          	  set skip 1
-              }
+         }
 
 	      -i {bugMe "Client: sound icon"
                   # Check to see if this references a file or a sound icon from server library
 	          set skip 1
-              }
+         }
 
-              --icon {bugMe "Client: icon"
+         --icon {bugMe "Client: icon"
                   set skip 1
-              }
+         }
 
 	      -l {
-                  # Requires a regexpression to check for valid input here 
-                  set volume [lindex $argv [expr $x + 1] ]
-                  if { $volume == "?"} {
-                      set eventID [monitorMe getVolume 5000 0]
-                      bugMe "Client: Sending getVolume : $eventID" 
-                      set command "$command getVolume $eventID"} else {
-                      
-                      if { $volume < 0 } {set volume 0
-                          puts "Volume Range 0-100. Negative value detected, correcting to min 0"
-                      }
-                      if { $volume > 100 } { set volume 100
-                          puts "Volume Range 0-100. Value too high, correcting to max 100"
-                      }
-                      set eventID [monitorMe setVolume 5000 0]
-                      bugMe "Client: set Server Volume to $volume - $eventID"
-                      set command "$command setVolume $volume $eventID"
-                  }
+             # Requires a regexpression to check for valid input here 
+             set volume [lindex $argv [expr $x + 1] ]
+             if { $volume == "?"} {
+                 set eventID [monitorMe getVolume $eventTimeout 0]
+                 bugMe "$eventID - Client: Sending getVolume" 
+                 set command "$command getVolume $eventID"
+             } else {
+                 if { $volume < 0 } {set volume 0
+                     puts "Volume Range 0-100. Negative value detected, correcting to min 0"
+                 }
+                 if { $volume > 100 } { set volume 100
+                     puts "Volume Range 0-100. Value too high, correcting to max 100"
+                 }
+                 set eventID [monitorMe setVolume $eventTimeout 0]
+                 bugMe "$eventID - Client: set Server Volume to $volume"
+                 set command "$command setVolume $volume $eventID"
+             }
 	          set skip 1
          }
 
          --volume {
-                  # Requires a regexpression to check for valid input here 
-                  set volume [lindex $argv [expr $x + 1] ]
-                  if { $volume == "?"} {
-                      set eventID [monitorMe getVolume 500 0]
-                      bugMe "Client: Sending getVolume" 
-                      set command "$command getVolume"} else {
-                      if { $volume < 0 } {set volume 0
-                          puts "Volume Range 0-100. Negative value detected, correcting to min 0"}
-                      if { $volume > 100 } { set volume 100
-                          puts "Volume Range 0-100. Value too high, correcting to max 100"}
-                      bugMe "Client: set Server Volume to $volume"
-                      set eventID [monitorMe setVolume 500 0]
-                      set command "$command setVolume $volume"
-                  }
+             # Requires a regexpression to check for valid input here 
+             set volume [lindex $argv [expr $x + 1] ]
+             if { $volume == "?"} {
+                 set eventID [monitorMe getVolume $eventTimeout 0]
+                 bugMe "$eventID - Client: Sending getVolume" 
+                 set command "$command getVolume $eventID"
+            } else {
+                 if { $volume < 0 } {set volume 0
+                     puts "Volume Range 0-100. Negative value detected, correcting to min 0"
+                 }
+                 if { $volume > 100 } { set volume 100
+                     puts "Volume Range 0-100. Value too high, correcting to max 100"
+                 }
+                 set eventID [monitorMe setVolume $eventTimeout 0]
+                 bugMe "$eventID - Client: set Server Volume to $volume"
+                 set command "$command setVolume $volume $eventID"
+             }
 	          set skip 1
          }
 
@@ -319,22 +329,28 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
                   # Requires a regexpression to check for valid input here
                   set person [lindex $argv [expr $x + 1] ]
                   if { $person == "?"} {
-                      bugMe "Client: Sending getVoice" 
-                      set command "$command getVoice" } else {
-                      set command "$command setVoice $person"
-                      bugMe "Client: Sending setVoices $person"
+                      set eventID [monitorMe getVoice $eventTimeout 0]
+                      bugMe "$eventID - Client: Sending getVoice" 
+                      set command "$command getVoice $eventID" 
+                  } else {
+                      set eventID [monitorMe setVoice $eventTimeout 0]
+                      set command "$command setVoice $person $eventID"
+                      bugMe "$eventID - Client: Sending setVoices $person"
                   } 
-	          set skip 1
+	               set skip 1
               }
 
               --person {
                    # Requires a regexpression to check for valid input here
                   set person [lindex $argv [expr $x + 1] ]
                   if { $person == "?"} {
-                      bugMe "Client: Sending getVoice" 
-                      set command "$command getVoice" } else {
-                      set command "$command setVoice $person"
-                      bugMe "Client: Sending setVoices $person"
+                      set eventID [monitorMe getVoice $eventTimeout 0]
+                      bugMe "$eventID - Client: Sending getVoice" 
+                      set command "$command getVoice $eventID" 
+                 } else {
+                     set eventID [monitorMe setVoice $eventTimeout 0]
+                      set command "$command setVoice $person $eventID"
+                      bugMe "$eventID - Client: Sending setVoices $person"
                   } 
                   set skip 1
               }
@@ -343,14 +359,19 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
                   # Sanity check Requires a regexpression to check for valid input here
                   set rate [lindex $argv [expr $x + 1] ]
                   if { $rate == "?"} {
-                      bugMe "Client: Sending getRate" 
-                      set command "$command getRate" } else {
+                      set eventID [monitorMe getRate $eventTimeout 0]
+                      bugMe "$eventID - Client: Sending getRate" 
+                      set command "$command getRate $eventID" 
+                  } else {
                       if { $rate < -10 } { set rate 0
-                          puts "Min Rate Range -10. Bad value detected, correcting to defaukt 0"}
+                          puts "Min Rate Range -10. Bad value detected, correcting to defaukt 0"
+                      }
                       if { $rate > 10 } { set rate 0
-                          puts "Max Rate Range +10. Bad value detected, correcting to defaukt 0"}
-                      set command "$command setRate $rate"
-                      bugMe "Client: set Server Rate to $rate"
+                          puts "Max Rate Range +10. Bad value detected, correcting to defaukt 0"
+                      }
+                      set eventID [monitorMe setRate $eventTimeout 0]
+                      set command "$command setRate $rate $eventID"
+                      bugMe "$eventID - Client: set Server Rate to $rate"
                   }
               set skip 1           
               }
@@ -359,14 +380,19 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
                   # Sanity check Requires a regexpression to check for valid input here
                   set rate [lindex $argv [expr $x + 1] ]
                   if { $rate == "?"} {
-                      bugMe "Client: getRate" 
-                      puts $sock "getRate" } else {
+                      set eventID [monitorMe getRate $eventTimeout 0]
+                      bugMe "$eventID - Client: Sending getRate" 
+                      set command "$command getRate $eventID" 
+                 } else {
                       if { $rate < -10 } {set rate 0
-                          puts "Min Rate Range -10. Bad value detected, correcting to defaukt 0"}
+                          puts "Min Rate Range -10. Bad value detected, correcting to defaukt 0"
+                      }
                       if { $rate > 10 } { set rate 0
-                          puts "Max Rate Range +10. Bad value detected, correcting to defaukt 0"}
-                      bugMe "Client: set Server Rate to $rate"
-                      set command "$command setRate $rate"
+                          puts "Max Rate Range +10. Bad value detected, correcting to defaukt 0"
+                      }
+                      set eventID [monitorMe setRate $eventTimeout 0]
+                      set command "$command setRate $rate $eventID"
+                      bugMe "$eventID - Client: set Server Rate to $rate"
                   }
               set skip 1
               }
@@ -403,13 +429,14 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
 	              puts "i = $i : mess = $argc"
 	              incr i
 	          }
-	          set command "$command say $text"
-	          bugMe "Client: Send for speech  - $text"
+	          set eventID [monitorMe say [expr $i * $averageWordTime]  0]
+	          set command "$command say $text $eventID"
+	          bugMe "$eventID - Client: Send for speech  - $text"
 	          set skip [expr $i - 1]
-              }
+         }
 
-              --text {
-                  set i 1
+         --text {
+             set i 1
 	          set word [lindex $argv [expr $x + $i]]
 	          set text $word
 	          incr i
@@ -418,20 +445,21 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
 	              set text "$text $word"
 	              incr i
 	          }
-             set command "$command say $text"
-	          bugMe "Client: Send for speech  - $text"
+	          set eventID [monitorMe say [expr $i * $averageWordTime]  0]
+             set command "$command say $text $eventID"
+	          bugMe "$eventID - Client: Send for speech  - $text"
 	          set skip [expr $i - 1]
-              }
+         }
 
 	      -x {
                   set flag [expr $flag | 8]
                   bugMe "Client: Speech Flag: $flag - XML" 
-              }
+         }
 
-              --xml {
-                  set flag [expr $flag | 8]
-                  bugMe "Client: Speech Flag: $flag - XML"  
-              }
+         --xml {
+             set flag [expr $flag | 8]
+             bugMe "Client: Speech Flag: $flag - XML"  
+         }
 
               --notxml {
                   set flag [expr $flag | 16]
@@ -463,10 +491,13 @@ fconfigure stdin -buffering line -blocking 0 -encoding utf-8
               --pitch {
                   set pitch [lindex $argv [expr $x + 1] ]
                   if { $pitch == "?"} {
-                      bugMe "Client: Sending getPitch" 
-                      set command "$command getPitch" } else {
-                      set command "$command setPitch $pitch"
-                      bugMe "Client: Sending setPitch $pitch"
+                      set eventID [monitorMe getPitch $eventTimeout 0]
+                      bugMe "$eventID - Client: Sending getPitch" 
+                      set command "$command getPitch $eventID" 
+                  } else {
+                      set command "$command setPitch $pitch $eventID"
+                      set eventID [monitorMe setPitch $eventTimeout 0]
+                      bugMe "$eventID - Client: Sending setPitch $pitch"
                   } 
                   set skip 1
               }
@@ -512,6 +543,8 @@ fileevent $sock readable [list sapiRead $sock]
 # Called By:
 #-------------------------------------------------------------------------------
 proc stdinRead { sock command } {
+set averageWordTime 4000
+
     if { [gets stdin line] == -1 || [eof stdin] } {
         catch {
             close stdin
@@ -520,8 +553,10 @@ proc stdinRead { sock command } {
         bugMe "closed stdin - $err"
         return
     } else {
+            set message [split $line " "]
+            set eventID [monitorMe say [expr [llength $line] * $averageWordTime]  0]
             if {$line == "" } { return } else {
-                puts $sock "$command say $line @@"
+                puts $sock "$command say $line @@ eventID"
             }
         }
 }
