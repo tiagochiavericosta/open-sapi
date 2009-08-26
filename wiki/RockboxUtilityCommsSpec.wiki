@@ -1,0 +1,157 @@
+#labels Phase-Implementation
+Communication Protocol for  for Rockbox Utility Sapi Server:
+
+=Protocol=
+
+Command   : readyServer <br>
+Arguments : None <br>
+Returns   : Status No : Desc (204:Ready) <br>
+
+Command   : exitServer <br>
+Arguments : None <br>
+Returns   : Status No : Desc ( : ) <br>
+
+Command   : setOpSys <br>
+Arguments : win / linux / mac <br>
+Returns   : None <br>
+
+Command   : getFormat <br>
+Arguments : None <br>
+Returns   : ID:Descr (1:SPSF_8kHz8BitMono:2:SPSF_8kHz8BitStereo) <br>
+
+Command   : setFormat <br>
+Arguments : Format ID <br>
+Returns   : None <br>
+
+Command   : outFile <br>
+Arguments : Filename (/tmp/filename , c:\temp\filename) <br>
+Returns   : None <br>
+Comment   : This is the full filename for where the file should be stored <br>
+
+Command   : getVol <br>
+Arguments : None <br>
+Returns   : Volume (0 - 100) <br>
+
+Command   : setVol <br>
+Arguments : Volume (0 - 100) <br>
+Returns   : None <br>
+
+Command   : setFeedback <br>
+Arguments : None <br>
+Returns   : None <br>
+
+Command   : getEngine <br>
+Arguments : None <br>
+Returns   : ID : Name (1:Microsoft Mary) <br>
+
+Command   : setEngine <br>
+Arguments : ID <br>
+Returns   : None <br>
+
+Command   : getRate <br>
+Arguments : None <br>
+Returns   : Rate <br>
+
+Command   : setRate <br>
+Arguments : Rate <br>
+Returns   : None <br>
+
+Command   : speakMe <br>
+Arguments : Text For Synth <br>
+Returns   : Status : Desc (205 : Synthesis OK) <br>
+
+Command   : speechFlag <br>
+Arguments : Value (See extended notes at bottom) <br>
+Returns   : None <br>
+
+Command   : testMe <br>
+Arguments : None <br>
+Returns   : None <br>
+
+Command   : Verbose <br>
+Arguments : None <br>
+Returns   : None <br>
+----
+=Extended Notes=
+
+==Speech Flags==
+See the SAPI documentation for further details. <br>
+SVSFDefault = 0 <br>
+SVSFlagsAsync = 1 <br>
+SVSFPurgeBeforeSpeak = 2 <br>
+SVSFIsFilename = 4 <br>
+SVSFIsXML = 8 <br>
+SVSFIsNotXML = 16 <br>
+SVSFPersistXML = 32 <br>
+SVSFNLPSpeakPunc = 64 <br>
+
+==Wav format list==
+SPSF_NoAssignedFormat <br>
+SPSF_Text <br>
+SPSF_NonStandardFormat <br>
+SPSF_ExtendedAudioFormat  <br>
+SPSF_8kHz8BitMono <br>
+SPSF_8kHz8BitStereo <br>
+SPSF_8kHz16BitMono <br>
+SPSF_8kHz16BitStereo <br>
+SPSF_11kHz8BitMono <br>
+SPSF_11kHz8BitStereo <br>
+SPSF_11kHz16BitMono <br>
+SPSF_11kHz16BitStereo
+SPSF_12kHz8BitMono
+SPSF_12kHz8BitStereo
+SPSF_12kHz16BitMono
+SPSF_12kHz16BitStereo
+SPSF_16kHz8BitMono
+SPSF_16kHz8BitStereo
+SPSF_16kHz16BitMono
+SPSF_16kHz16BitStereo
+SPSF_22kHz8BitMono
+SPSF_22kHz8BitStereo
+SPSF_22kHz16BitMono
+SPSF_22kHz16BitStereo
+SPSF_24kHz8BitMono
+SPSF_24kHz8BitStereo
+SPSF_24kHz16BitMono
+SPSF_24kHz16BitStereo
+SPSF_32kHz8BitMono
+SPSF_32kHz8BitStereo
+SPSF_32kHz16BitMono
+SPSF_32kHz16BitStereo
+SPSF_44kHz8BitMono
+SPSF_44kHz8BitStereo
+SPSF_44kHz16BitMono
+SPSF_44kHz16BitStereo
+SPSF_48kHz8BitMono
+SPSF_48kHz8BitStereo
+SPSF_48kHz16BitMono
+SPSF_48kHz16BitStereo
+SPSF_TrueSpeech_8kHz1BitMono
+SPSF_CCITT_ALaw_8kHzMono
+SPSF_CCITT_ALaw_8kHzStereo
+SPSF_CCITT_ALaw_11kHzMono
+SPSF_CCITT_ALaw_11kHzStereo
+SPSF_CCITT_ALaw_22kHzMono
+SPSF_CCITT_ALaw_22kHzStereo
+SPSF_CCITT_ALaw_44kHzMono
+SPSF_CCITT_ALaw_44kHzStereo
+SPSF_CCITT_uLaw_8kHzMono
+SPSF_CCITT_uLaw_8kHzStereo
+SPSF_CCITT_uLaw_11kHzMono
+SPSF_CCITT_uLaw_11kHzStereo
+SPSF_CCITT_uLaw_22kHzMono
+SPSF_CCITT_uLaw_22kHzStereo
+SPSF_CCITT_uLaw_44kHzMono
+SPSF_CCITT_uLaw_44kHzStereo
+SPSF_ADPCM_8kHzMono
+SPSF_ADPCM_8kHzStereo
+SPSF_ADPCM_11kHzMono
+SPSF_ADPCM_11kHzStereo
+SPSF_ADPCM_22kHzMono
+SPSF_ADPCM_22kHzStereo
+SPSF_ADPCM_44kHzMono
+SPSF_ADPCM_44kHzStereo
+SPSF_GSM610_8kHzMono
+SPSF_GSM610_11kHzMono
+SPSF_GSM610_22kHzMono
+SPSF_GSM610_44kHzMono
