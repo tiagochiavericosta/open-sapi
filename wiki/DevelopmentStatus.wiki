@@ -1,4 +1,4 @@
-#summary The current status of each componemt with detail on the work still outstanding.
+#summary The current status of each component with detail on the work still outstanding.
 #labels Featured,Phase-Design
 <wiki:toc max_depth="1" />
 ----
