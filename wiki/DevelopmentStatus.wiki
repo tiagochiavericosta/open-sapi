@@ -29,8 +29,13 @@ Currently the project is only available for download through svn see   	 Develop
     * Sanity Checks (list length on text)
     * Investigate commandline only execution
     * Implement one voice per client
+    * Implementation of Global Multi Dimentional Array for Data Sharing 
 
 ==Client==
+    * Client global & transaction timeouts
+    * Global Array for Event Tracking should be unset at some point
+    * Client should report to the user why it has timed out
+    
     * SAPI XML Markup
     * Sound Icons
     * Config files
