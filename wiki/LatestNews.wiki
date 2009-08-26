@@ -4,6 +4,19 @@
 See the DevelopmentStatus page for details on what is left to do.
 ----
 <wiki:toc max_depth="1" />
+=News - 23/08/09=
+I am now running open-sapi reliably using Ubuntu 9.04. The only modification is running the most recent binary release of wine which is helping stability. I have managed to run the system for a whole day without a crash and now believe it to be stable enough to use on a regular basis.
+
+There are still issues and unimplemented features. There are also avenues of investigation like increased integration into speech dispatcher. So a lot of work but things are stable and that was a big milestone for the project,
+
+Next comes testing with wav output that is then managed by speech dispatcher rather than replying on the wine audio system and management by the SAPI server. This will hopefully harness the power of speech dispatcher and increase the systems performance. This is where the testing will come into play.
+
+Development of an Open Sapi specific module will allow for the selection of voice through applications and more tightly integrated control and feedback to speech dispatcher. This may out perform the wav output solution detail above and provide a better solution but this is a bit of trial and error. The first solution will also provide the feature to output audio into a wav file which is a nice feature to have and not overly complicated so i will try that first.
+
+To get some real feedback i also need to implement more tracking and status information and a logging system that stores it all away.
+
+Finally a configuration file for the client and server that can be used to modify options  would be really useful for the future. So more work.....    
+
 =News - 03/06/09=
 
 After some heavy bug hunting with many fixes applied, we are getting close to the first stable release of open-sapi for the first development phase. Recently I have been concentrating on the testing of different encoding systems and so far have a working system for european languages. Others are untested at this time.
