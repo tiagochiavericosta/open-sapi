@@ -1,4 +1,4 @@
-#summary The Communication Protocol for Rockbox Utility Open Sapi Server:
+#summary The Communication Protocol for Rockbox Utility Open Sapi Server
 #labels Phase-Implementation
 <wiki:toc max_depth="2" />
 =Protocol=
