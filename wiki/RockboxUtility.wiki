@@ -1,6 +1,7 @@
 #summary Demonstrating a practical use of the Open Sapi Project
 #labels Featured
-
+<wiki:toc max_depth="1" />
+----
 =Introduction=
 Rockbox is an open source project that has been designed from the beginning with accessibility at its heart. 
 
