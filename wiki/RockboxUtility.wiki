@@ -12,6 +12,13 @@ Currently there is basic support for the Microsoft speech API in Windows. This e
 This example not only extends the SAPI functionality on Windows but also to Linux and Mac allowing users of Rockbox to access hundreds of high quality text to speech engines in many languages on their preferred operating system.
 
 =Features=
+    
+    * Variable Rate
+    * Variable Pitch
+    * Variable Volume
+    * Variable Wave File Quality
+    * Speech Engine Selection
+    * Fast
 
 =Developer Resources=
 
