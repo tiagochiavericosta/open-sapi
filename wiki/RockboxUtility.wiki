@@ -13,3 +13,5 @@ This example not only extends the SAPI functionality on Windows but also to Linu
 =Features=
 
 =Developer Resources=
+
+    * RockboxUtilityCommsSpec - Details the communication protocol for writing clients
