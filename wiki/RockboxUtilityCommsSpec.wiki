@@ -1,6 +1,17 @@
 #summary The Communication Protocol for Rockbox Utility Open Sapi Server
 #labels Phase-Implementation
 <wiki:toc max_depth="2" />
+
+=Communication Specifications=
+
+The server expects data to arrive in UTF-8 format from the client.
+
+The client must call a single readyServer command before issuing any further commands to the server. This has been implemented so that if the client is responsible for starting the server a call for sererReady can be main repeatedly until a response is received or startup fails. This is implemented in the client where is attempts five startups.
+
+All settings can be send in a group to the server or seperatly
+
+The speakMe command must be spent on its own as the last command to start synthesis on the server using the current settings
+   
 =Protocol=
 
 Command   : readyServer <br>
@@ -10,10 +21,6 @@ Returns   : Status No : Desc (204:Ready) <br>
 Command   : exitServer <br>
 Arguments : None <br>
 Returns   : Status No : Desc ( : ) <br>
-
-Command   : setOpSys <br>
-Arguments : win / linux / mac <br>
-Returns   : None <br>
 
 Command   : getFormat <br>
 Arguments : None <br>
@@ -36,8 +43,8 @@ Command   : setVol <br>
 Arguments : Volume (0 - 100) <br>
 Returns   : None <br>
 
-Command   : setFeedback <br>
-Arguments : None <br>
+Command   : setPitch <br>
+Arguments : Pitch (-10 - +10) <br>
 Returns   : None <br>
 
 Command   : getEngine <br>
@@ -53,7 +60,7 @@ Arguments : None <br>
 Returns   : Rate <br>
 
 Command   : setRate <br>
-Arguments : Rate <br>
+Arguments : Rate (-10 - 10)<br>
 Returns   : None <br>
 
 Command   : speakMe <br>
@@ -86,14 +93,14 @@ SVSFPersistXML = 32 <br>
 SVSFNLPSpeakPunc = 64 <br>
 
 ==Wav format list==
-SPSF_NoAssignedFormat <br>
-SPSF_Text <br>
-SPSF_NonStandardFormat <br>
-SPSF_ExtendedAudioFormat  <br>
-SPSF_8kHz8BitMono <br>
-SPSF_8kHz8BitStereo <br>
-SPSF_8kHz16BitMono <br>
-SPSF_8kHz16BitStereo <br>
+0    SPSF_NoAssignedFormat <br>
+1    SPSF_Text <br>
+3    SPSF_NonStandardFormat <br>
+4    SPSF_ExtendedAudioFormat  <br>
+5    SPSF_8kHz8BitMono <br>
+6    SPSF_8kHz8BitStereo <br>
+7    SPSF_8kHz16BitMono <br>
+8    SPSF_8kHz16BitStereo <br>
 SPSF_11kHz8BitMono <br>
 SPSF_11kHz8BitStereo <br>
 SPSF_11kHz16BitMono <br>
