@@ -31,13 +31,13 @@ proc helpMe {} {
    
    puts "Open SAPI Clip Generator v0.1 Alpha for Rockbox Utulity\n"
 
-   puts "Usage: sapi-spk ...\[swithches\] -ehlortv -t \"message\" @@ "
-   puts "A command line interface providing access to the Microsoft Speech \
-   Engine)\n"
+   puts "Usage: opensapi-cli ...\[swithches\] -ehlortv -t \"message\" @@ "
+   puts "Platform independant command line interface to the Microsoft Speech \
+   Engine\n"
    
    puts "Switches:"
    puts "\t -o <dir/filename.ext>  : Location & filename of output file"
-   puts "\t -t, --text <text>      : Text to be spoken terminate with @@ "
+   puts "\t -t, --text <text>      : Text to be spoken terminate with <space>@@"
    puts "\t -l, --volume ?<value>? : Gets/Sets Volume Level. Range Min 0 - 100 Max"
    puts "\t -r, --rate  ?<value>?  : Gets/Sets Speech Rate. Range Min -10 - 10 Max"
    puts "\t --pitch ?<value>?      : Gets/Sets Speech Pitch. Range Min -10 - 10 Max"
@@ -54,14 +54,13 @@ proc helpMe {} {
 #  puts "\t -o, --save <file>      : Output current config to file"
 #  puts "\t -s, --server <action>  : Server Actions - start, restart, stop"
    puts "\t --port <value>         : Value for server port. Default 5491"
-   puts "\t --test                 : Tests components are present and configured"
-   puts "\t --killserver           : Forces server to quit if timeouts are disbabled"
+#  puts "\t --test                 : Tests components are present and configured"
+   puts "\t --killserver           : Forces server to quit if timeout disbabled"
    puts "\t -v, --verbose          : Verbose output"
 #  puts "\t --pipemode             : Pipemode takes input on stdin to speak"
    puts "\t -h, --help             : This message\n"
    
-   puts "For updates, guides and help please refer to the project page:\
-   http://www.rockbox.org"
+   puts "For updates, guides and help please see: http://www.rockbox.org"
    puts "For bugs, comments and support please contact thomaslloyd@yahoo.com." 
 }
 # ------------------------------------------------------------------------------
@@ -188,7 +187,7 @@ set appLocation [info nameofexecutable]
     }
     
 # Run the Server 
-    if { [catch {exec $app $appPath $script 2> $nullDevice &} msg ] } {
+    if { [catch {exec $app $appPath $script --port $port 2> $nullDevice &} msg ] } {
          bugMe "Server Startup......FAILED"
          puts $msg  
          puts $::errorInfo
@@ -279,6 +278,7 @@ proc sapiRead { sock } {
                        set codeDesc [lindex $message [expr $x + 1] ]
                        set formatDesc [lindex $message [expr $x + 2] ]
                        bugMe "Response - $element - $codeDesc - $formatDesc"
+                       puts stdout "$element:$formatDesc"
                        set skip 2
                    }
                    
@@ -287,7 +287,7 @@ proc sapiRead { sock } {
                        bugMe "Response - $element - $codeDesc"
                        
                        foreach event $readyCheckerID {
-                           bugMe "Response - Cancelling Ready Test Event: \
+                         # bugMe "Response - Cancelling Ready Test Event: \
                            $event"
                            after cancel $event
                        }
@@ -300,6 +300,7 @@ proc sapiRead { sock } {
                        set codeDesc [lindex $message [expr $x + 1] ]
                        set rateVal [lindex $message [expr $x + 2] ]
                        bugMe "Response - $element - $codeDesc:$rateVal"
+                       puts stdout "$element:$rateVal"
                        set skip 2
                    }
                    
@@ -309,6 +310,7 @@ proc sapiRead { sock } {
                        set vName [lindex $message [expr $x + 3] ]
                        set vGender [lindex $message [expr $x + 4] ]
                        bugMe "Response - $element - $codeDesc: $vID:$vName:$vGender"
+                       puts stdout "$element:$vID:$vName:$vGender"
                        set skip 4
                    }
                    
@@ -318,6 +320,7 @@ proc sapiRead { sock } {
                        set formatDesc [lindex $message [expr $x + 3] ]
                        bugMe "Response - $element - $codeDesc:\
                        $formatNo.$formatDesc"
+                       puts stdout "$element:$formatNo:$formatDesc"
                        set skip 3
                    }
                    
@@ -452,7 +455,7 @@ proc processCommands { sock } {
  set port 5491
  set attempt 0
 
- bugMe "Beginning of Argument Prcessing"
+ bugMe "Beginning of Argument Processing"
 foreach element $argv {
     bugMe "Arg = $element"
         if {$skip == 0} {
@@ -464,7 +467,8 @@ foreach element $argv {
                 
                 --wavformat {
                     set format [lindex $argv [expr $x + 1] ]
-                    if { $format == "?"} { 
+                    set 1stChar [string index [lindex $argv [expr $x + 1] ] 0]
+                    if { $format == "?" || $1stChar == "-" || $1stChar == "" } { 
                     set command "$command getFormat" 
                     } else {
                     set command "$command setFormat $format"
@@ -499,7 +503,8 @@ foreach element $argv {
 	             -l {
                     # Requires a regexpression to check for valid input here 
                     set volume [lindex $argv [expr $x + 1] ]
-                    if { $volume == "?"} {
+                    set 1stChar [string index [lindex $argv [expr $x + 1] ] 0]
+                    if { $volume == "?" || $1stChar == "-" || $1stChar == ""} {
                         set command "$command getVol"
                         bugMe "Current Volume: $volume" 
                     } else {
@@ -520,7 +525,8 @@ foreach element $argv {
                 --volume {
                     # Requires a regexpression to check for valid input here 
                     set volume [lindex $argv [expr $x + 1] ]
-                    if { $volume == "?"} {
+                    set 1stChar [string index [lindex $argv [expr $x + 1] ] 0]
+                    if { $volume == "?" || $1stChar == "-" || $1stChar == ""} {
                         set command "$command getVol"
                         bugMe "Current Volume: $volume " 
                     } else {
@@ -541,7 +547,8 @@ foreach element $argv {
                 -e {
                     # Requires a regexpression to check for valid input here
                     set engineNum [lindex $argv [expr $x + 1] ]
-                    if { $engineNum == "?"} {
+                    set 1stChar [string index [lindex $argv [expr $x + 1] ] 0]
+                    if { $engineNum == "?" || $1stChar == "-" || $1stChar == ""} {
                         set command "$command getEngine"
                         bugMe "Got Engine List"  
                     } else {
@@ -553,7 +560,8 @@ foreach element $argv {
                 --engine {
                     # Requires a regexpression to check for valid input here
                     set engineNum [lindex $argv [expr $x + 1] ]
-                    if { $engineNum == "?"} {
+                    set 1stChar [string index [lindex $argv [expr $x + 1] ] 0]
+                    if { $engineNum == "?" || $1stChar == "-" || $1stChar == ""} {
                         set command "$command getEngine"
                         bugMe "Got Engine List"  
                     } else {
@@ -565,7 +573,8 @@ foreach element $argv {
 	             -r {
                     # Sanity check Requires a regexpression
                     set rate [lindex $argv [expr $x + 1] ]
-                    if { $rate == "?"} {
+                    set 1stChar [string index [lindex $argv [expr $x + 1] ] 0]
+                    if { $rate == "?" || $1stChar == "-" || $1stChar == ""} {
                         set command "$command getRate" 
                         bugMe "Current Rate: $rate"
                     } else {
@@ -584,7 +593,8 @@ foreach element $argv {
                 --rate {
                     # Sanity check Requires a regexpression
                     set rate [lindex $argv [expr $x + 1] ]
-                    if { $rate == "?"} {
+                    set 1stChar [string index [lindex $argv [expr $x + 1] ] 0]
+                    if { $rate == "?" || $1stChar == "-" || $1stChar == ""} {
                         set command "$command getRate" 
                         bugMe "Current Rate: $rate"
                     } else {
@@ -658,7 +668,7 @@ foreach element $argv {
                 
                 --verbose {}
                 
-                --port {}
+                --port { set skip 1 }
                 
                 default {
                     puts stderr "Unknown commandline switch $element.\

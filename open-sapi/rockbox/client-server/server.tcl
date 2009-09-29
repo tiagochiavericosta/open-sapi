@@ -20,6 +20,32 @@
 #Application Name: Open SAPI Clip Generator v0.1 Alpha for Rockbox Utulity
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+# ProcName : helpMe
+# Usage    : Supplies the user with usage information when called through stdout
+# Accepts  : None
+# Returns  : None
+# Called By: Main
+#-------------------------------------------------------------------------------
+proc helpMe {} {
+   
+   puts "Open SAPI Clip Generator Server v0.1 Alpha for Rockbox Utulity\n"
+
+   puts "Usage: opensapi-srv.exe...\[swithches\] -vh " 
+   puts "Server component of the text to speech file generation tool for use\
+   with MS SAPI"
+   
+   puts "Switches:"
+   puts "\t --debug                : Provides full debug/error infromation"
+   puts "\t --port <value>         : Sets Port Number to use for communicatoin"
+   puts "\t -v, --verbose          : Verbose output"
+   puts "\t --version              : Outputs the current Server version"
+   puts "\t -h, --help             : This message\n"
+   
+   puts "For updates, guides and help see http://www.rockbox.org"
+   puts "For bugs, comments and support please contact thomaslloyd@yahoo.com." 
+}
+
+# ------------------------------------------------------------------------------
 # ProcName : bugClient
 # Usage    : Called whenever an event needs to pass feedback to the client
 # Accepts  : errorCode - calls on the errorArray to supply the description
@@ -592,13 +618,13 @@ proc serverRead {sock voice} {
 	                 #[expr [lindex[split $message " "]] - 1]
 	                 unset i
                     bugMe "202:$errorArray(202,message) : Filename Set : $filename"
-                    bugClient 202 "Filename Set : $filename" $sock
+                    bugClient 202 "Filename:$filename" $sock
                 }    
 	          
 	             getVol {
 	                 set volume [getVol $voice]
 	                 bugMe "getVol: $volume"
-	                 bugClient 202 "Cureent Volume = $volume" $sock
+	                 bugClient 202 "Volume:$volume" $sock
 	             }
 	             
 	             setVol {
@@ -798,10 +824,18 @@ proc closeMe {caller args } {
     if {$caller == "client"} {
         # Notify Client
         bugClient 299 "" $args
-    } 
-    extCmdExeErrWrapper file delete -force "$::env(HOME)sapiTMP/"
-    bugMe "Cleaning Up..............OK"
-    exit 1
+    }
+    if { [file isdirectory "$::env(HOME)sapiTMP/"] } {
+        if { [catch {file delete -force "$::env(HOME)sapiTMP/"} msg ]} {
+            bugMe "Cleaning Up..........FAILED"
+            puts stdout "$::errorInfo"
+            exit 1
+        } else {
+            bugMe "Cleaning Up..............OK"
+            exit 0
+        }
+    }
+    exit 0
 }
 # ------------------------------------------------------------------------------
 # ProcName : sysHealthCheck 
@@ -863,6 +897,7 @@ proc sysHealthCheck { port } {
  set stackTrace 0
  set pitch 0
  set skip 0
+ set x 0
  
     # Start the Idle Shutdown Timer in the event the client is not able to
     # signal the server to shutdown or the server crashes. 
@@ -874,6 +909,16 @@ proc sysHealthCheck { port } {
     foreach element $argv {
         if {$skip == 0} {
             switch -exact -- $element {
+            
+                -h {
+                    helpMe
+                    closeMe main
+                }
+                
+                --help {
+                    helpMe
+                    closeMe main
+                }
         
                 -v {
                    set verboseText 1
@@ -892,8 +937,9 @@ proc sysHealthCheck { port } {
                 }
             
                 --port {
-                
-                }
+                    set port [lindex $argv [expr $x + 1] ]
+                    set skip 1
+                }    
                 
                 --version {
                     puts "Version 0.1 Alpha"
@@ -906,7 +952,8 @@ proc sysHealthCheck { port } {
                 }
         
             }; # End of switch
-        }; # End of Skip
+        } else { set skip [expr $skip - 1]}; # End of Skip
+    incr x
     }; # End of foreach
     bugMe "System Health Check:"
     bugMe "Idle Shutdown Timer.....OK"
