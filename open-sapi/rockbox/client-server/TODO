@@ -1,28 +1,17 @@
-# Server external config file
+Todo Alpha Release:
 
-Debug Method: File Stderr
-Debug Log File:
-Temp Directory:
-Default Port:
-Default Rate:
-Default Pitch:
-Default Volume:
-Default Wav Format:
-Default Voice:
-Default timeout:
+Critical:
+Adjust the client to grab output of command without using ?
+helpMe for server usage
+port specification for Server
+Output  to stdout information returned from Server 
 
-Todo:
-
-wav format location:
-helpMe for server usage:
-User Specified timeouts
-Adjust the retry amount for the length of the restart timer
-Retry to load server
-
-Linux find a process and kill it Win a Linux
-
-Meaningful comments file
-Meaningful bugMe Statements
+Optional:
+set server verbose option on client allows user to see server output on commandline / log
+User Specified timeouts in Mins
+Global Timeout set by length of text if longer than current (1 word = 1 sec)
+User Specified Log File
+Format Logs with Date and Time Stamps
 
 
 

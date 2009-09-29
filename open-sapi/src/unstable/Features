@@ -1,7 +1,17 @@
 Ideas:
 
-Client Closes after long timeout of waiting for close from Server - Should stop SD from freezing the desktop
-Client must implement global & transaction timeouts
+Client Closes after long timeout of waiting for reply from Server .............. Done
+Client must implement global & transaction timeouts ............................ Started
+    The Global Array for Event Tracking should be unset at some point
+
+Client should report to the user why it has timed out .......................... Started
+    Implementation of Global Multi Dimentional Array for Data Sharing
+    This will free the return Status 
+Sever and Client must co-operate when closing sockets .......................... Started
+
+Impl
+
+Server and Client should Log to one file using the standard log file format
 
 Simple monitoring client that checks resposiveness and take actions pn the server
     * Loaded at Server Launch

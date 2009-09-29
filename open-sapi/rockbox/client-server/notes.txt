@@ -1,3 +1,6 @@
+cat /usr/src/linux-headers-2.6.28-15/include/asm-generic/errno.h
+
+
 just add it to the list at top of tts.cpp and add a template string at ~ line 104
 
 if you change the DEFINES += QT_NO_DEBUG_OUTPUT  in rbutilqt.pro to DEFINES -= QT_NO_DEBUG_OUTPUT and rebuild, it will output the exact names of the files it wants to generate in the console, maybe that could help ?
