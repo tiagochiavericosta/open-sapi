@@ -556,7 +556,7 @@ set averageWordTime 4000
             set message [split $line " "]
             set eventID [monitorMe say [expr [llength $line] * $averageWordTime]  0]
             if {$line == "" } { return } else {
-                puts $sock "$command say $line @@ eventID"
+                puts $sock "$command say $line @@ $eventID"
             }
         }
 }
