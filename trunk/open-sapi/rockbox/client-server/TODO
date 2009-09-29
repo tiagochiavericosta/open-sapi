@@ -1,10 +1,7 @@
 Todo Alpha Release:
 
 Critical:
-Adjust the client to grab output of command without using ?
-helpMe for server usage
-port specification for Server
-Output  to stdout information returned from Server 
+Output to stdout information returned from Server for programs using the client 
 
 Optional:
 set server verbose option on client allows user to see server output on commandline / log
