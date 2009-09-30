@@ -457,7 +457,7 @@ proc processCommands { sock } {
 
  bugMe "Beginning of Argument Processing"
 foreach element $argv {
-    bugMe "Arg = $element"
+    bugMe "Arg = .$element."
         if {$skip == 0} {
             switch -exact -- $element {
 	        
@@ -466,15 +466,18 @@ foreach element $argv {
                 }
                 
                 --wavformat {
+                    bugMe "Got wavFormat"
                     set format [lindex $argv [expr $x + 1] ]
                     set 1stChar [string index [lindex $argv [expr $x + 1] ] 0]
                     if { $format == "?" || $1stChar == "-" || $1stChar == "" } { 
-                    set command "$command getFormat" 
+                        set command "$command getFormat" 
                     } else {
-                    set command "$command setFormat $format"
-                    }
-                    
-                set skip 1
+                        set command "$command setFormat $format"
+                    } 
+                    if {$1stChar != "-"} {
+	                     puts "set skip"
+	                     set skip 1
+	                 }
                 }
                 
                 -f {
@@ -519,7 +522,10 @@ foreach element $argv {
                         #Process XML Later
                         bugMe "Volume Set: $volume"
                     }
-	                 set skip 1
+	                 if {$1stChar != "-"} {
+	                     puts "set skip"
+	                     set skip 1
+	                 }
                 }
 
                 --volume {
@@ -541,7 +547,10 @@ foreach element $argv {
                         #Process XML Later
                         bugMe "Volume Set: $volume"
                     }
-	                 set skip 1
+	                 if {$1stChar != "-"} {
+	                     puts "set skip"
+	                     set skip 1
+	                 }
                 }
               
                 -e {
@@ -554,7 +563,10 @@ foreach element $argv {
                     } else {
                         set command "$command setEngine $engineNum"
                     }  
-	                 set skip 1
+	                 if {$1stChar != "-"} {
+	                     puts "set skip"
+	                     set skip 1
+	                 }
                 }
 
                 --engine {
@@ -567,7 +579,10 @@ foreach element $argv {
                     } else {
                         set command "$command setEngine $engineNum"
                     }  
-	                 set skip 1
+	                 if {$1stChar != "-"} {
+	                     puts "set skip"
+	                     set skip 1
+	                 }
                 }
                 
 	             -r {
@@ -576,7 +591,6 @@ foreach element $argv {
                     set 1stChar [string index [lindex $argv [expr $x + 1] ] 0]
                     if { $rate == "?" || $1stChar == "-" || $1stChar == ""} {
                         set command "$command getRate" 
-                        bugMe "Current Rate: $rate"
                     } else {
                         if { $rate < -10 } { set rate -10
                             bugMe "Rate too low, correcting to min 0"
@@ -587,7 +601,10 @@ foreach element $argv {
                         #Process XML Later
                         bugMe "Set Rate: $rate"
                     }
-                    set skip 1           
+                    if {$1stChar != "-"} {
+	                     puts "set skip"
+	                     set skip 1
+	                 }           
                 }
 
                 --rate {
@@ -607,7 +624,10 @@ foreach element $argv {
                         #Process XML Later
                         bugMe "Set Rate: $rate"
                     }
-                    set skip 1    
+                    if {$1stChar != "-"} {
+	                     puts "set skip"
+	                     set skip 1
+	                 }    
                 }
 
 	             -t {
@@ -676,7 +696,7 @@ foreach element $argv {
                 }
          	
             } ; # End switch
-        } else { set skip [expr $skip - 1]} ; # End if skip
+        } else { set skip [expr $skip - 1] } ; # End if skip
     incr x
     };# End of foreach    
      bugMe "End of Prcessing"
