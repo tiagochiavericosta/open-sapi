@@ -1,6 +1,6 @@
 #summary Demonstrating a practical use of the Open Sapi Project
 #labels Featured
-<wiki:toc max_depth="1" />
+<wiki:toc max_depth="2" />
 ----
 =Introduction=
 Rockbox is an open source project that has been designed from the beginning with accessibility at its heart. 
@@ -10,7 +10,7 @@ The project currently supply a utility that helps to setup Rockbox on your MP3 p
 Currently there is basic support for the Microsoft speech API in Windows. This example demonstrates the power and flexibility of Open Sapi. 
 
 This example not only extends the SAPI functionality on Windows but also to Linux and Mac allowing users of Rockbox to access hundreds of high quality text to speech engines in many languages on their preferred operating system.
-
+----
 =Features=
     
     * Variable Rate
@@ -19,7 +19,15 @@ This example not only extends the SAPI functionality on Windows but also to Linu
     * Variable Wave File Quality
     * Speech Engine Selection
     * Fast
+----
+=Instlling=
+==Windows==
 
+==Linux==
+----
+=Usage Examples=
+
+----
 =Developer Resources=
 
     * RockboxUtilityCommsSpec - Details the communication protocol for writing clients
