@@ -1,7 +1,9 @@
 Todo Alpha Release:
 
 Critical:
-Output to stdout information returned from Server for programs using the client 
+Output to stdout information returned from Server for programs using the client
+fix volume
+Server and Client
 
 Optional:
 set server verbose option on client allows user to see server output on commandline / log
