@@ -4,27 +4,40 @@
 
 =Communication Specifications=
 
+==Server Notes==
+
 The server expects data to arrive in UTF-8 format from the client.
 
-The client must call a single readyServer command before issuing any further commands to the server. This has been implemented so that if the client is responsible for starting the server a call for sererReady can be main repeatedly until a response is received or startup fails. This is implemented in the client where is attempts five startups.
+The client must call a single readyServer command before issuing any further commands to the server. If the server is running and responding then a 204:Ready response is received by the client. When the client receives this it can continue to send commands. 
 
-All settings can be send in a group to the server or seperatly
+The client currently checks to see if it can open the port to the server. If this fails it then begins to try and find the server executable and run the server. Once the server command has been executed it then tries to resend the serverReady command six times over a period of 60 seconds. This is mainly due to the fact that some machines are slow to start the server especially Linux as they are executing wine as well. 
 
-The speakMe command must be spent on its own as the last command to start synthesis on the server using the current settings
-   
+All "settings" can be send in a group to the server or seperatly
+
+The speakMe command must be sent on its own as the last command to start synthesis on the server using the current settings
+
+----    
+
 =Protocol=
 
 Command   : readyServer <br>
 Arguments : None <br>
-Returns   : Status No : Desc (204:Ready) <br>
+Returns   : Status No:Desc - (204:Ready) <br>
+COmment   : This command must be send on its own as the other commands will be ignored.<br>
 
-Command   : exitServer <br>
+Command   : killServer <br>
 Arguments : None <br>
-Returns   : Status No : Desc ( : ) <br>
+Returns   : Status No:Desc - (299:Shutdown OK) <br>
 
+Command   : closeClient <br>
+Arguments : None <br>
+Returns   : Status No:Desc - (294:Close Client) <br>
+Comment   : This command must be sent when the client has finished sending commands to the server.<br>
+
+--Settings--
 Command   : getFormat <br>
 Arguments : None <br>
-Returns   : ID:Descr (1:SPSF_8kHz8BitMono:2:SPSF_8kHz8BitStereo) <br>
+Returns   : Status No:Desc:ID:Format - (298:Format List:1:SPSF_8kHz8BitMono) <br>
 
 Command   : setFormat <br>
 Arguments : Format ID <br>
@@ -33,11 +46,11 @@ Returns   : None <br>
 Command   : outFile <br>
 Arguments : Filename (/tmp/filename , c:\temp\filename) <br>
 Returns   : None <br>
-Comment   : This is the full filename for where the file should be stored <br>
+Comment   : This is the full filename including PATH. If this is missed off a file called sapi.wav is created in the PWD <br>
 
 Command   : getVol <br>
 Arguments : None <br>
-Returns   : Volume (0 - 100) <br>
+Returns   : Status No:Desc:Volume - (295:Volume:100) <br>
 
 Command   : setVol <br>
 Arguments : Volume (0 - 100) <br>
@@ -49,7 +62,7 @@ Returns   : None <br>
 
 Command   : getEngine <br>
 Arguments : None <br>
-Returns   : ID : Name (1:Microsoft Mary) <br>
+Returns   : Status No:Desc:ID:Name:Gender:Language:Vendor:Age - (297:Voice List:1:Microsoft Mary:Female:English_United_States,Microsoft,Adult) <br>
 
 Command   : setEngine <br>
 Arguments : ID <br>
@@ -57,7 +70,7 @@ Returns   : None <br>
 
 Command   : getRate <br>
 Arguments : None <br>
-Returns   : Rate <br>
+Returns   : Status No:Desc:Rate - (296:Rate:0)<br>
 
 Command   : setRate <br>
 Arguments : Rate (-10 - 10)<br>
@@ -65,23 +78,24 @@ Returns   : None <br>
 
 Command   : speakMe <br>
 Arguments : Text For Synth <br>
-Returns   : Status : Desc (205 : Synthesis OK) <br>
+Returns   : Status : Desc (205:Synthesis OK) <br>
+Comment   : This command should be sent on its own after all settings commands.<br>
 
 Command   : speechFlag <br>
 Arguments : Value (See extended notes at bottom) <br>
 Returns   : None <br>
+Comment   : This commands is optional and should not be used in normal operation.<br>
 
-Command   : testMe <br>
+Command   : setDebug <br>
 Arguments : None <br>
 Returns   : None <br>
+Comment   : This gives full output to stdout from the server for debugging
 
-Command   : Verbose <br>
-Arguments : None <br>
-Returns   : None <br>
 ----
 =Extended Notes=
 
 ==Speech Flags==
+The client should not set the speech flag only in very special cases the server does not expect the speech flag to be set.
 See the SAPI documentation for further details. <br>
 SVSFDefault = 0 <br>
 SVSFlagsAsync = 1 <br>
@@ -93,6 +107,7 @@ SVSFPersistXML = 32 <br>
 SVSFNLPSpeakPunc = 64 <br>
 
 ==Wav format list==
+The server test each individual format on the OS it is running as not all formats are supported and returns a list of formats that it can use. This list is just for reference.
 0    SPSF_NoAssignedFormat <br>
 1    SPSF_Text <br>
 3    SPSF_NonStandardFormat <br>
@@ -101,64 +116,64 @@ SVSFNLPSpeakPunc = 64 <br>
 6    SPSF_8kHz8BitStereo <br>
 7    SPSF_8kHz16BitMono <br>
 8    SPSF_8kHz16BitStereo <br>
-SPSF_11kHz8BitMono <br>
-SPSF_11kHz8BitStereo <br>
-SPSF_11kHz16BitMono <br>
-SPSF_11kHz16BitStereo
-SPSF_12kHz8BitMono
-SPSF_12kHz8BitStereo
-SPSF_12kHz16BitMono
-SPSF_12kHz16BitStereo
-SPSF_16kHz8BitMono
-SPSF_16kHz8BitStereo
-SPSF_16kHz16BitMono
-SPSF_16kHz16BitStereo
-SPSF_22kHz8BitMono
-SPSF_22kHz8BitStereo
-SPSF_22kHz16BitMono
-SPSF_22kHz16BitStereo
-SPSF_24kHz8BitMono
-SPSF_24kHz8BitStereo
-SPSF_24kHz16BitMono
-SPSF_24kHz16BitStereo
-SPSF_32kHz8BitMono
-SPSF_32kHz8BitStereo
-SPSF_32kHz16BitMono
-SPSF_32kHz16BitStereo
-SPSF_44kHz8BitMono
-SPSF_44kHz8BitStereo
-SPSF_44kHz16BitMono
-SPSF_44kHz16BitStereo
-SPSF_48kHz8BitMono
-SPSF_48kHz8BitStereo
-SPSF_48kHz16BitMono
-SPSF_48kHz16BitStereo
-SPSF_TrueSpeech_8kHz1BitMono
-SPSF_CCITT_ALaw_8kHzMono
-SPSF_CCITT_ALaw_8kHzStereo
-SPSF_CCITT_ALaw_11kHzMono
-SPSF_CCITT_ALaw_11kHzStereo
-SPSF_CCITT_ALaw_22kHzMono
-SPSF_CCITT_ALaw_22kHzStereo
-SPSF_CCITT_ALaw_44kHzMono
-SPSF_CCITT_ALaw_44kHzStereo
-SPSF_CCITT_uLaw_8kHzMono
-SPSF_CCITT_uLaw_8kHzStereo
-SPSF_CCITT_uLaw_11kHzMono
-SPSF_CCITT_uLaw_11kHzStereo
-SPSF_CCITT_uLaw_22kHzMono
-SPSF_CCITT_uLaw_22kHzStereo
-SPSF_CCITT_uLaw_44kHzMono
-SPSF_CCITT_uLaw_44kHzStereo
-SPSF_ADPCM_8kHzMono
-SPSF_ADPCM_8kHzStereo
-SPSF_ADPCM_11kHzMono
-SPSF_ADPCM_11kHzStereo
-SPSF_ADPCM_22kHzMono
-SPSF_ADPCM_22kHzStereo
-SPSF_ADPCM_44kHzMono
-SPSF_ADPCM_44kHzStereo
-SPSF_GSM610_8kHzMono
-SPSF_GSM610_11kHzMono
-SPSF_GSM610_22kHzMono
-SPSF_GSM610_44kHzMono
+9    SPSF_11kHz8BitMono <br>
+10   SPSF_11kHz8BitStereo <br>
+11   SPSF_11kHz16BitMono <br>
+12   SPSF_11kHz16BitStereo <br>
+13   SPSF_12kHz8BitMono <br>
+14   SPSF_12kHz8BitStereo <br>
+16   SPSF_12kHz16BitMono <br>
+17   SPSF_12kHz16BitStereo <br>
+18   SPSF_16kHz8BitMono <br>
+19   SPSF_16kHz8BitStereo <br>
+20   SPSF_16kHz16BitMono <br>
+21   SPSF_16kHz16BitStereo <br>
+22   SPSF_22kHz8BitMono <br>
+25   SPSF_22kHz8BitStereo <br>
+26   SPSF_22kHz16BitMono <br>
+27   SPSF_22kHz16BitStereo <br>
+28   SPSF_24kHz8BitMono <br>
+29   SPSF_24kHz8BitStereo<br>
+30   SPSF_24kHz16BitMono <br>
+31   SPSF_24kHz16BitStereo <br>
+32   SPSF_32kHz8BitMono <br>
+33   SPSF_32kHz8BitStereo <br>
+35   SPSF_32kHz16BitMono <br>
+36   SPSF_32kHz16BitStereo <br>
+37   SPSF_44kHz8BitMono <br>
+38   SPSF_44kHz8BitStereo <br>
+39   SPSF_44kHz16BitMono <br>
+40   SPSF_44kHz16BitStereo <br>
+41   SPSF_48kHz8BitMono <br>
+42   SPSF_48kHz8BitStereo <br>
+43   SPSF_48kHz16BitMono <br>
+44   SPSF_48kHz16BitStereo <br>
+45   SPSF_TrueSpeech_8kHz1BitMono <br>
+46   SPSF_CCITT_ALaw_8kHzMono <br>
+47   SPSF_CCITT_ALaw_8kHzStereo <br>
+48   SPSF_CCITT_ALaw_11kHzMono <br>
+49   SPSF_CCITT_ALaw_11kHzStereo <br>
+50   SPSF_CCITT_ALaw_22kHzMono <br>
+51   SPSF_CCITT_ALaw_22kHzStereo <br>
+52   SPSF_CCITT_ALaw_44kHzMono <br>
+53   SPSF_CCITT_ALaw_44kHzStereo <br>
+54   SPSF_CCITT_uLaw_8kHzMono <br>
+55   SPSF_CCITT_uLaw_8kHzStereo <br>
+56   SPSF_CCITT_uLaw_11kHzMono <br>
+57   SPSF_CCITT_uLaw_11kHzStereo <br>
+58   SPSF_CCITT_uLaw_22kHzMono <br>
+59   SPSF_CCITT_uLaw_22kHzStereo <br>
+60   SPSF_CCITT_uLaw_44kHzMono <br>
+61   SPSF_CCITT_uLaw_44kHzStereo <br>
+62   SPSF_ADPCM_8kHzMono <br>
+63   SPSF_ADPCM_8kHzStereo <br>
+64   SPSF_ADPCM_11kHzMono <br>
+65   SPSF_ADPCM_11kHzStereo <br>
+66   SPSF_ADPCM_22kHzMono <br>
+67   SPSF_ADPCM_22kHzStereo <br>
+68   SPSF_ADPCM_44kHzMono <br>
+69   SPSF_ADPCM_44kHzStereo <br>
+70   SPSF_GSM610_8kHzMono <br>
+71   SPSF_GSM610_11kHzMono <br>
+72   SPSF_GSM610_22kHzMono <br>
+73   SPSF_GSM610_44kHzMono <br>
