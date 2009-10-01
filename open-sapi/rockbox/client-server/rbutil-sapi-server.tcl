@@ -876,13 +876,13 @@ proc sysHealthCheck { port } {
     # Loads both internal and external error code references
         
         set errorList [extCmdExeErrWrapper source \
-        Z:/home/tom/open-sapi/rockbox/client-server/sapi_error_array.init]
+        $::env(HOME)/open-sapi/rockbox/client-server/lib/sapi_error_array.init]
         array set errorArray $errorList
         bugMe  "Error System............OK"
     
         # Loads the MS Language ID reference file
         set langList [extCmdExeErrWrapper source \
-        Z:/home/tom/open-sapi/rockbox/client-server/lang_codes.init]
+        $::env(HOME)/open-sapi/rockbox/client-server/lib/lang_codes.init]
         array set langArray $langList
         bugMe  "Language System.........OK"
     }
