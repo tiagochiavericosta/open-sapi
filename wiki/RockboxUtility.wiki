@@ -20,10 +20,11 @@ This example not only extends the SAPI functionality on Windows but also to Linu
     * Speech Engine Selection
     * Fast
 ----
-=Instlling=
+=Installing=
 ==Windows==
-
+==Cygwin==
 ==Linux==
+==Mac==
 ----
 =Usage Examples=
 
