@@ -1,0 +1,151 @@
+#*******************************************************************************
+#             __________               __   ___.
+#   Open      \______   \ ____   ____ |  | _\_ |__   _______  ___
+#   Source     |       _//  _ \_/ ___\|  |/ /| __ \ /  _ \  \/  /
+#   Jukebox    |    |   (  <_> )  \___|    < | \_\ (  <_> > <  <
+#   Firmware   |____|_  /\____/ \___  >__|_ \|___  /\____/__/\_ \
+#                     \/            \/     \/    \/            \/
+#
+#   Copyright (C) 2009 by Thomas Lloyd
+#
+# All files in this archive are subject to the GNU General Public License.
+# See the file COPYING in the source tree root for full license agreement.
+#
+# This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
+# KIND, either express or implied.
+#
+#*******************************************************************************
+
+foreach {lang code} {\
+    Afrikaans                    436
+    Albanian                     041c
+    Arabic_Saudi_Arabia          401
+    Arabic_Iraq                  801
+    Arabic_Egypt                 0c01
+    Arabic_Libya                 1001
+    Arabic_Algeria               1401
+    Arabic_Morocco               1801
+    Arabic_Tunisia               1c01
+    Arabic_Oman                  2001
+    Arabic_Yemen                 2401
+    Arabic_Syria                 2801
+    Arabic_Jordan                2c01
+    Arabic_Lebanon               3001
+    Arabic_Kuwait                3401
+    Arabic_UAE                   3801
+    Arabic_Bahrain               3c01
+    Arabic_Qatar                 4001
+    Armenian                     042b
+    Azeri_Latin                  042c
+    Azeri_Cyrillic               082c
+    Basque                       042d
+    Belarusian                   423
+    Bulgarian                    402
+    Catalan                      403
+    Chinese_Taiwan               404
+    Chinese_PRC                  804
+    Chinese_Hong_Kong            0c04
+    Chinese_Singapore            1004
+    Chinese_Macau                1404
+    Croatian                     041a
+    Czech                        405
+    Danish                       406
+    Dutch_Standard               413
+    Dutch_Belgian                813
+    English_United_States        409
+    English_United_Kingdom       809
+    English_Australian           0c09
+    English_Canadian             1009
+    English_New_Zealand          1409
+    English_Irish                1809
+    English_South_Africa         1c09 
+    English_Jamaica              2009
+    English_Caribbean            2409
+    English_Belize               2809
+    English_Trinidad             2c09
+    English_Zimbabwe             3009
+    English_Philippines          3409
+    Estonian                     425
+    Faeroese                     438
+    Farsi                        429
+    Finnish                      040b
+    French_Standard              040c
+    French_Belgian               080c
+    French_Canadian              0c0c
+    French_Swiss                 100c
+    French_Luxembourg            140c
+    French_Monaco                180c
+    Georgian                     437
+    German_Standard              407
+    German_Swiss                 807
+    German_Austrian              0c07
+    German_Luxembourg            1007
+    German_Liechtenstein         1407
+    Greek                        408
+    Hebrew                       040d
+    Hindi                        439
+    Hungarian                    040e
+    Icelandic                    040f
+    Indonesian                   421
+    Italian_Standard             410
+    Italian_Swiss                810
+    Japanese                     411
+    Kazakh                       043f
+    Konkani                      457
+    Korean                       412
+    Latvian                      426
+    Lithuanian                   427
+    FYRO Macedonian              042f
+    Malay_Malaysia               043e
+    Malay_Brunei_Darussalam      083e
+    Marathi                      044e
+    Norwegian_Bokmal             414
+    Norwegian_Nynorsk            814
+    Polish                       415
+    Portuguese_Brazilian         416
+    Portuguese_Standard          816
+    Romanian                     418
+    Russian                      419
+    Sanskrit                     044f
+    Serbian_Latin                081a
+    Serbian_Cyrillic             0c1a
+    Slovak                       041b
+    Slovenian                    424
+    Spanish_Traditional_Sort     040a
+    Spanish_Mexican              080a
+    Spanish_Modern_Sort          0c0a
+    Spanish_Guatemala            100a
+    Spanish_Costa_Rica           140a
+    Spanish_Panama               180a
+    Spanish_Dominican_Republic   1c0a
+    Spanish_Venezuela            200a
+    Spanish_Colombia             240a
+    Spanish_Peru                 280a
+    Spanish_Argentina            2c0a
+    Spanish_Ecuador              300a
+    Spanish_Chile                340a 
+    Spanish_Uruguay              380a
+    Spanish_Paraguay             3c0a
+    Spanish_Bolivia              400a
+    Spanish_El_Salvador          440a
+    Spanish_Honduras             480a
+    Spanish_Nicaragua            4c0a
+    Spanish_Puerto_Rico          500a
+    Swahili                      441
+    Swedish                      041d
+    Swedish_Finland              081d
+    Tamil                        449
+    Tatar                        444
+    Thai                         041e
+    Turkish                      041f
+    Ukrainian                    422
+    Urdu                         420
+    Uzbek_Latin                  443
+    Uzbek_Cyrillic               843
+    Vietnamese                   042a} \
+    {set langArray($code) $lang}
+    
+return [array get langArray] 
+
+
+    
