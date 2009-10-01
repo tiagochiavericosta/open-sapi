@@ -93,7 +93,7 @@ set app ""
 set appPath ""
 set script ""
 set os [split $::tcl_platform(os) " "]
-set appName osapi-srv.exe
+set appName rbutil-sapi-server.exe
 set nullDevice NUL
 set appLocation [info nameofexecutable]
 
@@ -127,13 +127,14 @@ set appLocation [info nameofexecutable]
             set pathCheck 1 
         } else {
         # Command Runs OK
-        bugMe "Server Located PATH......OK"
+        bugMe "Server Located PATH.....OK"
+        
          
         set pathCheck 0
         }   
     } else {
     # Command Runs OK
-    bugMe "Server Located PATH......OK"
+    bugMe "Server Located PATH.....OK"
     set pathCheck 0
     }
     
@@ -176,9 +177,9 @@ set appLocation [info nameofexecutable]
     if {$appPath == ""} {
     #Code used when in testng enivroment
         if { [file exists $::env(HOME)/open-sapi/tools/tcl/bin/tclsh85.exe] &&\
-        [file exists $::env(HOME)/open-sapi/rockbox/client-server/server.tcl] } {
+        [file exists $::env(HOME)/open-sapi/rockbox/client-server/rbutil-sapi-server.tcl] } {
             set appPath "$::env(HOME)/open-sapi/tools/tcl/bin/tclsh85.exe"
-            set script "$::env(HOME)/open-sapi/rockbox/client-server/server.tcl"
+            set script "$::env(HOME)/open-sapi/rockbox/client-server/rbutil-sapi-server.tcl"
             bugMe "Server Location.........OK"
         } else {
         puts stderr "Client: Critical: Server Location.....FAILED"
@@ -296,10 +297,12 @@ proc sapiRead { sock } {
                        set skip 1
                    }
                    
-                   294 { # Close Client 
+                   294 { # Close Client
+                       set codeDesc [lindex $message [expr $x + 1] ] 
                        catch {close $sock} err
-                       bugMe "Response - $element"
+                       bugMe "Response - $element - $codeDesc"
                        exit 0
+                       set skip 1
                    }
                    
                    295 { # Volume
@@ -325,11 +328,11 @@ proc sapiRead { sock } {
                        set vGender [lindex $message [expr $x + 4] ]
                        set vLang [lindex $message [expr $x + 5] ]
                        set vVendor [lindex $message [expr $x + 6] ]
-                       set vAge [lindex $message [expr $x + 4] ]
+                       set vAge [lindex $message [expr $x + 7] ]
                        bugMe "Response - $element - $codeDesc:\
                         $vID:$vName:$vGender:$vLang:$vVendor:$vAge"
                        puts stdout "$element:$vID:$vName:$vGender:$vLang:$vVendor:$vAge"
-                       set skip 6
+                       set skip 7
                    }
                    
                    298 { # Format List 
