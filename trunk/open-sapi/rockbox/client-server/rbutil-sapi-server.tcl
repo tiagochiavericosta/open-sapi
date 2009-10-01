@@ -189,10 +189,6 @@ proc errorControl {caller} {
                        set missingDLL "wmspdmod.dll"
                    }
                
-                   # ::errorInfo is a string an we must do a find/replace command on it
-                    
-                   # set ::errorInfo [lreplace $::errorInfo 2 2 "$errorArray(590,message) $errorArray(591,message) $missingDLL "]
-               
                    set ::errorCode [lreplace $::errorCode 2 2 \
                    "$errorArray(590,message) $errorArray(591,message) $missingDLL"]
                
@@ -246,7 +242,10 @@ proc errorControl {caller} {
                }
                
                default {
-                  puts "$::errorInfo\n $::errorCode" 
+                  puts stdout "$errorArray(590,message) Unknown \
+                  Error $errorSubject. Please report details online at:\n \
+                  \thttp://code.google.com/p/open-sapi/issues/list\n \
+                  Stack Trace: \n$::errorInfo" 
                   
                } 
                 
@@ -534,6 +533,7 @@ proc serverRead {sock voice} {
  global supportedFormats
  global errorArray
  global pitch
+ global langArray
 
 # Cancel the global server timeout as there has been a new request from a client
 # indicating the server is still needed. 
@@ -676,10 +676,14 @@ proc serverRead {sock voice} {
                     set arraySize [expr $arraySize / 6]
                     set currentVoice [$voice Voice]  
                     while {$i < $arraySize} {
-                        set voiceHandle $voicesArray($i,handle)
+                        set voiceHandle $voice 
+                        # tempLangListesArray($i,handle)
+                        set tempLangList [split $voicesArray($i,lang) ";"]
+                        set voicesArray($i,lang) [lindex $tempLangList 0]
+                        set voicesArray($i,lang) $langArray($voicesArray($i,lang))
                         bugClient 297 "$i:$voicesArray($i,name):$voicesArray($i,gender):$voicesArray($i,lang):$voicesArray($i,vendor):$voicesArray($i,age)" $sock
                         bugMe "297:$errorArray(297,message)$i -\
-                        $voicesArray($i,name) and is $voicesArray($i,gender)"
+                        $voicesArray($i,name) and is $voicesArray($i,gender) $voicesArray($i,age)"
                         
                         
                         
@@ -856,6 +860,7 @@ proc sysHealthCheck { port } {
  global voice
  global errorArray
  global stackTrace
+ global langArray
         
     initErrorCodes
     
@@ -863,11 +868,11 @@ proc sysHealthCheck { port } {
     set dir "[file dirname [info script]]"
 
 # Try to load external files in Startkit    
-    set errorList [extCmdExeErrWrapper source [file join $dir sapi_error_array.init]]
+    set errorList [source [file join $dir sapi_error_array.init]]
     array set errorArray $errorList
     bugMe  "Error System............OK"
     
-    set langList [extCmdExeErrWrapper source [file join $dir lang_codes.init]]
+    set langList [source [file join $dir lang_codes.init]]
     array set langArray $langList
     bugMe  "Language System.........OK"
 
@@ -886,8 +891,6 @@ proc sysHealthCheck { port } {
         array set langArray $langList
         bugMe  "Language System.........OK"
     }
-    
-    
     
 
     # Attempt to start the listening server on the given port
