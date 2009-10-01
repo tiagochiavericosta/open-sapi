@@ -1,7 +1,7 @@
 #summary The Communication Protocol for Rockbox Utility Open Sapi Server
 #labels Phase-Implementation
 <wiki:toc max_depth="2" />
-
+----
 =Communication Specifications=
 
 ==Server Notes==
@@ -15,10 +15,8 @@ The client currently checks to see if it can open the port to the server. If thi
 All "settings" can be send in a group to the server or seperatly
 
 The speakMe command must be sent on its own as the last command to start synthesis on the server using the current settings
-
-----    
-
-=Protocol=
+----
+=Server Client Communication Protocol=
 
 Command   : readyServer <br>
 Arguments : None <br>
@@ -89,8 +87,7 @@ Comment   : This commands is optional and should not be used in normal operation
 Command   : setDebug <br>
 Arguments : None <br>
 Returns   : None <br>
-Comment   : This gives full output to stdout from the server for debugging
-
+Comment   : This gives full output to stdout from the server for debugging <br>
 ----
 =Extended Notes=
 
@@ -105,7 +102,7 @@ SVSFIsXML = 8 <br>
 SVSFIsNotXML = 16 <br>
 SVSFPersistXML = 32 <br>
 SVSFNLPSpeakPunc = 64 <br>
-
+----
 ==Wav format list==
 The server test each individual format on the OS it is running as not all formats are supported and returns a list of formats that it can use. This list is just for reference.
 0    SPSF_NoAssignedFormat <br>
