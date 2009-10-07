@@ -297,6 +297,12 @@ proc sapiRead { sock } {
                        set skip 1
                    }
                    
+                   293 { # End of List
+                       set codeDesc [lindex $message [expr $x + 1] ]
+                       bugMe "Response - $element - $codeDesc"
+                       set skip 1
+                   }
+                   
                    294 { # Close Client
                        set codeDesc [lindex $message [expr $x + 1] ] 
                        catch {close $sock} err
