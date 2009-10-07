@@ -78,6 +78,7 @@ proc initErrorCodes {} {
         "202:Setting OK"\
         "203:Test OK"\
         "204:Server Ready"\
+        "293:End of List"\
         "294:Close Client"\
         "295:Volume"\
         "296:Rate"\
@@ -584,24 +585,24 @@ proc serverRead {sock voice} {
                 }
 	                          
                 getFormat {
-                   bugMe "Tesing of getFormat"
-                   set formatList [array get supportedFormats *]
-                   foreach {ID formatDesc} $formatList {
-                       set ID [split $ID ","]
-                       set ID [lindex $ID 0]
-                       lappend tempFormatList "$ID $formatDesc"
-                   }
-                   set formatList $tempFormatList
-                   set formatList [lsort -dictionary $formatList]
+                    bugMe "Tesing of getFormat"
+                    set formatList [array get supportedFormats *]
+                    foreach {ID formatDesc} $formatList {
+                        set ID [split $ID ","]
+                        set ID [lindex $ID 0]
+                        lappend tempFormatList "$ID $formatDesc"
+                    }
+                    set formatList $tempFormatList
+                    set formatList [lsort -dictionary $formatList]
                    
-                   foreach {ID} $formatList {
-                       set tmpID [split $ID " "]
-                       set ID [lindex $tmpID 0]
-                       set format [lindex $tmpID 1]
-                       bugMe "298:$errorArray(298,message):$ID:$format"
-                       bugClient 298 "$ID:$format" $sock
-                   }
-                    
+                    foreach {ID} $formatList {
+                        set tmpID [split $ID " "]
+                        set ID [lindex $tmpID 0]
+                        set format [lindex $tmpID 1]
+                        bugMe "298:$errorArray(298,message):$ID:$format"
+                        bugClient 298 "$ID:$format" $sock
+                    }
+                    bugClient 293 "" $sock
                 }
                 
                 setFormat {
@@ -614,8 +615,7 @@ proc serverRead {sock voice} {
                         set audioFormats [initAudioFormats]
                         bugMe "202:$errorArray(202,message)\
                         - $supportedFormats($formatID,format)"
-                        bugClient 202 "Format\
-                        $supportedFormats($formatID,format)" $sock
+                        bugClient 202 "setFormat" $sock
                     }
                     set skip 1
                 }
@@ -633,7 +633,8 @@ proc serverRead {sock voice} {
 	                 #[expr [lindex[split $message " "]] - 1]
 	                 unset i
                     bugMe "202:$errorArray(202,message):Filename Set - $filename"
-                    bugClient 202 "Filename:$filename" $sock
+                    # Could improve this to check the filename
+                    bugClient 202 "outFile" $sock
                 }    
 	          
 	             getVol {
@@ -644,18 +645,25 @@ proc serverRead {sock voice} {
 	             
 	             setVol {
 	                set vol [lindex $message [expr $x + 1] ]
-	                setVol $voice $vol
-	                set skip 1   
+	                if {$vol != ""} {
+	                    setVol $voice $vol
+	                    bugClient 202 "setVol" $sock
+	                    set skip 1 
+	                } else {
+	                
+	                }    
 	             }
 	             
 	             setRate {
 	                 set rate [lindex $message [expr $x + 1] ]
 	                 setRate $voice $rate
+	                 bugClient 202 "setRate" $sock
 	                 set skip 1
 	             }
 	             
 	             setPitch {
 	                 set pitch [lindex $message [expr $x + 1] ]
+	                 bugClient 202 "setPitch" $sock
 	                 set skip 1
 	             }
 	             
@@ -688,7 +696,8 @@ proc serverRead {sock voice} {
                         
                         
                         incr i                      
-                    } 
+                    }
+                    bugClient 293 "" $sock
                     unset i 
                 }
                 
@@ -706,7 +715,7 @@ proc serverRead {sock voice} {
                     set voiceHandle $voicesArray($engineNum,handle)
                     setEngine $voice $voiceHandle
                     bugMe "TTS Engine Set:$voicesArray($engineNum,name)"
-                    bugClient 202 "TTS Engine Set - $voicesArray($engineNum,name)" $sock
+                    bugClient 202 "setEngine" $sock
                     set skip 1
                 }
                 
@@ -758,6 +767,7 @@ proc serverRead {sock voice} {
                 
                 setDebug {
                     set stackTrace 1
+                    bugClient 202 "setDebug" $sock
                 }
                 
                 verbose {}
@@ -772,6 +782,10 @@ proc serverRead {sock voice} {
     incr x
     };# End of for
     
+    if {$pitch} {
+        set text "<pitch absmiddle=\"$pitch\"/> $text"
+    }
+    
     if {$runTest} {
         if {$textPending} {
             puts "Error: Testing overrides text output remove --test option"
@@ -785,8 +799,8 @@ proc serverRead {sock voice} {
              bugClient 201 "" $sock
          }
      }
-     }; # end of socket if
- 
+ }; # end of socket if
+ set timeoutID [idleServerTimeout]
 }
 # ------------------------------------------------------------------------------
 # ProcName : serverAccept 
@@ -804,10 +818,7 @@ proc serverAccept {sock addr port} {
     bugMe "New Client On: $sock"
     fconfigure $sock -buffering line -blocking 0 -encoding utf-8
     set clientSock $sock
-    fileevent $sock readable [list serverRead $sock $voice]
-    set timeoutID [idleServerTimeout]
-    
-    
+    fileevent $sock readable [list serverRead $sock $voice]    
 }
 # ------------------------------------------------------------------------------
 # ProcName : sapiServer 
@@ -932,6 +943,7 @@ proc sysHealthCheck { port } {
  set pitch 0
  set skip 0
  set x 0
+ set filename "[pwd]/sapi.wav"
  
     # Start the Idle Shutdown Timer in the event the client is not able to
     # signal the server to shutdown or the server crashes. 
