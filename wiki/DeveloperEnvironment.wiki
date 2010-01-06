@@ -37,7 +37,14 @@ Please note Google Code is not the fastest at downloading and takes about ten mi
 This should leave you in a position where you have everything ready to go about configuring the system for speech.
 ----
 =Do not skip update Wine=
-During testing there have been issues identified in the older wine releases current shipped with most Distributions. This has ben confirmed in Ubuntu but i am sure it applies to other. I highly recommend for stability to use the latest binary available from WineHQ for your distribution. Details on how to do this can be found at the link below. This will update your package source for wine briging it to the latest stable release for your distribution.
+
+==Update for Ubuntu 9.10 (Karmic)== 
+Now the guys at Canonical have been busy and have made a very useful addition  tp the apt utility that allows the easy addition of personal software repositories. So we can add in the updated wine project repo with one command.
+
+sudo add-apt-repository ppa:ubuntu-wine/ppa
+
+==Ubuntu 9.04 and Other Dists== 
+During testing there have been issues identified in the older wine releases current shipped with most Distributions. This has ben confirmed in Ubuntu but i am sure it applies to others. I highly recommend for stability to use the latest binary available from WineHQ for your distribution. Details on how to do this can be found at the link below. This will update your package source for wine briging it to the latest stable release for your distribution.
 
 http://www.winehq.org/download
 
