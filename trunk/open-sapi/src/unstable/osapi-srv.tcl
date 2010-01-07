@@ -73,7 +73,7 @@ proc getRate {voice} {
    return [$voice Rate] 
 
 }
-##------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Proceedure Name: setRate
 # Description:
 #
@@ -181,10 +181,8 @@ proc sapiServer {port} {
 # Called By:
 #-------------------------------------------------------------------------------
 proc sapiAccept {sock addr port} {
-global voice
 
  bugMe "New connection on $sock" $sock
-# $voice Speak " " 3
  fileevent $sock readable [list sapiRead $sock]
 
 }
@@ -223,14 +221,17 @@ proc sapiRead {sock} {
      catch {flush $sock} err2
      catch {close $sock} err
      bugMe "Connection kill by client - $err" $sock
-#    $voice Speak " " 3
-     $voice Skip Sentence $maxint
+# $voice Speak " " 3 = 21745.54 microseconds per iteration
+# $voice Skip Sentence $maxint = 98917.72 microseconds per iteration
+     $voice Speak " " 3
+#     $voice Skip Sentence $maxint
      bugMe "Purge Speech!!" $sock
      return        
  } else {
      
      
      ::tcom::bind $voice voiceEvent
+     $voice EventInterests 4
      
      bugMe "Message from $sock : $message" $sock
      
@@ -441,13 +442,15 @@ proc voiceEvent { event args } {
 global clientSock
 global voice
 
+# 
+ 
  if {$event == "EndStream" && [$voice WaitUntilDone 500] } {
      puts "Speech Output ended : close clientSock"
-     puts $clientSock "eos"
+#    puts $clientSock "eos"
 #    flush $clientSock
      catch { close $clientSock } err
      bugMe "Voice events - $event : $err" $clientSock
-    ::tcom::unbind $voice
+     ::tcom::unbind $voice
  }
 
 }

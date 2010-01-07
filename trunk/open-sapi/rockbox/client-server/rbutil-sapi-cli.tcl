@@ -64,7 +64,7 @@ proc helpMe {} {
    puts "For bugs, comments and support please contact thomaslloyd@yahoo.com." 
 }
 # ------------------------------------------------------------------------------
-# ProcName : bugMe  
+# ProcName : bugMe
 # Usage    : If verbose output is on this function will output debug info to
 #          : stdout or logfile
 # Accepts  : $message to be output
@@ -458,6 +458,40 @@ proc sapiRead { sock } {
    }      
 }
 #------------------------------------------------------------------------------
+# ProcName : sdinRead
+# Usage    : Used to process input from stdin. Waits for server to singal it has
+#          : finished processing the text sent
+# Accepts  :
+# Returns  :
+# Called By:
+#-------------------------------------------------------------------------------
+proc stdinRead { sock } {
+set averageWordTime 4000
+global textSent
+    
+    if { [gets stdin line] == -1 || [eof stdin] } {
+        catch {
+            close stdin
+        } err
+        bugMe "closed stdin - $err"
+        
+        # SpeechD holds the client open until it is ready to send some more data
+        # for performace, we need to handle this. 
+        if { !$textSent } {            
+            catch {flush $sock} err2
+            catch {close $sock} err
+            exit 
+        }
+    } else {
+        bugMe "line =.$line."
+        if {$line == "" } { bugMe "Blanks"; return } else {
+            puts $sock "speakMe $line"
+            bugMe "Speak : $line"
+            set textSent 1   
+        }
+    }
+}
+#------------------------------------------------------------------------------
 # ProcName : processCommands
 # Usage    : 
 # Accepts  :
@@ -466,12 +500,13 @@ proc sapiRead { sock } {
 #-------------------------------------------------------------------------------
 proc processCommands { sock } {
  global argv argc
+ global textSent
  
  set textPending 0
  set runTest 0
  set skip 0
  set flag 0
- set filename "[pwd]/sapi.wav"
+ set filename 0
  set x 0
  set pitch 0
  set volume 100
@@ -482,6 +517,8 @@ proc processCommands { sock } {
  set port 5491
  set attempt 0
  set killServer 0
+ set pipeMode 0
+ 
 
  bugMe "Beginning of Argument Processing"
 foreach element $argv {
@@ -709,6 +746,10 @@ foreach element $argv {
                 
                 -v {}
                 
+                --pipemode {
+                    set pipeMode 1
+                }
+                
                 --verbose {}
                 
                 --port { set skip 1 }
@@ -724,20 +765,14 @@ foreach element $argv {
     };# End of foreach    
      bugMe "End of Prcessing"
     
-    set command "$command speechFlag $flag"
-    set command [string trimleft $command]
-    bugMe "Sending - $command"
-    
-    puts $sock $command
-    
     if {$volume != "?"} {
-        set text "<volume level=\"$volume\"/> $text"
+        set text "<volume level=\\\"$volume\\\"/> $text"
     }
     if {$pitch != "?"} {
-        set text "<pitch absmiddle=\"$pitch\"/> $text"
+        set text "<pitch absmiddle=\\\"$pitch\\\"/> $text"
     }
     if {$rate != "?"} {
-        set text "<rate absspeed=\"$rate\"/> $text"
+        set text "<rate absspeed=\\\"$rate\\\"/> $text"
     }
      
     if {$runTest} {
@@ -748,15 +783,26 @@ foreach element $argv {
         
      } else {
          if {$textPending} {
-         puts $sock "outFile $filename"  
-         puts $sock "speakMe $text"
+             set command "$command speechFlag $flag"
+             set command [string trimleft $command]
+             bugMe "Sending - $command"
+             puts $sock $command
+             if { $filename != 0 } {
+                 puts $sock "outFile $filename"
+             }  
+             puts $sock "speakMe $text"
          }
      }
  
      if {$killServer} {
          puts $sock "killServer"
      } else {
-         puts $sock "closeClient"
+         if {$pipeMode} {
+             fileevent stdin readable [list stdinRead $sock]
+             fconfigure stdin -buffering line -blocking 0 -encoding utf-8
+         } else {
+      #       puts $sock "closeClient"
+         }
      }
 }
 
@@ -774,6 +820,7 @@ foreach element $argv {
  set x 0
  set port 5491
  set attempt 0
+ set textSent 0
  
  
 
