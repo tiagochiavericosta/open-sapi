@@ -6,7 +6,7 @@
 #   Firmware   |____|_  /\____/ \___  >__|_ \|___  /\____/__/\_ \
 #                     \/            \/     \/    \/            \/
 #
-#   Copyright (C) 2009 by Thomas Lloyd
+#   Copyright (C) 2010 by Thomas Lloyd
 #
 # All files in this archive are subject to the GNU General Public License.
 # See the file COPYING in the source tree root for full license agreement.
@@ -57,8 +57,47 @@ proc initDebugLvls {} {
        speechThreadInit       0
        sysHealthCheck         0
        sysHealthCheck         0}\
-       {set procDebugLvlsArray($procName) $logLvl}      
-   }
+       {set procDebugLvlsArray($procName) $logLvl}
+ return [array get procDebugLvlsArray]     
+}
+# ------------------------------------------------------------------------------
+# ProcName : initDebugMsgTypes
+# Args     : None
+# Usage    : Generates an array each procedure and their log levels from 0 - 5
+#          : 0 None - 5 Everything (Not recommended)
+# Accepts  : None
+# Returns  : $audioFormats (list)
+# Called By: sysHealthCheck at startup
+#-------------------------------------------------------------------------------
+proc initDebugMsgTypes {} {
+
+# Using an xor to compare if the type of message is set. Then read its setting. 
+# 2 = Override each proc setting and show all debug messages of this type
+# 1=  On
+# 0 = Off
+
+# Set the overall debug levl. To be used to work out which debug statements
+# we want to see and which not. 
+ 
+ set debugMsgTypeLvl 15
+
+# Define debug message types and assigned then a binary ID 
+# example : set debug_message_type next_binary_num 
+ 
+ set generalInfo 1
+ set returnValues 2
+ set variableSetting 4
+ set programFlow 8
+
+# Using $messageType to make it easier to read for us programmers
+   bugMe "proc initDebugMsgTypes\{\}"
+   foreach {messageType logLvl} {\
+       $generalInfo         0
+       $returnValues        0
+       $variableSetting     0
+       $programFlow         0}\
+   {set debugMsgTypeArray($messageType) $logLvl}
+ return [array get debugMsgTypeArray]
 }
 # ------------------------------------------------------------------------------
 # ProcName : helpMe
@@ -452,8 +491,7 @@ proc setEngine {voice engine} {
 # Called By: sysHealthCheck at startup
 #-------------------------------------------------------------------------------
 proc testAudioFormat {voice} {
- bugMe "testAudioFormat"
- bugMe "voice:$voice"
+ bugMe "proc testAudioFormat \{$voice\}"
  global stackTrace
  global supportedFormats
  global tmpFolder
@@ -500,8 +538,7 @@ proc testAudioFormat {voice} {
 # Called By: main on startup
 #-------------------------------------------------------------------------------
 proc idleServerTimeout { timeout} {
-    bugMe "idleServerTimeout"
-    bugMe "timeout"
+    bugMe "idleServerTimeout \{$timeout\}"
     set watchDog [after $timeout { 
         bugMe "Idle Timeout...Shutting Down Now" 0
         closeMe idleServerTimeout
@@ -518,8 +555,7 @@ return $watchDog
 # Called By: None
 #-------------------------------------------------------------------------------
 proc testOutput {voice flag message} {
-    bugMe "testOutput"
-    bugMe "voice:$voice\nflag:$flag\nmessage:$message"
+    bugMe "testOutput \{$voice $flag $message\}"
     if { [catch { $voice Speak "Testing the SAPI speech engine & settings for\
     Rockbox Utility" $flag } errmsg ] } {
         puts "Speech initialisation failed - $errmsg"
@@ -536,8 +572,7 @@ proc testOutput {voice flag message} {
 # Called By: None
 #-------------------------------------------------------------------------------
 proc genSpeech {voice text} {
-    bugMe "genSpeech"
-    bugMe "voice:$voice\ntext:$text"
+    bugMe "genSpeech \{$voice $text\}"
     extCmdExeErrWrapper thread::send -async $::speechThread \
     "\$voice Speak \"$text\" 1"
 }
@@ -552,8 +587,7 @@ proc genSpeech {voice text} {
 # Called By: serverRead
 #-------------------------------------------------------------------------------
 proc genFiles {voice filename text format} {
- bugMe "genfiles"
- bugMe "voice:$voice\nfilename:$filename\ntext:$text\nformat:$format"
+ bugMe "proc genfiles \{$voice $filename $text $format\}"
  global tmpFolder
  
  set tempFile "$tmpFolder/opensapitmp.wav"
@@ -574,7 +608,7 @@ proc genFiles {voice filename text format} {
     extCmdExeErrWrapper $fileStream Open "$tempFile" $SSFMCreateForWrite False
     extCmdExeErrWrapper $voice AudioOutputStream $fileStream
 
-# Speak the text.
+# Speak the text without using threads for wav file output, not time critical.
     bugMe "Synthesising : $text" 3
     extCmdExeErrWrapper $voice Speak $text 0
 #   extCmdExeErrWrapper thread::send -async $::speechThread "\$voice Speak \"$text\" 1" 
@@ -591,8 +625,7 @@ proc genFiles {voice filename text format} {
 # Called By: serverAccept
 #-------------------------------------------------------------------------------
 proc cleanUp {filename fileStream} {
-    bugMe "cleanUp"
-    bugMe "filename:$filename\nfileStream:$filestream"
+    bugMe "proc cleanUp \{$filename $filestream\}"
 global tmpFolder
 
 set tempFile "$tmpFolder/opensapitmp.wav"
@@ -629,12 +662,13 @@ proc serverRead {sock voice} {
  global errorArray
  global pitch
  global langArray
-     bugMe "serverRead"
-     bugMe "sock:$sock\nvoice:$voice"
+     bugMe "proc serverRead \{$sock $voice\}"
  
  
 # Cancel the global server timeout as there has been a new request from a client
-# indicating the server is still needed. 
+# indicating the server is still needed. This feature is useful during 
+# development when the server might become unresponsive and saves time 
+# shutting it down manually each time
      after cancel $timeoutID
  
  set textPending 0
@@ -848,7 +882,7 @@ proc serverRead {sock voice} {
 	                     set text "$text [lindex $message [expr $x + $i]]"
 	                     incr i
 	                 }
-	                # This needs to be converted from always using utf-8 to system encoding
+# This needs to be converted from always using utf-8 to system encoding
 	                 set text [encoding convertfrom utf-8 $text]
 	                 set text [string trim $text "-"]
 	                
@@ -945,8 +979,7 @@ proc serverAccept {sock addr port} {
  global voice
  global clientSock
     
-    bugMe "serverAccept"
-    bugMe "sock:$sock\naddr:$addr\nport:$port"
+    bugMe "proc serverAccept \{$sock $addr $port\}"
     bugMe "New Client On: $sock"
     fconfigure $sock -buffering line -blocking 0 -encoding utf-8
     set clientSock $sock
@@ -960,8 +993,7 @@ proc serverAccept {sock addr port} {
 # Called By: main on startup
 #-------------------------------------------------------------------------------
 proc serverInit {port} {
-    bugMe "serverInit"
-    bugMe "port:$port"
+    bugMe "proc serverInit \{$port\}"
     set sock [extCmdExeErrWrapper socket -server serverAccept $port]
     
 }
@@ -975,8 +1007,7 @@ proc serverInit {port} {
 #-------------------------------------------------------------------------------
 proc closeMe {caller args } {
   global tmpFolder
-  bugMe "closeMe"
-  bugMe "caller:$caller\nargs:$args"
+  bugMe "proc closeMe \{$caller $args\}"
   
     if {$caller == "client"} {
         # Notify Client
@@ -1005,7 +1036,7 @@ proc speechThreadInit { } {
  package require Thread
  global speechMonitor
  
- bugMe "speechThreadInit"
+ bugMe "proc speechThreadInit \{\}"
  
  set speechThreadInit {
  package require tcom
@@ -1072,8 +1103,47 @@ return $speechThread
 # Called By: 
 #-------------------------------------------------------------------------------
 proc debugThreadInit { } {
-package require Thread
-    bugMe 
+ package require Thread
+ bugMe "proc debugThreadInit \{\}"
+    
+    set debugThreadInit {
+        # debugging code goes here
+        set procDebugLvlsArray [initDebugLvls]
+        set debugMsgTypeArray [initDebugMsgTypes]
+        
+        # General debug proc that accepts all debug messages and processes them.
+        proc bugMe {caller message type where2Output} {
+         
+         switch exact ::$debugMsgTypeArray($type) {
+         
+             0 { # This Message Type is being ignored   
+                 return 
+             }
+                 
+             1 { # This message type is being monitored if the proc is also set
+                 # to output its debug messages
+                 if {::$procDebugLvlsArray($caller)} {
+                     # bugMe command
+                 } else {
+                     return
+                 }
+             }
+             
+             2 { # This means the type overrides the proc setting and we show
+                 # all the messages of this type from everywhere
+                 # bugMe Command 
+             
+             }
+         } ; # End of Switch
+         
+        }
+            
+    } ; # debugThreadInit 
+    set debugThread [thread::create $debugThreadInit]
+
+return debugThread    
+    
+     
     switch -exact -- $loglvl {
          
         0 {return}
@@ -1099,7 +1169,8 @@ proc sysHealthCheck { port } {
  global stackTrace
  global langArray
  global filename
-
+ 
+ bugMe "proc sysHealthCheck \{$port\}"
 # sets up the debugging error code array        
     initErrorCodes
     
