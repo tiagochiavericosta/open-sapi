@@ -1112,47 +1112,38 @@ proc debugThreadInit { } {
         set debugMsgTypeArray [initDebugMsgTypes]
         
         # General debug proc that accepts all debug messages and processes them.
+        
         proc bugMe {caller message type where2Output} {
          
-         switch exact ::$debugMsgTypeArray($type) {
+            switch exact ::$debugMsgTypeArray($type) {
          
-             0 { # This Message Type is being ignored   
-                 return 
-             }
+                0 { # This Message Type is being ignored   
+                    return 
+                }
                  
-             1 { # This message type is being monitored if the proc is also set
-                 # to output its debug messages
-                 if {::$procDebugLvlsArray($caller)} {
-                     # bugMe command
-                 } else {
-                     return
-                 }
-             }
+                1 { # This message type is being monitored if the proc is also 
+                    # set to output its debug messages
+                    if {::$procDebugLvlsArray($caller)} {
+                        # bugMe command
+                    } else {
+                        return
+                    }
+                }
              
-             2 { # This means the type overrides the proc setting and we show
-                 # all the messages of this type from everywhere
-                 # bugMe Command 
-             
-             }
-         } ; # End of Switch
+                2 { # This means the type overrides the proc setting and we show
+                    # all the messages of this type from everywhere
+                    # bugMe Command 
+                }
+           } ; # End of Switch
          
-        }
+       } # end of bugMe proc
             
     } ; # debugThreadInit 
-    set debugThread [thread::create $debugThreadInit]
 
-return debugThread    
-    
-     
-    switch -exact -- $loglvl {
-         
-        0 {return}
-        1 {}
-        2 {}
-        3 {}
-        4 {}
-        5 {}
-    }
+# Spawn the thread using the above init code
+ set debugThread [thread::create $debugThreadInit]
+
+return debugThread
 }
 # ------------------------------------------------------------------------------
 # ProcName : sysHealthCheck 
