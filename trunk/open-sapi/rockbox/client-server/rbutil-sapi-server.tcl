@@ -29,7 +29,7 @@
 # Called By: sysHealthCheck at startup
 #-------------------------------------------------------------------------------
 proc initDebugLvls {} {
-   bugMe "proc initDebugLvls\{\}"
+   bugMe "proc initDebugLvls\{\}" programFlow
    foreach {procName logLvl} {\
        initDebugLvls          0
        helpMe                 0
@@ -55,7 +55,6 @@ proc initDebugLvls {} {
        serverAccept           0
        serverInit             0
        speechThreadInit       0
-       sysHealthCheck         0
        sysHealthCheck         0}\
        {set procDebugLvlsArray($procName) $logLvl}
  return [array get procDebugLvlsArray]     
@@ -90,7 +89,7 @@ proc initDebugMsgTypes {} {
  set programFlow 8
 
 # Using $messageType to make it easier to read for us programmers
-   bugMe "proc initDebugMsgTypes\{\}"
+   bugMe "proc initDebugMsgTypes\{\}" programFlow
    foreach {messageType logLvl} {\
        $generalInfo         0
        $returnValues        0
@@ -107,7 +106,7 @@ proc initDebugMsgTypes {} {
 # Called By: Main
 #-------------------------------------------------------------------------------
 proc helpMe {} {
-   bugMe "proc helpMe\{\}"
+   bugMe "proc helpMe\{\}" programFlow
    puts "Open SAPI Clip Generator Server v0.1 Alpha for Rockbox Utulity\n"
 
    puts "Usage: opensapi-srv.exe...\[swithches\] -vh " 
@@ -136,7 +135,7 @@ proc helpMe {} {
 #-------------------------------------------------------------------------------
 proc bugClient { errorCode message sock } {
 global errorArray
-    bugMe "proc bugClient \{$errorCode $message $sock\}"
+    bugMe "proc bugClient \{$errorCode $message $sock\}" programFlow
     puts $sock "$errorCode:$errorArray($errorCode,message):$message"
 }
 # ------------------------------------------------------------------------------
@@ -149,7 +148,7 @@ global errorArray
 
 proc initErrorCodes {} {
  global errorArray
-    bugMe "proc initErrorCodes \{\}"
+    bugMe "proc initErrorCodes \{\}" programFlow
     set errorCodes [list \
         "100:Trying"\
         "101:Trying Synth"\
@@ -200,7 +199,7 @@ proc initErrorCodes {} {
 #-------------------------------------------------------------------------------
 
 proc initAudioFormats {} {
-    bugMe "proc initAudioFormats \{\}"
+    bugMe "proc initAudioFormats \{\}" programFlow
 
     set audioFormats [list "SPSF_Default" "SPSF_NoAssignedFormat" "SPSF_Text"\
         "SPSF_NonStandardFormat" "SPSF_ExtendedAudioFormat" "SPSF_8kHz8BitMono"\
@@ -239,27 +238,30 @@ proc initAudioFormats {} {
 # Returns  : None
 # Called By: Any debug statement
 #-------------------------------------------------------------------------------
-proc bugMe {message loglvl } {
+proc bugMe {message type } {
  global verboseText
  set current [expr [info level] - 1]
  set self [info level]
  set caller toplevel
- set timestamp [clock format [clock seconds] -format "%b %d %H:%M:%S"
+ set timestamp [clock format [clock seconds] -format "%b %d %H:%M:%S"]
  
  
      catch {
          set caller [lindex [info level $current] 0]
      }
- 
+
+# proc logMe {caller message type where2Output}
+# Fix the output location later 
      if {$verboseText} {
-         
+         thread::send -async $::debugThread "logMe \{$caller\} \{$message\} \
+         $type 0 \{$timestamp\}"    
      } else {
          return
      }
      
      # if {$verboseText} { puts stdout "Server:$caller:$message" }
      
-     thread::send -async $::debugThread "logMe \"Server:\$caller:\$message\" "
+     
     
 }
 #-------------------------------------------------------------------------------
@@ -271,12 +273,11 @@ proc bugMe {message loglvl } {
 # Called By: extCmdExeErrWrapper on error
 #-------------------------------------------------------------------------------
 proc errorControl {caller} {
- bugMe "proc errorControl \{$caller\}"
+ bugMe "proc errorControl \{$caller\}" programFlow
  global errorArray
  global clientSock
    
-   bugMe "errorControl"
-   bugMe "caller:$caller"
+   bugMe "errorControl \{$caller\}" programFlow
    set errorCategory [lindex $::errorCode 0]
    switch -exact -- $errorCategory {
    
@@ -285,7 +286,7 @@ proc errorControl {caller} {
            switch -exact -- $errorSubject {
        
                0x80004005 {
-                   bugMe "Error:COM:Missing DLL \(0x80004005\)"
+                   bugMe "Error:COM:Missing DLL \(0x80004005\)" errorInfo
                    if { $caller == "genFiles" } {
                        set missingDLL "wmspdmod.dll"
                    }
@@ -298,7 +299,7 @@ proc errorControl {caller} {
                }
                
                default {
-                  bugMe "Error:COM:default"
+                  bugMe "Error:COM:default" errorInfo
                   if { [info exists errorArray($errorSubject,message)] } {
                       
                       # ::errorInfo is a string and we must do a find/replace command on it
@@ -310,7 +311,7 @@ proc errorControl {caller} {
                       $errorArray($errorSubject,message)"
                   
                   } else {
-                      bugMe "Error:COM:Unknown" 
+                      bugMe "Error:COM:Unknown" errorInfo
                       # ::errorInfo is a string and we must do a find/replace command on it
                       # make sure we remove duplicated code, and set error messge.
                       
@@ -333,7 +334,7 @@ proc errorControl {caller} {
        }
        
        POSIX {
-           bugMe "Error:POSIX"
+           bugMe "Error:POSIX" errorInfo
            set errorSubject [lindex $::errorCode 1] 
            switch -exact -- $errorSubject {
                
@@ -365,7 +366,7 @@ proc errorControl {caller} {
 # Called By: All commands that rely on external resources
 #-------------------------------------------------------------------------------
 proc extCmdExeErrWrapper { args } {
-bugMe "proc extCmdExeErrWrapper \{$args\}"
+bugMe "proc extCmdExeErrWrapper \{$args\}" programFlow
 global stackTrace   
     
     if { [catch { eval $args } msg ] } {
@@ -379,13 +380,13 @@ global stackTrace
         # errorControl is called here to populate the SAPI error message for TCL
         errorControl $caller
         
-        bugMe "Error in proc $caller" 1
-        bugMe "Executed through Error Wrapper extCmdExeErrWrapper" 1
+        bugMe "Error in proc $caller" errorInfo
+        bugMe "Executed through Error Wrapper extCmdExeErrWrapper" errorInfo
         if {$stackTrace} {
-            bugMe "$::errorCode" 1
-            bugMe "$::errorInfo" 1
+            bugMe "$::errorCode" errorInfo
+            bugMe "$::errorInfo" errorInfo
         } else {
-            bugMe "Please run server with --debug option for more information" 1
+            bugMe "Please run server with --debug option for more information" errorInfo
         }
     exit    
     } else {
@@ -400,7 +401,7 @@ global stackTrace
 # Called By: serverRead
 #-------------------------------------------------------------------------------
 proc getVol {voice} {
-   bugMe "proc getVol \{$voice\}"
+   bugMe "proc getVol \{$voice\}" programFlow
    return [extCmdExeErrWrapper $voice Volume]   
 }
 #-------------------------------------------------------------------------------
@@ -412,7 +413,7 @@ proc getVol {voice} {
 # Called By: None
 #-------------------------------------------------------------------------------
 proc setVol {voice volume} {
-   bugMe "proc setVol\{$voice $volume\}"
+   bugMe "proc setVol\{$voice $volume\}" programFlow
    extCmdExeErrWrapper $voice Volume $volume   
 }
 #-------------------------------------------------------------------------------
@@ -423,7 +424,7 @@ proc setVol {voice volume} {
 # Called By: None
 #-------------------------------------------------------------------------------
 proc getRate {voice} {
-   bugMe "proc getRate \{$voice\}"
+   bugMe "proc getRate \{$voice\}" programFlow
    return [extCmdExeErrWrapper $voice Rate] 
 }
 ##------------------------------------------------------------------------------
@@ -435,7 +436,7 @@ proc getRate {voice} {
 # Called By: None
 #-------------------------------------------------------------------------------
 proc setRate {voice rate} {
-    bugMe "proc setRate \{$voice $rate\}"
+    bugMe "proc setRate \{$voice $rate\}" programFlow
     extCmdExeErrWrapper $voice Rate $rate
 
 }
@@ -447,7 +448,7 @@ proc setRate {voice rate} {
 # Called By: serverRead
 #-------------------------------------------------------------------------------
 proc getEngineArray {voice} {
-    bugMe "proc getEngineArray \{$voice\}"
+    bugMe "proc getEngineArray \{$voice\}" programFlow
     set list [extCmdExeErrWrapper $voice GetVoices]
     if { [llength list] == 0 } {
         puts stderr "No Speech Engines Available"
@@ -480,7 +481,7 @@ return [array get engineArray]
 # Called By: serverRead
 #-------------------------------------------------------------------------------
 proc setEngine {voice engine} {
-    bugMe "proc setEngine \{$voice $engine\}"
+    bugMe "proc setEngine \{$voice $engine\}" programFlow
     extCmdExeErrWrapper $voice Voice $engine 
 }
 #-------------------------------------------------------------------------------
@@ -491,7 +492,7 @@ proc setEngine {voice engine} {
 # Called By: sysHealthCheck at startup
 #-------------------------------------------------------------------------------
 proc testAudioFormat {voice} {
- bugMe "proc testAudioFormat \{$voice\}"
+ bugMe "proc testAudioFormat \{$voice\}" programFlow
  global stackTrace
  global supportedFormats
  global tmpFolder
@@ -514,11 +515,11 @@ proc testAudioFormat {voice} {
                                 
             if { [catch { $voice Speak " " 0 } err] } {
                  if {$stackTrace} {
-                    bugMe "[expr $i-5] - Unsupported : $element :$err" 5
+                    bugMe "[expr $i-5] - Unsupported : $element :$err" generalInfo
                  }
             } else {
                 if {$stackTrace} {
-                    bugMe "[expr $i-5] - Passed      : $element" 5
+                    bugMe "[expr $i-5] - Passed      : $element" generalInfo
                 }
                 set supportedFormats([expr $i-5],format) $element
             }
@@ -538,9 +539,9 @@ proc testAudioFormat {voice} {
 # Called By: main on startup
 #-------------------------------------------------------------------------------
 proc idleServerTimeout { timeout} {
-    bugMe "idleServerTimeout \{$timeout\}"
+    bugMe "idleServerTimeout \{$timeout\}" programFlow
     set watchDog [after $timeout { 
-        bugMe "Idle Timeout...Shutting Down Now" 0
+        bugMe "Idle Timeout...Shutting Down Now" generalInfo
         closeMe idleServerTimeout
     }]
 return $watchDog
@@ -555,7 +556,7 @@ return $watchDog
 # Called By: None
 #-------------------------------------------------------------------------------
 proc testOutput {voice flag message} {
-    bugMe "testOutput \{$voice $flag $message\}"
+    bugMe "testOutput \{$voice $flag $message\}" programFlow
     if { [catch { $voice Speak "Testing the SAPI speech engine & settings for\
     Rockbox Utility" $flag } errmsg ] } {
         puts "Speech initialisation failed - $errmsg"
@@ -572,7 +573,7 @@ proc testOutput {voice flag message} {
 # Called By: None
 #-------------------------------------------------------------------------------
 proc genSpeech {voice text} {
-    bugMe "genSpeech \{$voice $text\}"
+    bugMe "genSpeech \{$voice $text\}" programFlow
     extCmdExeErrWrapper thread::send -async $::speechThread \
     "\$voice Speak \"$text\" 1"
 }
@@ -587,7 +588,7 @@ proc genSpeech {voice text} {
 # Called By: serverRead
 #-------------------------------------------------------------------------------
 proc genFiles {voice filename text format} {
- bugMe "proc genfiles \{$voice $filename $text $format\}"
+ bugMe "proc genfiles \{$voice $filename $text $format\}" programFlow
  global tmpFolder
  
  set tempFile "$tmpFolder/opensapitmp.wav"
@@ -609,7 +610,7 @@ proc genFiles {voice filename text format} {
     extCmdExeErrWrapper $voice AudioOutputStream $fileStream
 
 # Speak the text without using threads for wav file output, not time critical.
-    bugMe "Synthesising : $text" 3
+    bugMe "Synthesising : $text" generalInfo
     extCmdExeErrWrapper $voice Speak $text 0
 #   extCmdExeErrWrapper thread::send -async $::speechThread "\$voice Speak \"$text\" 1" 
 
@@ -625,7 +626,7 @@ proc genFiles {voice filename text format} {
 # Called By: serverAccept
 #-------------------------------------------------------------------------------
 proc cleanUp {filename fileStream} {
-    bugMe "proc cleanUp \{$filename $filestream\}"
+    bugMe "proc cleanUp \{$filename $filestream\}" programFlow
 global tmpFolder
 
 set tempFile "$tmpFolder/opensapitmp.wav"
@@ -662,7 +663,7 @@ proc serverRead {sock voice} {
  global errorArray
  global pitch
  global langArray
-     bugMe "proc serverRead \{$sock $voice\}"
+     bugMe "proc serverRead \{$sock $voice\}" programFlow
  
  
 # Cancel the global server timeout as there has been a new request from a client
@@ -687,16 +688,16 @@ proc serverRead {sock voice} {
     if { [gets $sock message] == -1 || [eof $sock] } {
         extCmdExeErrWrapper thread::send -async $::speechThread "\$voice Speak \" \" 3"
         if { [catch {close $sock} err ] } {
-            bugMe "Connection killed by client - $err" 3
+            bugMe "Connection killed by client - $err" generalInfo
             
             return
         } else {
-            bugMe "Connection killed by client" 3
+            bugMe "Connection killed by client" generalInfo
             return
         }
                 
     } else {
-    bugMe "Message : $message"
+    bugMe "$sock:Message : $message" msgIn
     set message [split $message " "]
  
     foreach element $message {
@@ -704,26 +705,26 @@ proc serverRead {sock voice} {
             switch -exact -- $element {
              
                 readyServer {
-                    bugMe "ReadyServer from $sock" 5
-                    bugMe "204:$errorArray(204,message)" 4
+                    bugMe "ReadyServer from $sock" msgIn
+                    bugMe "204:$errorArray(204,message)" msgOut
                     bugClient 204 "" $sock
                     return
                 }
                 
                 closeClient {
-                    bugMe "CloseClient from $sock" 5
-                    bugMe "294::$errorArray(294,message)" 4
+                    bugMe "CloseClient from $sock" msgIn
+                    bugMe "294::$errorArray(294,message)" msgOut
                     bugClient 294 "" $sock
                     return
                 }
                 
                 killServer {
-                    bugMe "killServer from $sock" 5
+                    bugMe "killServer from $sock" msgIn
                     closeMe client $sock
                 }
 	                          
                 getFormat {
-                    bugMe "getFormat from $sock" 5
+                    bugMe "getFormat from $sock" msgIn
                     set formatList [array get supportedFormats *]
                     foreach {ID formatDesc} $formatList {
                         set ID [split $ID ","]
@@ -737,33 +738,33 @@ proc serverRead {sock voice} {
                         set tmpID [split $ID " "]
                         set ID [lindex $tmpID 0]
                         set format [lindex $tmpID 1]
-                        bugMe "298:$errorArray(298,message):$ID:$format" 4
+                        bugMe "298:$errorArray(298,message):$ID:$format" msgOut
                         bugClient 298 "$ID:$format" $sock
                     }
                     bugClient 293 "" $sock
                 }
                 
                 setFormat {
-                    bugMe "setFormat from $sock" 5
+                    bugMe "setFormat from $sock" msgIn
                     set formatID [lindex $message [expr $x + 1] ]
                     if { [catch {info exists \
                     $supportedFormats($formatID,format)}] } {
-                        bugMe "593:$errorArray(593,message) - $formatID"
+                        bugMe "593:$errorArray(593,message) - $formatID" msgOut
                         bugClient 593 "$formatID" $sock
                     } else {
                         set audioFormats [initAudioFormats]
                         bugMe "202:$errorArray(202,message)\
-                        - $supportedFormats($formatID,format)"
+                        - $supportedFormats($formatID,format)" msgOut
                         bugClient 202 "setFormat" $sock
                     }
                     set skip 1
                 }
                 
                 outFile {
-                    bugMe "outFile cmd from client:$sock"
+                    bugMe "outFile from $sock" msgIn
                     set i 1
 	                set filename [lindex $message [expr $x + $i]]
-	                bugMe "filename set: $filename" 5
+	                bugMe "filename set: $filename" varSetting
 	                incr i
 	                while {$i < [llength $message]} {
 	                   set filename "$filename [lindex $message [expr $x + $i]]"
@@ -772,23 +773,24 @@ proc serverRead {sock voice} {
 	                set filename [encoding convertfrom utf-8 $filename]
 	                set skip $i
 	                unset i
-                    bugMe "202:$errorArray(202,message):Filename Set - $filename"
+                    bugMe "202:$errorArray(202,message):Filename Set - $filename" msgOut
                     # Could improve this to check the filename
                     bugClient 202 "outFile" $sock
                 }    
 	          
 	             getVol {
-	                 bugMe "getVol cmd from client:$sock"
+	                 bugMe "getVol from $sock" msgIn
 	                 set volume [getVol $voice]
-	                 bugMe "getVol:$volume"
+	                 bugMe "getVol:$volume" msgOut
 	                 bugClient 295 "$volume" $sock
 	             }
 	             
 	             setVol {
-	                bugMe "setVol cmd from client:$sock"
+	                bugMe "setVol from $sock" msgIn
 	                set vol [lindex $message [expr $x + 1] ]
 	                if {$vol != ""} {
 	                    setVol $voice $vol
+	                    bugMe "202:$errorArray(202,message): setVol - $vol" msgOut
 	                    bugClient 202 "setVol" $sock
 	                    set skip 1 
 	                } else {
@@ -796,18 +798,18 @@ proc serverRead {sock voice} {
 	             }
 	             
 	             setRate {
-	                 bugMe "setRate cmd from client:$sock"
+	                 bugMe "setRate from $sock" msgIn
 	                 set rate [lindex $message [expr $x + 1] ]
-	                 bugMe "Rate = $rate" 
+	                 bugMe "202:$errorArray(202,message): setRate - $rate" msgOut 
 	                 setRate $voice $rate
 	                 bugClient 202 "setRate" $sock
 	                 set skip 1
 	             }
 	             
 	             setPitch {
+	                 bugMe "setPitch from $sock" msgIn
 	                 set pitch [lindex $message [expr $x + 1] ]
-	                 bugMe "setPitch cmd from client:$sock"
-	                 bugMe "Pitch = $pitch"
+	                 bugMe "202:$errorArray(202,message): setPitch - $pitch" msgOut
 	                 bugClient 202 "setPitch" $sock
 	                 set skip 1
 	             }
@@ -820,7 +822,7 @@ proc serverRead {sock voice} {
                 getEngine {
                     # Requires a regexpression to check for valid input here
                     # set engineNum [lindex $message [expr $x + 1] ]
-                    bugMe "getEngine  cmd from client:$sock"
+                    bugMe "getEngine from $sock" msgIn
                     set engineList [getEngineArray $voice]
                     array set voicesArray $engineList
                     set i 0
@@ -837,43 +839,43 @@ proc serverRead {sock voice} {
                         set voicesArray($i,lang) $langArray($voicesArray($i,lang))
                         bugClient 297 "$i:$voicesArray($i,name):$voicesArray($i,gender):$voicesArray($i,lang):$voicesArray($i,vendor):$voicesArray($i,age)" $sock
                         bugMe "297:$errorArray(297,message)$i -\
-                        $voicesArray($i,name) and is $voicesArray($i,gender) $voicesArray($i,age)"
+                        $voicesArray($i,name) and is $voicesArray($i,gender) $voicesArray($i,age)" msgOut
                         incr i                      
                     }
                     bugClient 293 "" $sock
-                    bugMe "293:$errorArray(293,message)
+                    bugMe "293:$errorArray(293,message) msgOut
                     unset i 
                 }
                 
                 setEngine {
                     set engineNum [lindex $message [expr $x + 1] ]
-                    bugMe "getEngine from $sock"
-                    bugMe "engineNum  = $engineNum"
+                    bugMe "getEngine from $sock" msgIn
+                    bugMe "engineNum  = $engineNum" varSetting
                     set engineList [getEngineArray $voice]
                     set engineCount [expr [llength engineList] / 3]
                     array set voicesArray $engineList
                     set arraySize [expr [array size voicesArray] / 6 - 1]
                     if { $engineNum > $arraySize} {
-                        bugMe "594:$errorArray(594,message) - $engineNum"
+                        bugMe "594:$errorArray(594,message) - $engineNum" msgOut
                         bugClient 594 "$engineNum" $sock
                         return
                     }
                     set voiceHandle $voicesArray($engineNum,handle)
                     setEngine $voice $voiceHandle
-                    bugMe "TTS Engine = $voicesArray($engineNum,name)"
+                    bugMe "TTS Engine = $voicesArray($engineNum,name)" msgOut
                     bugClient 202 "setEngine:$voicesArray($engineNum,name)" $sock
                     set skip 1
                 }
                 
                 getRate {
                     set rate [getRate $voice]
-                    bugMe "getRate from $sock
-                    bugMe "Rate       = $rate"
+                    bugMe "getRate from $sock msgIn
+                    bugMe "296:$errorArray(296,message): getRate - $rate" msgOut
                     bugClient 296 "$rate" $sock
                 }
                 
 	             speakMe {
-	                  bugMe
+	                  bugMe "speakMe from $sock" msgIn
 	                  set textPending 1
 	                  set i 1
 	                  set text [lindex $message [expr $x + $i]]
@@ -888,13 +890,13 @@ proc serverRead {sock voice} {
 	                
 	                 set skip $i
 	                 unset i
-                    bugMe "SpeakMe : $text"
+                     bugMe "speakMe : $text" generalInfo
 	                
 	             }
 	             
 	             speechFlag {
 	                 set speechFlag [lindex $message [expr $x + 1] ]
-	                 bugMe "speechFlags : $speechFlag"
+	                 bugMe "speechFlag from $sock : $speechFlag" msgIn
 	                 set skip 1
 	             }
 
@@ -910,18 +912,20 @@ proc serverRead {sock voice} {
 	                 set skip $i
 	                 unset i
       
-                    bugMe "TestMe : $text"
+                    bugMe "testMe from $sock : $text" msgIn
                 }
                 
                 setDebug {
                     set stackTrace 1
+                    bugMe "setDebug from $sock" msgIn
+                    bugMe "202:$errorArray(202,message) : bugClient" msgOut
                     bugClient 202 "setDebug" $sock
                 }
                 
                 verbose {}
                 
                 default {
-                    bugMe "Unknown Option $element - Please type -h for usage help"
+                    bugMe "Unknown Option $element - Please Check the Server Communication Specs" errorInfo
                     bugClient 501 "Server does not support command $element" $sock 
                 }
          	
@@ -936,9 +940,10 @@ proc serverRead {sock voice} {
     
     if {$runTest} {
         if {$textPending} {
-            puts "Error: Testing overrides text output remove --test option"
+            bugMe "Testing overrides text output remove --test option" errorInfo
         } 
         testOutput $voice $speechFlag $text
+        bugMe "203:$errorArray(203,message) : testMe" msgOut
         bugClient 203 "" $sock
         
      } else {
@@ -956,12 +961,14 @@ proc serverRead {sock voice} {
              }
              
              bugClient 201 "" $sock
+             bugMe "203:$errorArray(203,message) : genText" msgOut
              bugClient 294 "" $sock
+             bugMe "203:$errorArray(203,message) : genText" msgOut
          } else {
          #    bugClient 294 "" $sock
          }
      }
- }; # end of socket if
+ } ; # end of socket if
  if { $::timeout } {
      set timeoutID [idleServerTimeout $::timeout]
   }
@@ -979,8 +986,8 @@ proc serverAccept {sock addr port} {
  global voice
  global clientSock
     
-    bugMe "proc serverAccept \{$sock $addr $port\}"
-    bugMe "New Client On: $sock"
+    bugMe "proc serverAccept \{$sock $addr $port\}" programFlow
+    bugMe "New Client On: $sock" generalInfo
     fconfigure $sock -buffering line -blocking 0 -encoding utf-8
     set clientSock $sock
     fileevent $sock readable [list serverRead $sock $voice]    
@@ -993,7 +1000,7 @@ proc serverAccept {sock addr port} {
 # Called By: main on startup
 #-------------------------------------------------------------------------------
 proc serverInit {port} {
-    bugMe "proc serverInit \{$port\}"
+    bugMe "proc serverInit \{$port\}" programFlow
     set sock [extCmdExeErrWrapper socket -server serverAccept $port]
     
 }
@@ -1007,7 +1014,7 @@ proc serverInit {port} {
 #-------------------------------------------------------------------------------
 proc closeMe {caller args } {
   global tmpFolder
-  bugMe "proc closeMe \{$caller $args\}"
+  bugMe "proc closeMe \{$caller $args\}" programFlow
   
     if {$caller == "client"} {
         # Notify Client
@@ -1015,11 +1022,11 @@ proc closeMe {caller args } {
     }
     if { [file isdirectory "$tmpFolder"] } {
         if { [catch {file delete -force "$tmpFolder"} msg ]} {
-            bugMe "Cleaning Up..........FAILED"
+            bugMe "Cleaning Up..........FAILED" errorInfo
             puts stdout "$::errorInfo"
             exit 1
         } else {
-            bugMe "Cleaning Up..............OK"
+            bugMe "Cleaning Up..............OK" generalInfo
             exit 0
         }
     }
@@ -1036,7 +1043,7 @@ proc speechThreadInit { } {
  package require Thread
  global speechMonitor
  
- bugMe "proc speechThreadInit \{\}"
+ bugMe "proc speechThreadInit \{\}" programFlow
  
  set speechThreadInit {
  package require tcom
@@ -1104,46 +1111,115 @@ return $speechThread
 #-------------------------------------------------------------------------------
 proc debugThreadInit { } {
  package require Thread
- bugMe "proc debugThreadInit \{\}"
+ bugMe "proc debugThreadInit \{\}" programFlow
+
+   
     
     set debugThreadInit {
-        # debugging code goes here
-        set procDebugLvlsArray [initDebugLvls]
-        set debugMsgTypeArray [initDebugMsgTypes]
+# Not working please edit me !!!!!!
         
+#-------------------------------------------------------------------------------        
         # General debug proc that accepts all debug messages and processes them.
-        
-        proc bugMe {caller message type where2Output} {
+    proc initDebugLvls {} {
+     global procDebugLvlsArray
+       # bugMe "proc initDebugLvls\{\}" programFlow
+        foreach {procName logLvl} {\
+            initDebugLvls          1
+            helpMe                 1
+            bugClient              1
+            initErrorCodes         0
+            initAudioFormats       1
+            bugMe                  1
+            errorControl           1
+            extCmdExeErrWrapper    1
+            getVolume              1
+            setVolume              1
+            getRate                1
+            setRate                1
+            getEngineArray         1
+            setEngine              1
+            testAudioFormat        1
+            idleServerTimeout      1
+            testOutput             1
+            genSpeech              1
+            genFiles               1
+            cleanUp                1
+            serverRead             1
+            serverAccept           1
+            serverInit             1
+            speechThreadInit       1
+            sysHealthCheck         1}\
+            {set procDebugLvlsArray($procName) $logLvl
+            }    
+    }
+#-------------------------------------------------------------------------------
+    proc initDebugMsgTypes {} {
+     global debugMsgTypeArray
+     
+   
+
+    # Set the overall debug levl. To be used to work out which debug statements
+    # we want to see and which not. 
+ 
+     set debugMsgTypeLvl 15
+
+    # Define debug message types and assigned then a binary ID 
+    # example : set debug_message_type next_binary_num 
+
+    # Using $messageType as text to make it easier to read for us programmers
+    # 2 = Override each proc setting and show all debug messages of this type
+    # 1=  On
+    # 0 = Off
+        foreach {messageType logLvl} { \
+            generalInfo          1 
+            returnValues         0
+            varSetting           0
+            programFlow          2
+            errorInfo            2
+            msgIn                2
+            msgOut               2 }\
+            {set debugMsgTypeArray($messageType) $logLvl
+            }
+    }
+#-------------------------------------------------------------------------------    
+    proc logMe {caller message type where2Output timeStamp} {
+     
+     
+     global debugMsgTypeArray
+     global procDebugLvlsArray
+     # puts "Caller : $caller"       
+        switch -exact -- $debugMsgTypeArray($type) {
          
-            switch exact ::$debugMsgTypeArray($type) {
-         
-                0 { # This Message Type is being ignored   
-                    return 
-                }
+            0 { # This Message Type is being ignored   
+                return 
+            }
                  
-                1 { # This message type is being monitored if the proc is also 
-                    # set to output its debug messages
-                    if {::$procDebugLvlsArray($caller)} {
-                        # bugMe command
-                    } else {
-                        return
-                    }
+            1 { # This message type is being monitored if the proc is also 
+                # set to output its debug messages
+                if {$procDebugLvlsArray($caller)} {
+                    puts stdout "$timeStamp $type : $message"
+                } else {
+                    return
                 }
+            }
              
-                2 { # This means the type overrides the proc setting and we show
-                    # all the messages of this type from everywhere
-                    # bugMe Command 
-                }
+            2 { # This means the type overrides the proc setting and we show
+                # all the messages of this type from everywhere
+                puts stdout "$timeStamp $type : $message"
+             }
+           default { puts stdout "debugging error!"}
            } ; # End of Switch
-         
-       } # end of bugMe proc
-            
+             
+        } ; # end of bugMe proc
+        initDebugLvls
+        initDebugMsgTypes
+        thread::wait       
     } ; # debugThreadInit 
 
 # Spawn the thread using the above init code
  set debugThread [thread::create $debugThreadInit]
 
-return debugThread
+return $debugThread
 }
 # ------------------------------------------------------------------------------
 # ProcName : sysHealthCheck 
@@ -1161,7 +1237,7 @@ proc sysHealthCheck { port } {
  global langArray
  global filename
  
- bugMe "proc sysHealthCheck \{$port\}"
+ bugMe "proc sysHealthCheck \{$port\}" programFlow
 # sets up the debugging error code array        
     initErrorCodes
     
@@ -1171,11 +1247,11 @@ proc sysHealthCheck { port } {
 # Try to load external files in Startkit    
     set errorList [source [file join $dir sapi_error_array.init]]
     array set errorArray $errorList
-    bugMe  "Error System............OK"
+    bugMe  "Error System............OK" generalInfo
     
     set langList [source [file join $dir lang_codes.init]]
     array set langArray $langList
-    bugMe  "Language System.........OK"
+    bugMe  "Language System.........OK" generalInfo
 
 # If not in Startkit try to load files in Development Mode   
     if { [info exists $errorList] && [info exists $langList] } {
@@ -1184,37 +1260,37 @@ proc sysHealthCheck { port } {
         set errorList [extCmdExeErrWrapper source \
         $::env(HOME)/open-sapi/rockbox/client-server/lib/sapi_error_array.init]
         array set errorArray $errorList
-        bugMe  "Error System............OK"
+        bugMe  "Error System............OK" generalInfo
     
         # Loads the MS Language ID reference file
         set langList [extCmdExeErrWrapper source \
         $::env(HOME)/open-sapi/rockbox/client-server/lib/lang_codes.init]
         array set langArray $langList
-        bugMe  "Language System.........OK"
+        bugMe  "Language System.........OK" generalInfo
     }
     
-
+    bugMe "Server Listening:$port...check" generalInfo
 # Attempt to start the listening server on the given port
     extCmdExeErrWrapper serverInit $port
-    bugMe "Server Listening:$port...OK"
+    bugMe "Server Listening:$port...OK" generalInfo
     
 # Checks that the TCOM Package and components is available and starts the debug\
   thread ready for work
          
     if { [catch { package require Thread } msg ] } {
-        puts "stdout "590:$errorArray(590,message).\
+        puts stdout "590:$errorArray(590,message).\
         $errorArray(598,message) - Thread package"
         if {$stackTrace} { extCmdExeErrWrapper package missing Thread }
         exit
     }
     
-    if ( [catch {set ::debugThread [thread::create $debugThreadInit]}msg ] } {
-        puts "stdout "590:$errorArray(590,message).\
-        $errorArray(598,message) - Unable to start Threads, you must use wine\
-        version 1.1.32 or greater"
-    }
+  #  if { [catch { set ::debugThread [thread::create $debugThreadInit] } msg ] } {
+  #      puts stdout "590:$errorArray(590,message).\
+  #      $errorArray(598,message) - Unable to start Threads, you must use wine\
+  #      version 1.1.32 or greater"
+  #  }
     
-    bugMe "Debug Thread Initalised.OK"
+    bugMe "Debug Thread Initalised.OK" generalInfo
 
 # Checks that the TCOM Package and components is available and generates \
     the SAPI voice COM object.       
@@ -1225,16 +1301,16 @@ proc sysHealthCheck { port } {
         exit
     }
     
-    bugMe "TCOM Initalised.........OK"
+    bugMe "TCOM Initalised.........OK" generalInfo
         
     set voice [extCmdExeErrWrapper ::tcom::ref createobject Sapi.SpVoice] 
-    bugMe "SAPI Initalised.........OK"
+    bugMe "SAPI Initalised.........OK" generalInfo
         
 # Only run the format check if we are outputting to the filesystem
     if {$filename} {
         array set supportedFormats [testAudioFormat $voice]
-        bugMe "Output Format Check.....OK"
-        bugMe "File Generation.........OK"
+        bugMe "Output Format Check.....OK" generalInfo
+        bugMe "File Generation Check...OK" generalInfo
     }
         
 # Starts a new thread to deal with synthesis requests. Only needed for direct\
@@ -1242,10 +1318,10 @@ proc sysHealthCheck { port } {
   
     if {!$filename} {
        set ::speechThread [extCmdExeErrWrapper speechThreadInit]
-       bugMe "Speech Thread Init......OK"
+       bugMe "Speech Thread Init......OK" generalInfo
     }
     
-    bugMe "Waiting for Clients.....OK"
+    bugMe "Waiting for Clients.....OK" generalInfo
 
 # return $speechThread
 }
@@ -1270,9 +1346,12 @@ proc sysHealthCheck { port } {
  set timeout 60000
  set checkClient 0
  set timeoutID 0
+
+ # Initalise the debug thread first as we will start debugging right away
+ set debugThread [debugThreadInit] 
  
-    # Loop through the argument supplied on the commandline checking for valid
-    # switches 
+ # Loop through the argument supplied on the commandline checking for valid 
+ # switches 
     foreach element $argv {
         if {$skip == 0} {
             switch -exact -- $element {
@@ -1303,18 +1382,18 @@ proc sysHealthCheck { port } {
         
                 -v {
                    set verboseText 1
-                   bugMe "Verbose Output" 1
+                   bugMe "Verbose Output" generalInfo
                 }
             
                 --verbose {
                     set verboseText 1
-                    bugMe "Verbose Output" 1
+                    bugMe "Verbose Output" generalInfo
                 }
             
                 --debug {
                     set verboseText 1
                     set stackTrace 1
-                    bugMe "Debug Mode" 1
+                    bugMe "Debug Mode" generalInfo
                 }
             
                 --port {
@@ -1337,7 +1416,7 @@ proc sysHealthCheck { port } {
     incr x
     }; # End of foreach
     
-    bugMe "System Health Check:"
+    bugMe "System Health Check:" generalInfo
     
     # Start the Idle Shutdown Timer in the event the client is not able to
     # signal the server to shutdown or the server crashes. 
@@ -1345,7 +1424,7 @@ proc sysHealthCheck { port } {
         set timeoutID [idleServerTimeout $timeout]
     }
     
-    bugMe "Idle Shutdown Timer.....OK"
+    bugMe "Idle Shutdown Timer.....OK" generalInfo
     
     if { $filename && ![file isdirectory $tmpFolder] } {
         extCmdExeErrWrapper file mkdir $tmpFolder
