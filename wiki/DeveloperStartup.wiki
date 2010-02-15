@@ -38,7 +38,7 @@ If you have chosen to use a custom location to store the SVN files then it is im
 
 Code:
 {{{
-speech-dispatcher -C ~/open-sapi/packages/speech-dispatcher/
+killall speech-dispatcher; speech-dispatcher -C ~/open-sapi/packages/speech-dispatcher/
 }}}
 
 After this has been confirmed to work then your ready to fire up Orca.
