@@ -201,9 +201,9 @@ set appLocation [info nameofexecutable]
     }
 
 #When the file is located and executed wait for the server to become ready.
-    while { $attempt <= 6 } {  
+    while { $attempt <= 20 } {  
         if { [catch {set sock [socket localhost $port] } err] } {
-            after 10000
+            after 1000
             incr attempt
             bugMe "Comms Open Attempt No...0$attempt"  
         } else {
@@ -870,9 +870,9 @@ foreach element $argv {
     
     bugMe "Connected on $sock......OK"
     
-    while { $attempt < 6 } { 
+    while { $attempt < 9 } { 
         set x 0
-            lappend readyCheckerID [after [expr {10000 * $attempt}] { 
+            lappend readyCheckerID [after [expr {500 * $attempt}] { 
                 incr x
                 puts $sock "readyServer"
                 bugMe "Server Ready Test No....0$x"

@@ -1,0 +1,19 @@
+Threaded Structure:
+
+Thread for communications
+5 * Threads for SAPI
+Each thread blocks till done
+One thread is dedicated to purging speech
+Use mutex to lock and unlock speech start
+Kill client as soon as speech is done. 
+
+Get Text to say
+Send sync's speech to async Thread
+set blocked mutex
+send Close client straight away. Server continues to talk
+New speech from speech dispatcher
+Queue on same thread while holding client open 
+Wait until speech is done on Thread
+
+
+

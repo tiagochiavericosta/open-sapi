@@ -1,0 +1,18 @@
+Package: open-sapi
+Version: 0.2
+Section: Gnome Desktop Environment 
+Priority: optional
+Architecture: all
+Essential: no
+Depends: tcl (>= 8.5), wine (>= 1.1), cabextract
+Pre-Depends: 
+Recommends: 
+Suggests: gnome-orca, speech-dispatcher, python-speechd,   
+Installed-Size: 1024
+Maintainer: Thomas Lloyd [thomaslloyd@yahoo.com]
+Provides: open-sapi
+Homepage: http://code.google.com/p/open-sapi/
+Description: Open-Sapi provides a compatability layer that allows Linux based
+             applications to drive Microsoft based Speech Engines. This package
+             requires the latest development version of wine found at 
+             http://www.winehq.org/download/deb.

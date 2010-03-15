@@ -1,0 +1,48 @@
+#*******************************************************************************
+#             __________               __   ___.
+#   Open      \______   \ ____   ____ |  | _\_ |__   _______  ___
+#   Source     |       _//  _ \_/ ___\|  |/ /| __ \ /  _ \  \/  /
+#   Jukebox    |    |   (  <_> )  \___|    < | \_\ (  <_> > <  <
+#   Firmware   |____|_  /\____/ \___  >__|_ \|___  /\____/__/\_ \
+#                     \/            \/     \/    \/            \/
+#
+#   Copyright (C) 2009,2010 by Thomas Lloyd
+#
+# All files in this archive are subject to the GNU General Public License.
+# See the file COPYING in the source tree root for full license agreement.
+#
+# This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
+# KIND, either express or implied.
+#
+#*******************************************************************************
+
+ foreach {procName logLvl} {\
+       initDebugLvls          0
+       helpMe                 0
+       bugClient              0
+       initErrorCodes         0
+       initAudioFormats       0
+       bugMe                  0
+       errorControl           0
+       extCmdExeErrWrapper    0
+       getVolume              0
+       setVolume              0
+       getRate                0
+       setRate                0
+       getEngineArray         0
+       setEngine              0
+       testAudioFormat        0
+       IdleServerTimeout      0
+       testOutput             0
+       genSpeech              0
+       genFiles               0
+       cleanUp                0
+       serverRead             0
+       serverAccept           0
+       serverInit             0
+       speechThreadInit       0
+       sysHealthCheck         0
+       sysHealthCheck         0}\
+       {set procDebugLvlsArray($procName) $logLvl}      
+       
+return [array get procDebugLvlsArray] 
