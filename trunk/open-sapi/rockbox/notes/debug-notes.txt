@@ -1,0 +1,19 @@
+        Categiries:
+        1  - General Messages
+        2  - Error Messages
+        4  - Variable Changes
+        8  - Client / Server Communication (Human Readable)
+        16 - Client & Server Communication (RAW Messages)
+        32 - Program Flow
+        
+        Verbosity Level:
+        0 - None
+        1 -
+        2 -
+        3 -
+        4 -
+        5 - Everything
+
+
+Current Work:
+Proc Tracking

@@ -46,7 +46,7 @@ proc initDebugLvls {} {
        getEngineArray         0
        setEngine              0
        testAudioFormat        0
-       IdleServerTimeout      0
+       idleServerTimeout      0
        testOutput             0
        genSpeech              0
        genFiles               0
@@ -663,6 +663,7 @@ proc serverRead {sock voice} {
  global errorArray
  global pitch
  global langArray
+ global timeout
      bugMe "proc serverRead \{$sock $voice\}" programFlow
  
  
@@ -689,15 +690,16 @@ proc serverRead {sock voice} {
         extCmdExeErrWrapper thread::send -async $::speechThread "\$voice Speak \" \" 3"
         if { [catch {close $sock} err ] } {
             bugMe "Connection killed by client - $err" generalInfo
-            
+            set timeoutID [idleServerTimeout $timeout]
             return
         } else {
             bugMe "Connection killed by client" generalInfo
+            set timeoutID [idleServerTimeout $timeout]
             return
         }
                 
     } else {
-    bugMe "$sock:Message : $message" msgIn
+    bugMe "$sock:Message : $message" socketMsgIn
     set message [split $message " "]
  
     foreach element $message {
@@ -705,26 +707,26 @@ proc serverRead {sock voice} {
             switch -exact -- $element {
              
                 readyServer {
-                    bugMe "ReadyServer from $sock" msgIn
-                    bugMe "204:$errorArray(204,message)" msgOut
+                    bugMe "ReadyServer from $sock" generalInfo
+                    bugMe "204:$errorArray(204,message)" socketMsgOut
                     bugClient 204 "" $sock
                     return
                 }
                 
                 closeClient {
-                    bugMe "CloseClient from $sock" msgIn
-                    bugMe "294::$errorArray(294,message)" msgOut
+                    bugMe "CloseClient from $sock" socketMsgIn
+                    bugMe "294::$errorArray(294,message)" socketMsgOut
                     bugClient 294 "" $sock
                     return
                 }
                 
                 killServer {
-                    bugMe "killServer from $sock" msgIn
+                    bugMe "killServer from $sock" socketMsgIn
                     closeMe client $sock
                 }
 	                          
                 getFormat {
-                    bugMe "getFormat from $sock" msgIn
+                    bugMe "getFormat from $sock" socketMsgIn
                     set formatList [array get supportedFormats *]
                     foreach {ID formatDesc} $formatList {
                         set ID [split $ID ","]
@@ -738,30 +740,30 @@ proc serverRead {sock voice} {
                         set tmpID [split $ID " "]
                         set ID [lindex $tmpID 0]
                         set format [lindex $tmpID 1]
-                        bugMe "298:$errorArray(298,message):$ID:$format" msgOut
+                        bugMe "298:$errorArray(298,message):$ID:$format" socketMsgOut
                         bugClient 298 "$ID:$format" $sock
                     }
                     bugClient 293 "" $sock
                 }
                 
                 setFormat {
-                    bugMe "setFormat from $sock" msgIn
+                    bugMe "setFormat from $sock" socketMsgIn
                     set formatID [lindex $message [expr $x + 1] ]
                     if { [catch {info exists \
                     $supportedFormats($formatID,format)}] } {
-                        bugMe "593:$errorArray(593,message) - $formatID" msgOut
+                        bugMe "593:$errorArray(593,message) - $formatID" socketMsgOut
                         bugClient 593 "$formatID" $sock
                     } else {
                         set audioFormats [initAudioFormats]
                         bugMe "202:$errorArray(202,message)\
-                        - $supportedFormats($formatID,format)" msgOut
+                        - $supportedFormats($formatID,format)" socketMsgOut
                         bugClient 202 "setFormat" $sock
                     }
                     set skip 1
                 }
                 
                 outFile {
-                    bugMe "outFile from $sock" msgIn
+                    bugMe "outFile from $sock" socketMsgIn
                     set i 1
 	                set filename [lindex $message [expr $x + $i]]
 	                bugMe "filename set: $filename" varSetting
@@ -773,24 +775,24 @@ proc serverRead {sock voice} {
 	                set filename [encoding convertfrom utf-8 $filename]
 	                set skip $i
 	                unset i
-                    bugMe "202:$errorArray(202,message):Filename Set - $filename" msgOut
+                    bugMe "202:$errorArray(202,message):Filename Set - $filename" socketMsgOut
                     # Could improve this to check the filename
                     bugClient 202 "outFile" $sock
                 }    
 	          
 	             getVol {
-	                 bugMe "getVol from $sock" msgIn
+	                 bugMe "getVol from $sock" socketMsgIn
 	                 set volume [getVol $voice]
-	                 bugMe "getVol:$volume" msgOut
+	                 bugMe "getVol:$volume" socketMsgOut
 	                 bugClient 295 "$volume" $sock
 	             }
 	             
 	             setVol {
-	                bugMe "setVol from $sock" msgIn
+	                bugMe "setVol from $sock" socketMsgIn
 	                set vol [lindex $message [expr $x + 1] ]
 	                if {$vol != ""} {
 	                    setVol $voice $vol
-	                    bugMe "202:$errorArray(202,message): setVol - $vol" msgOut
+	                    bugMe "202:$errorArray(202,message): setVol - $vol" socketMsgOut
 	                    bugClient 202 "setVol" $sock
 	                    set skip 1 
 	                } else {
@@ -798,18 +800,18 @@ proc serverRead {sock voice} {
 	             }
 	             
 	             setRate {
-	                 bugMe "setRate from $sock" msgIn
+	                 bugMe "setRate from $sock" socketMsgIn
 	                 set rate [lindex $message [expr $x + 1] ]
-	                 bugMe "202:$errorArray(202,message): setRate - $rate" msgOut 
+	                 bugMe "202:$errorArray(202,message): setRate - $rate" socketMsgOut
 	                 setRate $voice $rate
 	                 bugClient 202 "setRate" $sock
 	                 set skip 1
 	             }
 	             
 	             setPitch {
-	                 bugMe "setPitch from $sock" msgIn
+	                 bugMe "setPitch from $sock" socketMsgIn
 	                 set pitch [lindex $message [expr $x + 1] ]
-	                 bugMe "202:$errorArray(202,message): setPitch - $pitch" msgOut
+	                 bugMe "202:$errorArray(202,message): setPitch - $pitch" socketMsgOut
 	                 bugClient 202 "setPitch" $sock
 	                 set skip 1
 	             }
@@ -822,7 +824,7 @@ proc serverRead {sock voice} {
                 getEngine {
                     # Requires a regexpression to check for valid input here
                     # set engineNum [lindex $message [expr $x + 1] ]
-                    bugMe "getEngine from $sock" msgIn
+                    bugMe "getEngine from $sock" socketMsgIn
                     set engineList [getEngineArray $voice]
                     array set voicesArray $engineList
                     set i 0
@@ -839,43 +841,43 @@ proc serverRead {sock voice} {
                         set voicesArray($i,lang) $langArray($voicesArray($i,lang))
                         bugClient 297 "$i:$voicesArray($i,name):$voicesArray($i,gender):$voicesArray($i,lang):$voicesArray($i,vendor):$voicesArray($i,age)" $sock
                         bugMe "297:$errorArray(297,message)$i -\
-                        $voicesArray($i,name) and is $voicesArray($i,gender) $voicesArray($i,age)" msgOut
+                        $voicesArray($i,name) and is $voicesArray($i,gender) $voicesArray($i,age)" socketMsgOut
                         incr i                      
                     }
                     bugClient 293 "" $sock
-                    bugMe "293:$errorArray(293,message) msgOut
+                    bugMe "293:$errorArray(293,message) socketMsgOut
                     unset i 
                 }
                 
                 setEngine {
                     set engineNum [lindex $message [expr $x + 1] ]
-                    bugMe "getEngine from $sock" msgIn
+                    bugMe "getEngine from $sock" socketMsgIn
                     bugMe "engineNum  = $engineNum" varSetting
                     set engineList [getEngineArray $voice]
                     set engineCount [expr [llength engineList] / 3]
                     array set voicesArray $engineList
                     set arraySize [expr [array size voicesArray] / 6 - 1]
                     if { $engineNum > $arraySize} {
-                        bugMe "594:$errorArray(594,message) - $engineNum" msgOut
+                        bugMe "594:$errorArray(594,message) - $engineNum" socketMsgOut
                         bugClient 594 "$engineNum" $sock
                         return
                     }
                     set voiceHandle $voicesArray($engineNum,handle)
                     setEngine $voice $voiceHandle
-                    bugMe "TTS Engine = $voicesArray($engineNum,name)" msgOut
+                    bugMe "TTS Engine = $voicesArray($engineNum,name)" socketMsgOut
                     bugClient 202 "setEngine:$voicesArray($engineNum,name)" $sock
                     set skip 1
                 }
                 
                 getRate {
                     set rate [getRate $voice]
-                    bugMe "getRate from $sock msgIn
-                    bugMe "296:$errorArray(296,message): getRate - $rate" msgOut
+                    bugMe "getRate from $sock socketMsgIn
+                    bugMe "296:$errorArray(296,message): getRate - $rate" socketMsgOut
                     bugClient 296 "$rate" $sock
                 }
                 
 	             speakMe {
-	                  bugMe "speakMe from $sock" msgIn
+	                  bugMe "speakMe from $sock" socketMsgIn
 	                  set textPending 1
 	                  set i 1
 	                  set text [lindex $message [expr $x + $i]]
@@ -896,7 +898,7 @@ proc serverRead {sock voice} {
 	             
 	             speechFlag {
 	                 set speechFlag [lindex $message [expr $x + 1] ]
-	                 bugMe "speechFlag from $sock : $speechFlag" msgIn
+	                 bugMe "speechFlag from $sock : $speechFlag" socketMsgIn
 	                 set skip 1
 	             }
 
@@ -912,13 +914,13 @@ proc serverRead {sock voice} {
 	                 set skip $i
 	                 unset i
       
-                    bugMe "testMe from $sock : $text" msgIn
+                    bugMe "testMe from $sock : $text" socketMsgIn
                 }
                 
                 setDebug {
                     set stackTrace 1
-                    bugMe "setDebug from $sock" msgIn
-                    bugMe "202:$errorArray(202,message) : bugClient" msgOut
+                    bugMe "setDebug from $sock" socketMsgIn
+                    bugMe "202:$errorArray(202,message) : bugClient" socketMsgOut
                     bugClient 202 "setDebug" $sock
                 }
                 
@@ -943,7 +945,7 @@ proc serverRead {sock voice} {
             bugMe "Testing overrides text output remove --test option" errorInfo
         } 
         testOutput $voice $speechFlag $text
-        bugMe "203:$errorArray(203,message) : testMe" msgOut
+        bugMe "203:$errorArray(203,message) : testMe" socketMsgOut
         bugClient 203 "" $sock
         
      } else {
@@ -961,16 +963,16 @@ proc serverRead {sock voice} {
              }
              
              bugClient 201 "" $sock
-             bugMe "203:$errorArray(203,message) : genText" msgOut
+             bugMe "201:$errorArray(201,message) : genText" socketMsgOut
              bugClient 294 "" $sock
-             bugMe "203:$errorArray(203,message) : genText" msgOut
+             bugMe "294:$errorArray(294,message) : genText" socketMsgOut
          } else {
          #    bugClient 294 "" $sock
          }
      }
  } ; # end of socket if
- if { $::timeout } {
-     set timeoutID [idleServerTimeout $::timeout]
+ if { $timeout } {
+     set timeoutID [idleServerTimeout $timeout]
   }
 }
 # ------------------------------------------------------------------------------
@@ -1087,7 +1089,6 @@ proc speechThreadInit { } {
            global voice
            global voiceEvent
            if {$event == "EndStream" && [$voice WaitUntilDone 500] } {
-               puts "Speech Output ended : close clientSock"
                set voiceEvent 1
            }
            
@@ -1120,101 +1121,97 @@ proc debugThreadInit { } {
         
 #-------------------------------------------------------------------------------        
         # General debug proc that accepts all debug messages and processes them.
-    proc initDebugLvls {} {
-     global procDebugLvlsArray
-       # bugMe "proc initDebugLvls\{\}" programFlow
-        foreach {procName logLvl} {\
-            initDebugLvls          1
-            helpMe                 1
-            bugClient              1
-            initErrorCodes         0
-            initAudioFormats       1
-            bugMe                  1
-            errorControl           1
-            extCmdExeErrWrapper    1
-            getVolume              1
-            setVolume              1
-            getRate                1
-            setRate                1
-            getEngineArray         1
-            setEngine              1
-            testAudioFormat        1
-            idleServerTimeout      1
-            testOutput             1
-            genSpeech              1
-            genFiles               1
-            cleanUp                1
-            serverRead             1
-            serverAccept           1
-            serverInit             1
-            speechThreadInit       1
-            sysHealthCheck         1}\
-            {set procDebugLvlsArray($procName) $logLvl
+        proc initDebugLvls {} {
+            global procDebugLvlsArray
+            # bugMe "proc initDebugLvls\{\}" programFlow
+            foreach {procName logLvl} {\
+                initDebugLvls          1
+                helpMe                 1
+                bugClient              1
+                initErrorCodes         0
+                initAudioFormats       1
+                bugMe                  1
+                errorControl           1
+                extCmdExeErrWrapper    1
+                getVolume              1
+                setVolume              1
+                getRate                1
+                setRate                1
+                getEngineArray         1
+                setEngine              1
+                testAudioFormat        1
+                idleServerTimeout      1
+                testOutput             1
+                genSpeech              1
+                genFiles               1
+                cleanUp                1
+                serverRead             1
+                serverAccept           1
+                serverInit             1
+                speechThreadInit       1
+                closeMe                1
+                sysHealthCheck         1}\
+                {set procDebugLvlsArray($procName) $logLvl
             }    
-    }
+        }
 #-------------------------------------------------------------------------------
-    proc initDebugMsgTypes {} {
-     global debugMsgTypeArray
-     
-   
-
-    # Set the overall debug levl. To be used to work out which debug statements
-    # we want to see and which not. 
+        proc initDebugMsgTypes {} {
+         global debugMsgTypeArray
  
-     set debugMsgTypeLvl 15
+        # Define debug message types and assigned then a binary ID 
+        # example : set debug_message_type next_binary_num 
 
-    # Define debug message types and assigned then a binary ID 
-    # example : set debug_message_type next_binary_num 
-
-    # Using $messageType as text to make it easier to read for us programmers
-    # 2 = Override each proc setting and show all debug messages of this type
-    # 1=  On
-    # 0 = Off
-        foreach {messageType logLvl} { \
-            generalInfo          1 
-            returnValues         0
-            varSetting           0
-            programFlow          2
-            errorInfo            2
-            msgIn                2
-            msgOut               2 }\
-            {set debugMsgTypeArray($messageType) $logLvl
+        # Using $messageType as text to make it easier to read for us programmers
+        # 2 = Override each proc setting and show all debug messages of this type
+        # 1=  On
+        # 0 = Off
+            foreach {messageType logLvl} { \
+                generalInfo          1 
+                returnValue          1
+                varSetting           1
+                programFlow          1
+                errorDebug           1
+                socketMsgIn          1
+                socketMsgOut         1 }\
+                {set debugMsgTypeArray($messageType) $logLvl
             }
-    }
+        }
 #-------------------------------------------------------------------------------    
-    proc logMe {caller message type where2Output timeStamp} {
-     
-     
-     global debugMsgTypeArray
-     global procDebugLvlsArray
-     # puts "Caller : $caller"       
-        switch -exact -- $debugMsgTypeArray($type) {
-         
-            0 { # This Message Type is being ignored   
-                return 
-            }
-                 
-            1 { # This message type is being monitored if the proc is also 
-                # set to output its debug messages
-                if {$procDebugLvlsArray($caller)} {
-                    puts stdout "$timeStamp $type : $message"
-                } else {
-                    return
+        proc logMe {caller message type where2Output timeStamp} {
+         global debugMsgTypeArray
+         global procDebugLvlsArray
+        # puts "Caller : $caller"       
+            switch -exact -- $debugMsgTypeArray($type) {
+                0 { # This Message Type is being ignored   
+                    return 
                 }
-            }
+                 
+                1 { # This message type is being monitored if the proc is also 
+                    # set to output its debug messages
+                    if {$procDebugLvlsArray($caller)} {
+                        puts stdout "$timeStamp $type : $message"
+                    } else {
+                        return
+                    }
+                }
              
-            2 { # This means the type overrides the proc setting and we show
+                2 { 
+                # This means the type overrides the proc setting and we show
                 # all the messages of this type from everywhere
-                puts stdout "$timeStamp $type : $message"
-             }
-           default { puts stdout "debugging error!"}
-           } ; # End of Switch
-             
-        } ; # end of bugMe proc
-        initDebugLvls
-        initDebugMsgTypes
-        thread::wait       
-    } ; # debugThreadInit 
+                    puts stdout "$timeStamp $type : $message"
+               }
+               
+               default { 
+                   bugMe "The value for messageType on $type in the debugging \
+                   file is incrorrect. Please verify you settings!" errorInfo
+               }
+           
+        } ; # End of Switch
+    } ; # end of bugMe proc
+    initDebugLvls
+    initDebugMsgTypes
+    thread::wait       
+ } ; # debugThreadInit 
 
 # Spawn the thread using the above init code
  set debugThread [thread::create $debugThreadInit]
@@ -1268,8 +1265,6 @@ proc sysHealthCheck { port } {
         array set langArray $langList
         bugMe  "Language System.........OK" generalInfo
     }
-    
-    bugMe "Server Listening:$port...check" generalInfo
 # Attempt to start the listening server on the given port
     extCmdExeErrWrapper serverInit $port
     bugMe "Server Listening:$port...OK" generalInfo
