@@ -14,34 +14,36 @@ Currently the project is only available for download through svn see   	 Develop
 
    * Speech Dispatcher - Seems buggy as a [akcage when not using a standard english install. Other small glitches have been noticed by speechD but i am ruling out that open-saou is not to blame. 
 
-   * UTF-8 and UNICODE have been implemented to support European languages. Other languages are untested as yet. 
+   * UTF-8 and UNICODE have been implemented to support European languages. Other languages are untested as yet.
+   * SAPI XML Markup
+   * Performance issues
+   * Reliability issues (Work in Progress)
+   * Error handling
+   * Sanity Checks
+   * Multi Threading Model
+   * Raw audio data output
+   * Flexible debugging system
+   * Client global & transaction timeouts
+   * Server Control - client spawns server if it has crashed ;) or is not yet started
+   * File output
+   * Changeable Output Wav Format
 ----
-=Still Todo=
+=Still Todo (List not complete)=
 
 ==Server==
-    * SAPI XML Markup
-    * Performance issues
-    * Reliability issues
     * Sound Icons
     * Config files
-    * Error handling !!!
     * Implement as a Service ?
-    * Sanity Checks (list length on text)
     * Investigate commandline only execution
     * Implement one voice per client
-    * Implementation of Global Multi Dimentional Array for Data Sharing 
+    * Implementation of Global Multi Dimensional Array for Data Sharing 
 
 ==Client==
-    * Client global & transaction timeouts
     * Global Array for Event Tracking should be unset at some point
-    * Client should report to the user why it has timed out
-    
-    * SAPI XML Markup
     * Sound Icons
     * Config files
-    * Error handling !!!
     * Sanity Checks  (list length on text)
-    * Server Control - implement on wrapping
+
     * Test performance, possible migration to native C
 
 ==Server-GUI==
