@@ -1016,6 +1016,7 @@ proc serverInit {port} {
 #-------------------------------------------------------------------------------
 proc closeMe {caller args } {
   global tmpFolder
+  global sock
   bugMe "proc closeMe \{$caller $args\}" programFlow
   
     if {$caller == "client"} {
@@ -1029,6 +1030,7 @@ proc closeMe {caller args } {
             exit 1
         } else {
             bugMe "Cleaning Up..............OK" generalInfo
+            catch [close $sock]
             exit 0
         }
     }
