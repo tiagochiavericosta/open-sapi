@@ -16,7 +16,7 @@ set maxint [expr 0x7[string range [format %X -1] 1 end]]
 set SSSPTRelativeToStart 0
 set SSSPTRelativeToCurrentPosition 1
 set SSSPTRelativeToEnd 2
-## End Enum
+#End Enum
            puts "Seek Position - [$GI Seek 0 $SSSPTRelativeToStart]"
            set EOF 
            while { !$EOF} {
