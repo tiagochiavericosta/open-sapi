@@ -92,11 +92,40 @@ set attempt 0
 set app ""
 set appPath ""
 set script ""
+# Added here for development, set differnetly when in production.
+set app "wine"
+set appPath "$::env(HOME)/open-sapi/tools/tcl/bin/tclsh85.exe"
+set script "$::env(HOME)/open-sapi/rockbox/client-server/rbutil-sapi-server.tcl"
 set os [split $::tcl_platform(os) " "]
 set appName rbutil-sapi-server.exe
 set nullDevice NUL
 set appLocation [info nameofexecutable]
 
+    # Speech Dispatcher likes to kill our clinet before it spawns the server. 
+    # We run lots of checks and I think it important to run the server and server
+    # ready check before checking for all of the compoents, if the server run
+    # we really don't care how. 
+
+    if { [catch {exec $app $appPath $script --port $port 2> $nullDevice &} msg ] } {
+         puts stderr "Client: Critical: Server Startup......FAILED"
+         puts stderr $msg  
+         puts stderr $::errorInfo
+         puts stderr $::errorCode
+    } else {
+        bugMe "Server Startup..........OK - $msg"
+    }
+
+    # second check if the server is running for speed, otherwise try to spawn or
+    # diagnose the problem.
+    while { $attempt <= 10 } {  
+        if { [catch {set sock [socket localhost $port] } err] } {
+            after 1000
+            incr attempt
+            bugMe "Comms Open Attempt No...0$attempt"  
+        } else {
+            return $sock
+        }
+    } 
 
     # Wine is not installed = POSIX ENOENT {no such file or directory}
     # Wine is installed, run without a program = CHILDSTATUS 19456 1
@@ -190,26 +219,16 @@ set appLocation [info nameofexecutable]
     }
     
 # Run the Server 
-    if { [catch {exec $app $appPath $script --port $port 2> $nullDevice &} msg ] } {
-         puts stderr "Client: Critical: Server Startup......FAILED"
-         puts stderr $msg  
-         puts stderr $::errorInfo
-         puts stderr $::errorCode 
-         exit
-    } else {
-        bugMe "Server Startup..........OK"
-    }
-
-#When the file is located and executed wait for the server to become ready.
-    while { $attempt <= 20 } {  
-        if { [catch {set sock [socket localhost $port] } err] } {
-            after 1000
-            incr attempt
-            bugMe "Comms Open Attempt No...0$attempt"  
-        } else {
-            return $sock
-        }
-    }    
+#    if { [catch {exec $app $appPath $script --port $port 2> $nullDevice &} msg ] } {
+#         puts stderr "Client: Critical: Server Startup......FAILED"
+#         puts stderr $msg  
+#         puts stderr $::errorInfo
+#         puts stderr $::errorCode 
+#         exit
+#    } else {
+#        bugMe "Server Startup..........OK"
+#    }
+    
 puts stderr "Client : Critical Error - unable to start Server on port:$port"
 exit
 }
