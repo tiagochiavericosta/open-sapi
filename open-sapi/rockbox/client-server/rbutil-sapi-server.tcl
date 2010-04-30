@@ -1351,9 +1351,9 @@ proc sysHealthCheck { port } {
  set timeoutID 0
 
  # Initalise the debug thread first as we will start debugging right away
- set debugThread [debugThreadInit]
+ # set debugThread [debugThreadInit]
 
-    if { [catch { set ::debugThread [thread::create $debugThreadInit] } msg ] } {
+    if { [catch { set debugThread [debugThreadInit] } msg ] } {
         puts stdout "Unable to start Threads, you must be using wine\
         version 1.1.32 or greater"
         if { [catch { package require Thread } msg ] } {
