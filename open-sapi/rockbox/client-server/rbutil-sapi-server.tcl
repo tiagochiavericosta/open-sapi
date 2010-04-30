@@ -276,6 +276,7 @@ proc errorControl {caller} {
  bugMe "proc errorControl \{$caller\}" programFlow
  global errorArray
  global clientSock
+ global port
    
    bugMe "errorControl \{$caller\}" programFlow
    set errorCategory [lindex $::errorCode 0]
@@ -334,13 +335,16 @@ proc errorControl {caller} {
        }
        
        POSIX {
-           bugMe "Error:POSIX" errorInfo
+           # bugMe "Error:POSIX" errorInfo
            set errorSubject [lindex $::errorCode 1] 
            switch -exact -- $errorSubject {
                
                EADDRINUSE {
                    puts stdout "596:$errorArray(596,message)\
                    $errorArray(597,message) [lindex $::errorCode 2]."
+                   bugMe "POSIX port:$port is already in use.\
+                   Please check and close any service using port:$port or\
+                   specify a custom port usng the --port switch" errorInfo
                    exit
                }
                
@@ -1174,7 +1178,8 @@ proc debugThreadInit { } {
                 programFlow          1
                 errorDebug           1
                 socketMsgIn          1
-                socketMsgOut         1 }\
+                socketMsgOut         1 
+                errorInfo            1}\
                 {set debugMsgTypeArray($messageType) $logLvl
             }
         }
@@ -1191,7 +1196,7 @@ proc debugThreadInit { } {
                 1 { # This message type is being monitored if the proc is also 
                     # set to output its debug messages
                     if {$procDebugLvlsArray($caller)} {
-                        puts stdout "$timeStamp $type : $message"
+                        puts stdout "$timeStamp $type: $message"
                     } else {
                         return
                     }
@@ -1280,7 +1285,8 @@ proc sysHealthCheck { port } {
         if {$stackTrace} { extCmdExeErrWrapper package missing Thread }
         exit
     }
-    
+  # Commented as debugging is the first thing we load at startup.
+   
   #  if { [catch { set ::debugThread [thread::create $debugThreadInit] } msg ] } {
   #      puts stdout "590:$errorArray(590,message).\
   #      $errorArray(598,message) - Unable to start Threads, you must use wine\
@@ -1345,7 +1351,17 @@ proc sysHealthCheck { port } {
  set timeoutID 0
 
  # Initalise the debug thread first as we will start debugging right away
- set debugThread [debugThreadInit] 
+ set debugThread [debugThreadInit]
+
+    if { [catch { set ::debugThread [thread::create $debugThreadInit] } msg ] } {
+        puts stdout "Unable to start Threads, you must be using wine\
+        version 1.1.32 or greater"
+        if { [catch { package require Thread } msg ] } {
+            puts stdout "Unable to load Thread package your install is corrupted"
+            if {$stackTrace} { extCmdExeErrWrapper package missing Thread }
+            exit
+    }
+    } 
  
  # Loop through the argument supplied on the commandline checking for valid 
  # switches 
