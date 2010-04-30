@@ -88,7 +88,7 @@ set SSSPTRelativeToEnd 2
        # set $VAOS $APO
         
      $voice Speak "<bookmark mark=\"bookmark_one\"/>This is a test. We are going to <bookmark mark=\"bookmark_two\"/>make more noise and speaking than normal?<bookmark mark=\"bookmark_three\"/>\
-     and on and on and on, and on and on and, on some more."
+     and on and on and on, and on and on and, on some more." 2
 
      #  set test 0
      #  while {1} {
