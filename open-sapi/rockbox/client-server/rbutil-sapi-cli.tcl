@@ -105,7 +105,7 @@ set appLocation [info nameofexecutable]
     # We run lots of checks and I think it important to run the server and server
     # ready check before checking for all of the compoents, if the server run
     # we really don't care how. 
-
+    # 
     if { [catch {exec $app $appPath $script --port $port 2> $nullDevice &} msg ] } {
          puts stderr "Client: Critical: Server Startup......FAILED"
          puts stderr $msg  
@@ -203,7 +203,7 @@ set appLocation [info nameofexecutable]
         }
     }
     
-    if {$appPath == ""} {
+    if {$appPath == "$::env(HOME)/open-sapi/tools/tcl/bin/tclsh85.exe"} {
     #Code used when in testng enivroment
         if { [file exists $::env(HOME)/open-sapi/tools/tcl/bin/tclsh85.exe] &&\
         [file exists $::env(HOME)/open-sapi/rockbox/client-server/rbutil-sapi-server.tcl] } {
@@ -211,7 +211,7 @@ set appLocation [info nameofexecutable]
             set script "$::env(HOME)/open-sapi/rockbox/client-server/rbutil-sapi-server.tcl"
             bugMe "Server Location.........OK"
         } else {
-        puts stderr "Client: Critical: Server Location.....FAILED"
+        puts stderr "Client: Critical: TestServer Location..FAILED"
         puts stderr "Client: Critical: Failed to locate Server Binary. See \
         verbose output for more"
         exit 1
@@ -219,15 +219,16 @@ set appLocation [info nameofexecutable]
     }
     
 # Run the Server 
-#    if { [catch {exec $app $appPath $script --port $port 2> $nullDevice &} msg ] } {
-#         puts stderr "Client: Critical: Server Startup......FAILED"
-#         puts stderr $msg  
-#         puts stderr $::errorInfo
-#         puts stderr $::errorCode 
-#         exit
-#    } else {
-#        bugMe "Server Startup..........OK"
-#    }
+     if { [catch {exec $app $appPath $script --port $port 2> $nullDevice &} msg ] } {
+         puts stderr "Client: Critical: Server Startup......FAILED"
+         puts stderr $msg  
+         puts stderr $::errorInfo
+         puts stderr $::errorCode 
+         exit
+    } else {
+        bugMe "Server Startup..........OK"
+        return 0 
+    }
     
 puts stderr "Client : Critical Error - unable to start Server on port:$port"
 exit

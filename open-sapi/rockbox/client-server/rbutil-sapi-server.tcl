@@ -544,7 +544,7 @@ proc testAudioFormat {voice} {
 #-------------------------------------------------------------------------------
 proc idleServerTimeout {timeout} {
     bugMe "idleServerTimeout \{$timeout\}" programFlow
-    if{$timeout} {
+    if {$timeout > 0} {
         set watchDog [after $timeout { 
             bugMe "Idle Timeout...Shutting Down Now" generalInfo
             closeMe idleServerTimeout
@@ -679,7 +679,7 @@ proc serverRead {sock voice} {
 # indicating the server is still needed. This feature is useful during 
 # development when the server might become unresponsive and saves time 
 # shutting it down manually each time
-    if {$timeout} {
+    if {$timeout > 0} {
      after cancel $timeoutID
      }
  
@@ -700,13 +700,13 @@ proc serverRead {sock voice} {
         extCmdExeErrWrapper thread::send -async $::speechThread "\$voice Speak \" \" 3"
         if { [catch {close $sock} err ] } {
             bugMe "Connection killed by client - $err" generalInfo
-            if {$timeout} {
+            if {$timeout > 0} {
                 set timeoutID [idleServerTimeout $timeout]
                 return
             }
         } else {
             bugMe "Connection killed by client" generalInfo
-            if {$timeout} {
+            if {$timeout > 0} {
                 set timeoutID [idleServerTimeout $timeout]
                 return
             }
@@ -985,7 +985,7 @@ proc serverRead {sock voice} {
          }
      }
  } ; # end of socket if
- if { $timeout } {
+ if { $timeout > 0 } {
      set timeoutID [idleServerTimeout $timeout]
   }
 }
@@ -1443,7 +1443,7 @@ proc sysHealthCheck { port } {
     
     # Start the Idle Shutdown Timer in the event the client is not able to
     # signal the server to shutdown or the server crashes. 
-    if {$timeout} {
+    if {$timeout > 0} {
         set timeoutID [idleServerTimeout $timeout]
     }
     
