@@ -1034,8 +1034,10 @@ proc closeMe {caller args } {
   bugMe "proc closeMe \{$caller $args\}" programFlow
   
     if {$caller == "client"} {
-        # Notify Client
+        # Notify Client shutdown accepted
+        
         bugClient 299 "" $args
+        # Ask the client to shutdown first play nicley with sockets.
     }
     if { [file isdirectory "$tmpFolder"] } {
         if { [catch {file delete -force "$tmpFolder"} msg ]} {
@@ -1044,6 +1046,7 @@ proc closeMe {caller args } {
             exit 1
         } else {
             bugMe "Cleaning Up..............OK" generalInfo
+            # Force to kill the socket even if clients are hanging on. 
             catch [close $sock]
             exit 0
         }
