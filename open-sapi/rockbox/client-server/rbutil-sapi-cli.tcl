@@ -485,7 +485,7 @@ proc sapiRead { sock } {
 # Returns  :
 # Called By:
 #-------------------------------------------------------------------------------
-proc stdinRead { sock } {
+proc stdinRead { sock text } {
 set averageWordTime 4000
 global textSent
     
@@ -505,8 +505,8 @@ global textSent
     } else {
         bugMe "line =.$line."
         if {$line == "" } { bugMe "Blanks"; return } else {
-            puts $sock "speakMe $line"
-            bugMe "Speak : $line"
+            puts $sock "speakMe $text$line"
+            bugMe "Speak : $text$line"
             set textSent 1   
         }
     }
@@ -818,8 +818,9 @@ foreach element $argv {
          puts $sock "killServer"
      } else {
          if {$pipeMode} {
-             fileevent stdin readable [list stdinRead $sock]
-             fconfigure stdin -buffering line -blocking 0 -encoding utf-8
+	     fconfigure stdin -buffering line -blocking 0 -encoding utf-8
+             fileevent stdin readable [list stdinRead $sock $text]
+             
          } else {
       #       puts $sock "closeClient"
          }
