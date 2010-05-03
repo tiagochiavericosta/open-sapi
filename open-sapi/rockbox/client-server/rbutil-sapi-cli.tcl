@@ -101,31 +101,36 @@ set appName rbutil-sapi-server.exe
 set nullDevice NUL
 set appLocation [info nameofexecutable]
 
-    # Speech Dispatcher likes to kill our clinet before it spawns the server. 
+    # Speech Dispatcher likes to kill our client before it spawns the server. 
     # We run lots of checks and I think it important to run the server and server
     # ready check before checking for all of the compoents, if the server run
     # we really don't care how. 
-    # 
+    #
     if { [catch {exec $app $appPath $script --port $port 2> $nullDevice &} msg ] } {
          puts stderr "Client: Critical: Server Startup......FAILED"
-         puts stderr $msg  
+         puts stderr $msg
          puts stderr $::errorInfo
          puts stderr $::errorCode
+         exit
     } else {
-        bugMe "Server Startup..........OK - $msg"
+        bugMe "Server Startup..........OK"
     }
 
     # second check if the server is running for speed, otherwise try to spawn or
     # diagnose the problem.
     while { $attempt <= 10 } {  
         if { [catch {set sock [socket localhost $port] } err] } {
-            after 1000
-            incr attempt
-            bugMe "Comms Open Attempt No...0$attempt"  
+            after 1000 
+            bugMe "Comms Open Attempt No....$attempt"
+            incr attempt  
         } else {
             return $sock
         }
-    } 
+    }
+    if { $attempt eq 11 } {
+        puts stderr "Client: Critical: Server Startup......FAILED"
+        exit
+    }
 
     # Wine is not installed = POSIX ENOENT {no such file or directory}
     # Wine is installed, run without a program = CHILDSTATUS 19456 1
@@ -146,92 +151,91 @@ set appLocation [info nameofexecutable]
         } else {
             bugMe "Wine Test...............OK"
             set nullDevice "/dev/null"       
-        }
-    }
-    
-    # Test in Path
-    if { [catch {exec $appName --version 2> $nullDevice} msg ] } { 
-        if { [catch {exec wine $appName --version 2> $nullDevice} msg ] } {
-            bugMe "PATH test...........FAILED"
-            set pathCheck 1 
-        } else {
-        # Command Runs OK
-        bugMe "Server Located PATH.....OK"
-        
-         
-        set pathCheck 0
-        }   
+        } 
     } else {
-    # Command Runs OK
-    bugMe "Server Located PATH.....OK"
-    set pathCheck 0
-    }
     
-  #   puts $msg  
-  #   puts $::errorInfo
-  #   puts $::errorCode
-  
-    # Test in pwd and same path as client
-    
-    
-    # Local dir check
-    if { $pathCheck } {
-        
-        if { [file exists "[pwd]/$appName"] } {
-            if { [file executable "[pwd]/$appName"] } {
-                set appPath "[pwd]/$appName"
-                bugMe "Server Located PWD......OK" 
+        # Test in Path
+        if { [catch {exec $appName --version 2> $nullDevice} msg ] } { 
+            if { [catch {exec wine $appName --version 2> $nullDevice} msg ] } {
+                bugMe "PATH test...........FAILED"
+                set pathCheck 1 
             } else {
-                puts stderr "Client: Critical:  Server found PWD. Unable to \
-                exectue! Please check user/file permissions"
-                exit 1
-            }
+                # Command Runs OK
+                bugMe "Server Located PATH.....OK"
+                set pathCheck 0
+            }   
         } else {
-            bugMe "PWD test............FAILED"
-            if { [file exists "$appLocation/$appName"] } {
-                if { [file executable "$appLocation/$appName"] } {
-                    set appPath "$appLocation/$appName"
-                    bugMe "Server Located CliPATH..OK"
-                     
+            # Command Runs OK
+            bugMe "Server Located PATH.....OK"
+            set pathCheck 0
+        }
+    
+        #   puts $msg  
+        #   puts $::errorInfo
+        #   puts $::errorCode
+  
+        # Test in pwd and same path as client
+    
+    
+        # Local dir check
+        if { $pathCheck } {
+        
+            if { [file exists "[pwd]/$appName"] } {
+                if { [file executable "[pwd]/$appName"] } {
+                    set appPath "[pwd]/$appName"
+                    bugMe "Server Located PWD......OK" 
                 } else {
-                    puts stderr "Server found in Client PATH. Unable to exectue!\
-                    Please check user/file permissions"
+                    puts stderr "Client: Critical:  Server found PWD. Unable to \
+                    exectue! Please check user/file permissions"
+                    exit 1
                 }
             } else {
-                bugMe "Client PATH test....FAILED"
+                bugMe "PWD test............FAILED"
+                if { [file exists "$appLocation/$appName"] } {
+                    if { [file executable "$appLocation/$appName"] } {
+                        set appPath "$appLocation/$appName"
+                        bugMe "Server Located CliPATH..OK"    
+                    } else {
+                        puts stderr "Server found in Client PATH. Unable to exectue!\
+                        Please check user/file permissions"
+                    }
+                } else {
+                    bugMe "Client PATH test....FAILED"
+                }
             }
         }
-    }
     
-    if {$appPath == "$::env(HOME)/open-sapi/tools/tcl/bin/tclsh85.exe"} {
-    #Code used when in testng enivroment
-        if { [file exists $::env(HOME)/open-sapi/tools/tcl/bin/tclsh85.exe] &&\
-        [file exists $::env(HOME)/open-sapi/rockbox/client-server/rbutil-sapi-server.tcl] } {
-            set appPath "$::env(HOME)/open-sapi/tools/tcl/bin/tclsh85.exe"
-            set script "$::env(HOME)/open-sapi/rockbox/client-server/rbutil-sapi-server.tcl"
-            bugMe "Server Location.........OK"
-        } else {
-        puts stderr "Client: Critical: TestServer Location..FAILED"
-        puts stderr "Client: Critical: Failed to locate Server Binary. See \
-        verbose output for more"
-        exit 1
+        if {$appPath == "$::env(HOME)/open-sapi/tools/tcl/bin/tclsh85.exe"} {
+        #Code used when in testng enivroment
+            if { [file exists $::env(HOME)/open-sapi/tools/tcl/bin/tclsh85.exe] &&\
+            [file exists $::env(HOME)/open-sapi/rockbox/client-server/rbutil-sapi-server.tcl] } {
+                set appPath "$::env(HOME)/open-sapi/tools/tcl/bin/tclsh85.exe"
+                set script "$::env(HOME)/open-sapi/rockbox/client-server/rbutil-sapi-server.tcl"
+                bugMe "Server Location.........OK"
+            } else {
+                puts stderr "Client: Critical: TestServer Location..FAILED"
+                puts stderr "Client: Critical: Failed to locate Server Binary. See \
+                verbose output for more"
+                exit 1
+            }
         }
-    }
     
 # Run the Server 
-     if { [catch {exec $app $appPath $script --port $port 2> $nullDevice &} msg ] } {
-         puts stderr "Client: Critical: Server Startup......FAILED"
-         puts stderr $msg  
-         puts stderr $::errorInfo
-         puts stderr $::errorCode 
-         exit
-    } else {
-        bugMe "Server Startup..........OK"
-        return 0 
-    }
+#    if { [catch {exec $app $appPath $script --port $port 2> $nullDevice &} msg ] } {
+#         puts stderr "Client: Critical: Server Startup......FAILED"
+#         puts stderr $msg  
+#         puts stderr $::errorInfo
+#         puts stderr $::errorCode 
+#         exit
+#    } else {
+#        bugMe "Server Startup..........OK"
+#        return 0 
+#    }
     
-puts stderr "Client : Critical Error - unable to start Server on port:$port"
-exit
+    puts stderr "Client : Critical Error - unable to start Server on port:$port"
+    exit
+
+    }
 }
 #-------------------------------------------------------------------------------
 # ProcName : sapiRead  
@@ -325,10 +329,11 @@ proc sapiRead { sock } {
                    
                    294 { # Close Client
                        set codeDesc [lindex $message [expr $x + 1] ] 
-                       catch {close $sock} err
+                       catch [close $sock] err
                        bugMe "Response - $element - $codeDesc"
-                       exit 0
                        set skip 1
+                       exit 0
+                       
                    }
                    
                    295 { # Volume
@@ -374,6 +379,8 @@ proc sapiRead { sock } {
                    299 { # Shutdown OK 
                        set codeDesc [lindex $message [expr $x + 1] ]
                        bugMe "Response - $element - $codeDesc"
+                       catch [close $sock] err
+                       exit 0
                        set skip 1
                    }
                    
