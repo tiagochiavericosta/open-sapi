@@ -36,7 +36,9 @@ Please note Google Code is not the fastest at downloading and takes about ten mi
 
 This should leave you in a position where you have everything ready to go about configuring the system for speech.
 ----
-=Do not skip update Wine=
+=Update Wine on ubuntu 9.xx=
+
+For those users of 10.04 Lucid we have updated to a version of wine that supports using treads so you can skip this step. 
 
 ==Update for Ubuntu 9.10 (Karmic)== 
 Now the guys at Canonical have been busy and have made a very useful addition  tp the apt utility that allows the easy addition of personal software repositories. So we can add in the updated wine project repo with one command.
