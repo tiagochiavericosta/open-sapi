@@ -7,20 +7,22 @@ Please note this information is not complete, please ask questions in the disuss
 These commands assume the location of the open-sapi svn directory is in your home folder. If you ahve chosen a different location then please read the notes on speech-dispacher below and change code examples to mirror your locations.  
 
 == Server Startup ==
-Wine gives lots of warnings and errors on the STDERR so i redirect these to /dev/null as we are not interested in the wine output most of the time. Remove the 2> /dev/null to see the wine errors. Tcl also complains on STDERR so if for any reason your setup has failed then you will miss these errors.   
+Running the server for the first time as a stand alone application is a good idea so you can analyse any problem with the installation. After you have confirmed the server to be working you can run the client and it will auto load the server if it is not already running. By default for development purposes the server timesouts after 60 seconds. This can be extended by calling the --timeout x (x is a number of mins,0 disabled time-outs).    
 
 When the server is first run it should say in the default voice "Ready" if you do not hear this then you have a configuration problem see the TroubleShooting page. Try removing the 2> /dev/null part of the command to get all error output. This will help when you look at the TroubleShooting Page.  
 
 Code:
 {{{
-wine ~/open-sapi/tools/tcl/bin/tclsh85.exe ~/open-sapi/src/unstable/osapi-srv.tcl 2> /dev/null
+wine ~/open-sapi/tools/tcl/bin/tclsh85.exe ~/open-sapi/rockbox/client-server/rbutil-sapi-server.tcl -v --debug
 }}}
+
+Later on when you get annoyed with wines annoying error messages you can append 2> /dev/null onto the end of the command to hide then. If your developing this is not recommended. 
 
 == Running Client Simple text test ==
 
 Code:
 {{{
-~/open-sapi/src/unstable/osapi-cli.tcl -t This is a test of the Open Sapi project @@
+~/open-sapi/rockbox/client-server/rbutil-sapi-cli.tcl -t This is a test of the Open Sapi project @@ -v --debug
 }}}
 
 == Running Client pipe mode test ==
