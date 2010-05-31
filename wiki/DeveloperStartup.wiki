@@ -29,7 +29,7 @@ Code:
 
 Code:
 {{{
-who | ~/open-sapi/src/unstable/osapi-cli.tcl --pipemode
+who | ~/open-sapi/rockbox/client-server/rbutil-sapi-cli.tcl --pipemode
 }}}
 
 == Running Speech Dispatcher ==
