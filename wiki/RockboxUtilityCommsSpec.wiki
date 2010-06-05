@@ -103,7 +103,7 @@ Comment   : This gives full output to stdout from the server for debugging <br>
 || 293 || End of List || This follows any list of data returned by the server||
 || 294 || Close Client || The server has finished its current job||
 || 295 || Volume || Returns the current server volume as well ||
-|| 296 || Rate - Returns the current server rate ||
+|| 296 || Rate || Returns the current server rate ||
 || 297 || Voice List || Returns with a list of voices and their details ||
 || 298 || Format List || Returns with a list of supported wav formats ||
 || 299 || Shutdown OK || Acknowledges the shutdown request from the client ||   
@@ -119,9 +119,9 @@ Comment   : This gives full output to stdout from the server for debugging <br>
 || 594 || No Speech Engines Match That Request || You have asked for a speech engine that does not exist on this system ||   
 || 595 || Shutdown Failure || something in the shut-down process failed ||   
 || 596 || Startup Failure  || Can't Start the server and the reason ||
-|| 597 || Server Port Busy ||        
-|| 598 || MS Visual C++ DLL Load Failure||        
-|| 599 || Unable to Initialise SAPI||
+|| 597 || Server Port Busy || ||        
+|| 598 || MS Visual C++ DLL Load Failure|| ||        
+|| 599 || Unable to Initialise SAPI|| ||
 
 ----
 =Extended Notes=
