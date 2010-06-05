@@ -95,59 +95,59 @@ Comment   : This gives full output to stdout from the server for debugging <br>
 ----
 =Server Return Codes & Messages=
 
-"200:OK"\ - General OK (unimplemented)  
+"200:OK"\ - General OK (unimplemented)<BR>  
 
 201:Synth OK - Lets the client know that the synthesis is going ahead ok
 
-202:Setting OK - Returned after any setting change on the server Rate Volume Speed Output file
+202:Setting OK - Returned after any setting change on the server Rate Volume Speed Output file<BR>
 
-203:Test OK - If the test complete this code is returned (unimplemented)
+203:Test OK - If the test complete this code is returned (unimplemented)<BR>
 
-204:Server Ready - Signifies the server is ready for work
+204:Server Ready - Signifies the server is ready for work<BR>
 
-293:End of List - This follows any list of data returned by the server
+293:End of List - This follows any list of data returned by the server<BR>
 
-294:Close Client - The server has finished its current job 
+294:Close Client - The server has finished its current job<BR>
 
-295:Volume - Returns the current server volume as well
+295:Volume - Returns the current server volume as well<BR>
         
-296:Rate - Returns the current server rate
+296:Rate - Returns the current server rate<BR>
         
-297:Voice List - Returns with a list of voices and their details
+297:Voice List - Returns with a list of voices and their details<BR>
         
-"298:Format List - Returns with a list of supported wav formats
+"298:Format List - Returns with a list of supported wav formats<BR>
         
-299:Shutdown OK - Acknowledges the shutdown request from the client
+299:Shutdown OK - Acknowledges the shutdown request from the client<BR>
         
-400:Bad Request - Unimplemented
+400:Bad Request - Unimplemented<BR>
         
-500:Server Internal Error - Unimplemented
+500:Server Internal Error - Unimplemented<BR>
         
-501:Not Implemented - Unimplemented (how ironic)
+501:Not Implemented - Unimplemented (how ironic)<BR>
       
-504:Time Out - Tells the client the server timedout while sitting idle. 
+504:Time Out - Tells the client the server timedout while sitting idle<BR>
         
-513:Message Too Large - Unimplemented
+513:Message Too Large - Unimplemented<BR>
         
-590:COM Error - Give meaningful information about COM errors
+590:COM Error - Give meaningful information about COM errors<BR>
         
-591:Core Component Missing - Gives information about the components
+591:Core Component Missing - Gives information about the components<BR>
         
-592:Unexpected SAPI Error - Gives errors from SAPI
+592:Unexpected SAPI Error - Gives errors from SAPI<BR>
         
-593:Unsupported Wav Format - Somehow you have tried to you an unsupported format for your system
+593:Unsupported Wav Format - Somehow you have tried to you an unsupported format for your system<BR>
         
-594:No Speech Engines Match That Request - You have asked for an speechengine that does not exist on this system
+594:No Speech Engines Match That Request - You have asked for an speechengine that does not exist on this system<BR>
         
-595:Shutdown Failure - something in the shutdown process failed
+595:Shutdown Failure - something in the shutdown process failed<BR>
         
-596:Startup Failure - Can't Start the server and the reason
+596:Startup Failure - Can't Start the server and the reason<BR>
         
-597:Server Port Busy
+597:Server Port Busy<BR>
         
-598:MS Visual C++ DLL Load Failure
+598:MS Visual C++ DLL Load Failure<BR>
         
-599:Unable to Initialise SAPI
+599:Unable to Initialise SAPI<BR>
 
 ----
 =Extended Notes=
