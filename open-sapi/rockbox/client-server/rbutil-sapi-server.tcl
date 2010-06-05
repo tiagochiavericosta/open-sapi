@@ -634,13 +634,13 @@ proc genFiles {voice filename text format} {
 # Called By: serverAccept
 #-------------------------------------------------------------------------------
 proc cleanUp {filename fileStream} {
-    bugMe "proc cleanUp \{$filename $filestream\}" programFlow
+    bugMe "proc cleanUp \{$filename $fileStream\}" programFlow
 global tmpFolder
 
 set tempFile "$tmpFolder/opensapitmp.wav"
 
 # Close the fileStream    
- #  extCmdExeErrWrapper $fileStream Close
+   extCmdExeErrWrapper $fileStream Close
     
 # Rename the files from the tmp name used for creation due to a SAPI bug that
 # all the files created by SAPI have to have .wav extension. 
@@ -968,7 +968,7 @@ proc serverRead {sock voice} {
              if { $pitch } {
                  set $text "<pitch absmiddle=\"$pitch\"/> $text"
              }
-             if {$filename} {
+             if {$filename ne 0} {
                  set fileStream [genFiles $voice $filename $text $wavFormat]
                  cleanUp $filename $fileStream
              } else {
@@ -1323,7 +1323,7 @@ proc sysHealthCheck { port } {
     bugMe "SAPI Initalised.........OK" generalInfo
         
 # Only run the format check if we are outputting to the filesystem
-    if {$filename} {
+    if { $filename ne 0} {
         array set supportedFormats [testAudioFormat $voice]
         bugMe "Output Format Check.....OK" generalInfo
         bugMe "File Generation Check...OK" generalInfo
@@ -1452,7 +1452,7 @@ proc sysHealthCheck { port } {
     
     bugMe "Idle Shutdown Timer.....OK" generalInfo
     
-    if { $filename && ![file isdirectory $tmpFolder] } {
+    if { $filename ne 0 && ![file isdirectory $tmpFolder] } {
         extCmdExeErrWrapper file mkdir $tmpFolder
     }
     

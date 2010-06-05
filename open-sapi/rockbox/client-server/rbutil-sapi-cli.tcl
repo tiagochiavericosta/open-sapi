@@ -21,6 +21,64 @@
 #Application Name: Open SAPI Clip Generator v0.1 Alpha for Rockbox Utulity
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+# ProcName : initDebugLvls
+# Usage    : NA
+# Accepts  : None
+# Returns  : None
+# Called By: Main
+#-------------------------------------------------------------------------------
+proc initDebugLvls {} {
+   bugMe "proc initDebugLvls\{\}" programFlow
+   foreach {procName logLvl} {\
+       initDebugLvls          0
+       helpMe                 0
+       bugClient              0
+       initErrorCodes         0
+       initAudioFormats       0
+       bugMe                  0
+       startUpSever           0
+       sapiRead               0
+       sdinRead               0}\
+       {set procDebugLvlsArray($procName) $logLvl}
+ return [array get procDebugLvlsArray]     
+}
+# ------------------------------------------------------------------------------
+# ProcName : initDebugMsgTypes
+# Usage    : NA
+# Accepts  : None
+# Returns  : None
+# Called By: Main
+#-------------------------------------------------------------------------------
+proc initDebugMsgTypes {} {
+
+# Using an xor to compare if the type of message is set. Then read its setting. 
+# 2 = Override each proc setting and show all debug messages of this type
+# 1=  On
+# 0 = Off
+
+# Set the overall debug levl. To be used to work out which debug statements
+# we want to see and which not. 
+
+
+# Define debug message types and assigned then a binary ID 
+# example : set debug_message_type next_binary_num 
+ 
+ set generalInfo 1
+ set returnValues 2
+ set variableSetting 4
+ set programFlow 8
+
+# Using $messageType to make it easier to read for us programmers
+   bugMe "proc initDebugMsgTypes\{\}" programFlow
+   foreach {messageType logLvl} {\
+       $generalInfo         0
+       $returnValues        0
+       $variableSetting     0
+       $programFlow         0}\
+   {set debugMsgTypeArray($messageType) $logLvl}
+ return [array get debugMsgTypeArray]
+}
+# ------------------------------------------------------------------------------
 # ProcName : helpMe
 # Usage    : Supplies the user with usage information when called through stdout
 # Accepts  : None
