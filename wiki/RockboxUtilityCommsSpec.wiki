@@ -17,6 +17,10 @@ All "settings" can be send in a group to the server or seperatly
 The speakMe command must be sent on its own as the last command to start synthesis on the server using the current settings
 ----
 =Server Client Communication Protocol=
+General Code Rule:
+200 = OK
+400 = Error
+500 = Erros
 
 Command   : readyServer <br>
 Arguments : None <br>
@@ -88,6 +92,63 @@ Command   : setDebug <br>
 Arguments : None <br>
 Returns   : None <br>
 Comment   : This gives full output to stdout from the server for debugging <br>
+----
+=Server Return Codes & Messages=
+
+"200:OK"\ - General OK (unimplemented)  
+
+201:Synth OK - Lets the client know that the synthesis is going ahead ok
+
+202:Setting OK - Returned after any setting change on the server Rate Volume Speed Output file
+
+203:Test OK - If the test complete this code is returned (unimplemented)
+
+204:Server Ready - Signifies the server is ready for work
+
+293:End of List - This follows any list of data returned by the server
+
+294:Close Client - The server has finished its current job 
+
+295:Volume - Returns the current server volume as well
+        
+296:Rate - Returns the current server rate
+        
+297:Voice List - Returns with a list of voices and their details
+        
+"298:Format List - Returns with a list of supported wav formats
+        
+299:Shutdown OK - Acknowledges the shutdown request from the client
+        
+400:Bad Request - Unimplemented
+        
+500:Server Internal Error - Unimplemented
+        
+501:Not Implemented - Unimplemented (how ironic)
+      
+504:Time Out - Tells the client the server timedout while sitting idle. 
+        
+513:Message Too Large - Unimplemented
+        
+590:COM Error - Give meaningful information about COM errors
+        
+591:Core Component Missing - Gives information about the components
+        
+592:Unexpected SAPI Error - Gives errors from SAPI
+        
+593:Unsupported Wav Format - Somehow you have tried to you an unsupported format for your system
+        
+594:No Speech Engines Match That Request - You have asked for an speechengine that does not exist on this system
+        
+595:Shutdown Failure - something in the shutdown process failed
+        
+596:Startup Failure - Can't Start the server and the reason
+        
+597:Server Port Busy
+        
+598:MS Visual C++ DLL Load Failure
+        
+599:Unable to Initialise SAPI
+
 ----
 =Extended Notes=
 
