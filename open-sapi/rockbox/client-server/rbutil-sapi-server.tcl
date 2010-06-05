@@ -1,3 +1,5 @@
+package provide app-rbutil-sapi-server 1.0
+
 #*******************************************************************************
 #             __________               __   ___.
 #   Open      \______   \ ____   ____ |  | _\_ |__   _______  ___
@@ -316,7 +318,7 @@ proc errorControl {caller} {
                       # ::errorInfo is a string and we must do a find/replace command on it
                       # make sure we remove duplicated code, and set error messge.
                       
-                       set checkClient [after 1000 { close $sock }]          
+                       set checkClient [after 1000 { catch [close $sock] }]          
                        set ::errorCode [lreplace $::errorCode 2 2 \
                        "$errorArray(590,message) Unknown \
                        Error $errorSubject. Please report details online at:\n \
@@ -507,13 +509,20 @@ proc testAudioFormat {voice} {
  set testFormat [::tcom::ref createobject Sapi.SpAudioFormat]
  set testStreamFormat [$testStream Format]
  set i -1
- set tempFile "$tmpFolder/opensapitmp.wav"  
+ set tempFile "$tmpFolder/opensapitmp.wav"
+   
+   # Make sure the tmp directory is available before we start
+   if { ![file isdirectory $tmpFolder] } {
+       extCmdExeErrWrapper file mkdir $tmpFolder
+   }  
                   
     foreach element $audioFormats {
+    puts "Audio format = $element"
         if { $i > 5} {
             $testFormat Type $i
             extCmdExeErrWrapper $testStream Format $testFormat
-            $testStream Open $tempFile $SSFMCreateForWrite False 
+            puts "$testStream - $tempFile - $SSFMCreateForWrite"
+            $testStream Open $tempFile $SSFMCreateForWrite False
             
             $voice AudioOutputStream $testStream
                                 
@@ -741,6 +750,7 @@ proc serverRead {sock voice} {
 	                          
                 getFormat {
                     bugMe "getFormat from $sock" socketMsgIn
+                    array set supportedFormats [testAudioFormat $voice]
                     set formatList [array get supportedFormats *]
                     foreach {ID formatDesc} $formatList {
                         set ID [split $ID ","]
@@ -1322,12 +1332,13 @@ proc sysHealthCheck { port } {
     set voice [extCmdExeErrWrapper ::tcom::ref createobject Sapi.SpVoice] 
     bugMe "SAPI Initalised.........OK" generalInfo
         
-# Only run the format check if we are outputting to the filesystem
-    if { $filename ne 0} {
-        array set supportedFormats [testAudioFormat $voice]
-        bugMe "Output Format Check.....OK" generalInfo
-        bugMe "File Generation Check...OK" generalInfo
-    }
+# We are not going to run this code on startup for speed if someone wants the list
+# then we can check the supported formats. 
+#    if { $filename ne 0} {
+#        array set supportedFormats [testAudioFormat $voice]
+#        bugMe "Output Format Check.....OK" generalInfo
+#        bugMe "File Generation Check...OK" generalInfo
+#    }
         
 # Starts a new thread to deal with synthesis requests. Only needed for direct\
   synthesis.
@@ -1357,7 +1368,7 @@ proc sysHealthCheck { port } {
  set skip 0
  set x 0
  set filename 0
- set tmpFolder "$::env(HOME)sapiTMP"
+ set tmpFolder "$::env(HOME)/sapiTMP"
  set speechMonitor 0
  set timeout 60000
  set checkClient 0
