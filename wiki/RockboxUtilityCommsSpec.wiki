@@ -93,61 +93,35 @@ Arguments : None <br>
 Returns   : None <br>
 Comment   : This gives full output to stdout from the server for debugging <br>
 ----
-=Server Return Codes & Messages=
-
-"200:OK"\ - General OK (unimplemented)<BR>  
-<BR>
-201:Synth OK - Lets the client know that the synthesis is going ahead ok
-<BR>
-202:Setting OK - Returned after any setting change on the server Rate Volume Speed Output file<BR>
-<BR>
-203:Test OK - If the test complete this code is returned (unimplemented)<BR>
-<BR>
-204:Server Ready - Signifies the server is ready for work<BR>
-<BR>
-293:End of List - This follows any list of data returned by the server<BR>
-<BR>
-294:Close Client - The server has finished its current job<BR>
-<BR>
-295:Volume - Returns the current server volume as well<BR>
-<BR>    
-296:Rate - Returns the current server rate<BR>
-<BR>
-297:Voice List - Returns with a list of voices and their details<BR>
-<BR>
-"298:Format List - Returns with a list of supported wav formats<BR>
-<BR>
-299:Shutdown OK - Acknowledges the shutdown request from the client<BR>
-<BR>    
-400:Bad Request - Unimplemented<BR>
-<BR>    
-500:Server Internal Error - Unimplemented<BR>
-<BR>    
-501:Not Implemented - Unimplemented (how ironic)<BR>
-<BR>  
-504:Time Out - Tells the client the server timedout while sitting idle<BR>
-<BR>    
-513:Message Too Large - Unimplemented<BR>
-<BR>    
-590:COM Error - Give meaningful information about COM errors<BR>
-<BR>    
-591:Core Component Missing - Gives information about the components<BR>
-<BR>    
-592:Unexpected SAPI Error - Gives errors from SAPI<BR>
-<BR>    
-593:Unsupported Wav Format - Somehow you have tried to you an unsupported format for your system<BR>
-<BR>    
-594:No Speech Engines Match That Request - You have asked for an speechengine that does not exist on this system<BR>
-<BR>    
-595:Shutdown Failure - something in the shutdown process failed<BR>
-<BR>    
-596:Startup Failure - Can't Start the server and the reason<BR>
-<BR>    
-597:Server Port Busy<BR>
-<BR>        
-598:MS Visual C++ DLL Load Failure<BR>
-<BR>        
-599:Unable to Initialise SAPI<BR>
+=Table of Server Return Codes & Messages=
+||*CODE*||*Message*||*Description*||
+|| 200 || OK || General OK (unimplemented)||
+|| 201 || Synth OK || Lets the client know that the synthesis is going ahead OK ||
+|| 202 || Setting OK || Returned after any setting change on the server Rate Volume Speed Output file||
+|| 203 || Test OK || If the test complete this code is returned (unimplemented)||
+|| 204 || Server Ready || Signifies the server is ready for work||
+|| 293 || End of List || This follows any list of data returned by the server||
+|| 294 || Close Client || The server has finished its current job||
+|| 295 || Volume || Returns the current server volume as well ||
+|| 296 || Rate - Returns the current server rate ||
+|| 297 || Voice List || Returns with a list of voices and their details ||
+|| 298 || Format List || Returns with a list of supported wav formats ||
+|| 299 || Shutdown OK || Acknowledges the shutdown request from the client ||   
+|| 400 || Bad Request || Unimplemented||
+|| 500 || Server Internal Error || Unimplemented ||    
+|| 501 || Not Implemented || Unimplemented (how ironic)||
+|| 504 || Time Out || Tells the client the server timed out while sitting idle ||
+|| 513 ||Message Too Large || Unimplemented ||
+|| 590 || COM Error || Give meaningful information about COM errors||
+|| 591 || Core Component Missing || Gives information about the components ||    
+|| 592 || Unexpected SAPI Error || Gives errors from SAPI ||    
+|| 593 || Unsupported Wav Format || Somehow you have tried to you an unsupported format for your system||
+|| 594 || No Speech Engines Match That Request || You have asked for a speech engine that does not exist on this system ||   
+|| 595 || Shutdown Failure || something in the shut-down process failed ||   
+|| 596 || Startup Failure  || Can't Start the server and the reason ||
+|| 597 || Server Port Busy ||        
+|| 598 || MS Visual C++ DLL Load Failure||        
+|| 599 || Unable to Initialise SAPI||
 
 ----
 =Extended Notes=
