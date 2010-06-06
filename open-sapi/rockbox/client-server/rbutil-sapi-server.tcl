@@ -318,7 +318,7 @@ proc errorControl {caller} {
                       # ::errorInfo is a string and we must do a find/replace command on it
                       # make sure we remove duplicated code, and set error messge.
                       
-                       set checkClient [after 1000 { catch [close $sock] }]          
+                       set checkClient [after 1000 { catch { close $sock } err }]          
                        set ::errorCode [lreplace $::errorCode 2 2 \
                        "$errorArray(590,message) Unknown \
                        Error $errorSubject. Please report details online at:\n \
@@ -869,7 +869,7 @@ proc serverRead {sock voice} {
                         incr i                      
                     }
                     bugClient 293 "" $sock
-                    bugMe "293:$errorArray(293,message) socketMsgOut
+                    bugMe "293:$errorArray(293,message)" socketMsgOut
                     unset i 
                 }
                 
@@ -1056,9 +1056,12 @@ proc closeMe {caller args } {
             exit 1
         } else {
             bugMe "Cleaning Up..............OK" generalInfo
-            # Force to kill the socket even if clients are hanging on. 
-            catch [close $sock]
-            exit 0
+            # Force to kill the socket even if clients are hanging on.
+            
+            if [info exists sock] { 
+                catch { close $sock } err
+                exit 0
+            }
         }
     }
  exit 0
@@ -1158,12 +1161,12 @@ proc debugThreadInit { } {
                 helpMe                 1
                 bugClient              1
                 initErrorCodes         0
-                initAudioFormats       1
+                initAudioFormats       0
                 bugMe                  1
                 errorControl           1
                 extCmdExeErrWrapper    1
-                getVolume              1
-                setVolume              1
+                getVol                 1
+                setVol                 1
                 getRate                1
                 setRate                1
                 getEngineArray         1

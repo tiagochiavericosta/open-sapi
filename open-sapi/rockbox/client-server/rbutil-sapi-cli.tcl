@@ -867,7 +867,7 @@ foreach element $argv {
         puts $sock "testMe This is a test of the rockbox Utility speech output."
         
      } else {
-         if {$textPending} {
+         if {$textPending || $command ne ""} {
              set command "$command speechFlag $flag"
              set command [string trimleft $command]
              bugMe "Sending - $command"
