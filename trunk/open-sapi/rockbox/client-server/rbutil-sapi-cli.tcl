@@ -354,7 +354,9 @@ proc sapiRead { sock } {
                    201 { # Synthesis OK
                        set codeDesc [lindex $message [expr $x + 1] ]
                        bugMe "Response - $element - $codeDesc"
+                       catch [close $sock] err; # Added for rbutil
                        set skip 1
+                       exit 0 ; # Added for rbutil
                    }
                    
                    202 { # Setting OK 
@@ -654,12 +656,12 @@ foreach element $argv {
 	          
 	             -l {
                     # Requires a regexpression to check for valid input here 
-                    set volume [lindex $argv [expr $x + 1] ]
                     set 1stChar [string index [lindex $argv [expr $x + 1] ] 0]
                     if { $volume == "?" || $1stChar == "-" || $1stChar == ""} {
                         set command "$command getVol"
                         bugMe "Current Volume: $volume" 
                     } else {
+                        set volume [lindex $argv [expr $x + 1] ]
                         if { $volume < 0 } {
                             set volume 0
                             bugMe "Volume Range 0-100. Negative value detected, correcting to min 0"
@@ -849,16 +851,6 @@ foreach element $argv {
     incr x
     };# End of foreach    
      bugMe "End of Prcessing"
-    
-    if {$volume != "?"} {
-        set text "<volume level=\\\"$volume\\\"/> $text"
-    }
-    if {$pitch != "?"} {
-        set text "<pitch absmiddle=\\\"$pitch\\\"/> $text"
-    }
-    if {$rate != "?"} {
-        set text "<rate absspeed=\\\"$rate\\\"/> $text"
-    }
      
     if {$runTest} {
         if {$textPending} {
@@ -867,15 +859,20 @@ foreach element $argv {
         puts $sock "testMe This is a test of the rockbox Utility speech output."
         
      } else {
-         if {$textPending || $command ne ""} {
+         if {$command ne ""} {
              set command "$command speechFlag $flag"
              set command [string trimleft $command]
              bugMe "Sending - $command"
              puts $sock $command
              if { $filename != 0 } {
                  puts $sock "outFile $filename"
-             }  
-             puts $sock "speakMe $text"
+             }
+             if {$textPending} {
+                 set text "<volume level=\\\"$volume\\\"/> $text"
+                 set text "<pitch absmiddle=\\\"$pitch\\\"/> $text"
+                 set text "<rate absspeed=\\\"$rate\\\"/> $text"     
+                 puts $sock "speakMe $text"
+             } else {
          }
      }
  

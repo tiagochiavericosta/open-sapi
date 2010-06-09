@@ -505,28 +505,32 @@ proc testAudioFormat {voice} {
  
  set SSFMCreateForWrite 3
  set audioFormats [initAudioFormats]
- set testStream [::tcom::ref createobject Sapi.SpFileStream]
- set testFormat [::tcom::ref createobject Sapi.SpAudioFormat]
- set testStreamFormat [$testStream Format]
+ # New code to speed up format checking
+ 
+ set GI [::tcom::ref createobject  Sapi.SpMemoryStream]
+ set GIC [::tcom::ref createobject Sapi.SpAudioFormat]
+
+ #End of new Code
+ 
+ #set testStream [::tcom::ref createobject Sapi.SpFileStream]
+ #set testFormat [::tcom::ref createobject Sapi.SpAudioFormat]
+ #set testStreamFormat [$testStream Format]
+ 
  set i -1
- set tempFile "$tmpFolder/opensapitmp.wav"
+ # set tempFile "$tmpFolder/opensapitmp.wav"
    
    # Make sure the tmp directory is available before we start
-   if { ![file isdirectory $tmpFolder] } {
-       extCmdExeErrWrapper file mkdir $tmpFolder
-   }  
+ #  if { ![file isdirectory $tmpFolder] } {
+ #      extCmdExeErrWrapper file mkdir $tmpFolder
+ #  }  
                   
     foreach element $audioFormats {
-    puts "Audio format = $element"
         if { $i > 5} {
-            $testFormat Type $i
-            extCmdExeErrWrapper $testStream Format $testFormat
-            puts "$testStream - $tempFile - $SSFMCreateForWrite"
-            $testStream Open $tempFile $SSFMCreateForWrite False
-            
-            $voice AudioOutputStream $testStream
-                                
-            if { [catch { $voice Speak " " 0 } err] } {
+            set customStream [::tcom::ref createobject Sapi.SpCustomStream]
+            $GIC Type $i
+            extCmdExeErrWrapper $GI Format $GIC
+                                            
+            if { [catch { $voice Speak " " 3 } err] } {
                  if {$stackTrace} {
                     bugMe "[expr $i-5] - Unsupported : $element :$err" generalInfo
                  }
@@ -536,11 +540,12 @@ proc testAudioFormat {voice} {
                 }
                 set supportedFormats([expr $i-5],format) $element
             }
-        $testStream Close
+            unset customStream
         }
     incr i
     }
-    unset testFormat testStream testStreamFormat i
+    
+    unset i
     return [array get supportedFormats]  
 }
 #-------------------------------------------------------------------------------
@@ -660,6 +665,8 @@ set tempFile "$tmpFolder/opensapitmp.wav"
             file copy -force -- $tempFile $filename
         }
     }
+    bugClient 201 "" $sock
+    bugMe "201:$errorArray(201,message) : genText" socketMsgOut
 }
 # ------------------------------------------------------------------------------
 # ProcName : serverRead 
@@ -986,10 +993,11 @@ proc serverRead {sock voice} {
                  vwait speechMonitor
              }
              
-             bugClient 201 "" $sock
-             bugMe "201:$errorArray(201,message) : genText" socketMsgOut
-             bugClient 294 "" $sock
-             bugMe "294:$errorArray(294,message) : genText" socketMsgOut
+             #bugClient 201 "" $sock
+             #bugMe "201:$errorArray(201,message) : genText" socketMsgOut
+             # Commented due to complicance with one command one reponse
+             #bugClient 294 "" $sock
+             #bugMe "294:$errorArray(294,message) : genText" socketMsgOut
          } else {
          #    bugClient 294 "" $sock
          }
