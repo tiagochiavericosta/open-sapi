@@ -873,6 +873,7 @@ foreach element $argv {
                  set text "<rate absspeed=\\\"$rate\\\"/> $text"     
                  puts $sock "speakMe $text"
              } else {
+             }
          }
      }
  

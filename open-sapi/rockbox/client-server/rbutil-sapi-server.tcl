@@ -497,7 +497,7 @@ proc setEngine {voice engine} {
 # Returns  : supportedFormats (list)
 # Called By: sysHealthCheck at startup
 #-------------------------------------------------------------------------------
-proc testAudioFormat {voice} {
+proc testAudioFormat {voice sock} {
  bugMe "proc testAudioFormat \{$voice\}" programFlow
  global stackTrace
  global supportedFormats
@@ -530,13 +530,15 @@ proc testAudioFormat {voice} {
             $GIC Type $i
             extCmdExeErrWrapper $GI Format $GIC
                                             
-            if { [catch { $voice Speak " " 3 } err] } {
+            if { [catch { $voice Speak " " 0 } err] } {
                  if {$stackTrace} {
                     bugMe "[expr $i-5] - Unsupported : $element :$err" generalInfo
+                    
                  }
             } else {
                 if {$stackTrace} {
                     bugMe "[expr $i-5] - Passed      : $element" generalInfo
+                    bugClient 298 "$i:$element" $sock
                 }
                 set supportedFormats([expr $i-5],format) $element
             }
@@ -544,7 +546,7 @@ proc testAudioFormat {voice} {
         }
     incr i
     }
-    
+    bugClient 293 "" $sock
     unset i
     return [array get supportedFormats]  
 }
@@ -757,7 +759,7 @@ proc serverRead {sock voice} {
 	                          
                 getFormat {
                     bugMe "getFormat from $sock" socketMsgIn
-                    array set supportedFormats [testAudioFormat $voice]
+                    array set supportedFormats [testAudioFormat $voice $sock]
                     set formatList [array get supportedFormats *]
                     foreach {ID formatDesc} $formatList {
                         set ID [split $ID ","]
