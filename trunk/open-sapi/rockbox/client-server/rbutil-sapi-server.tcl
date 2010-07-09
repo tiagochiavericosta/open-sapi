@@ -137,8 +137,20 @@ proc helpMe {} {
 #-------------------------------------------------------------------------------
 proc bugClient { errorCode message sock } {
 global errorArray
+
+    # Need some work here to detect when the sock no longer exists. An idea is
+    # to use upvar to link to the main sock varialbe or as the implmentation 
+    # is going to demand having a client tracking mechanism that can check if
+    # the client has gone. For now we do not care. So if there is an error 
+    # we catch and forget. Naughty I know. 
+    
     bugMe "proc bugClient \{$errorCode $message $sock\}" programFlow
-    puts $sock "$errorCode:$errorArray($errorCode,message):$message"
+    
+    if [ info exists sock ] {
+       catch { puts $sock "$errorCode:$errorArray($errorCode,message):$message"} 
+    } else {
+        bugMe "Unable to send the client has disappeared - $err" generalInfo
+    }
 }
 # ------------------------------------------------------------------------------
 # ProcName : initErrorCodes
@@ -717,6 +729,7 @@ proc serverRead {sock voice} {
     if { [gets $sock message] == -1 || [eof $sock] } {
         extCmdExeErrWrapper thread::send -async $::speechThread "\$voice Speak \" \" 3"
         if { [catch {close $sock} err ] } {
+            
             bugMe "Connection killed by client - $err" generalInfo
             if {$timeout > 0} {
                 set timeoutID [idleServerTimeout $timeout]
@@ -995,11 +1008,15 @@ proc serverRead {sock voice} {
                  vwait speechMonitor
              }
              
-             #bugClient 201 "" $sock
-             #bugMe "201:$errorArray(201,message) : genText" socketMsgOut
+             bugClient 201 "" $sock
+             bugMe "201:$errorArray(201,message) : genText" socketMsgOut
              # Commented due to complicance with one command one reponse
              #bugClient 294 "" $sock
              #bugMe "294:$errorArray(294,message) : genText" socketMsgOut
+             # Added for testing purposes
+             if [info exists sock] {
+                catch { close $sock } err
+             }
          } else {
          #    bugClient 294 "" $sock
          }
