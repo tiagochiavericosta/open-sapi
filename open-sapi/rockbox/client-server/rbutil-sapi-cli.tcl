@@ -783,7 +783,7 @@ foreach element $argv {
 	                 incr i
 	                 while {$word != "@@"} {
 	                     set word [lindex $argv [expr $x + $i]]
-	                         if {$word != "@@"} {
+	                         if {$word ne "@@"} {
 	                             set text "$text $word"   
 	                         }
 	                 incr i
@@ -800,7 +800,7 @@ foreach element $argv {
 	                 incr i
 	                 while {$word != "@@"} {
 	                     set word [lindex $argv [expr $x + $i]]
-	                         if {$word != "@@"} {
+	                         if {$word ne "@@"} {
 	                             set text "$text $word"   
 	                         }
 	                 incr i
@@ -833,6 +833,11 @@ foreach element $argv {
                 
                 -v {}
                 
+                --debug {
+                    puts "Debug mode is not implemeneted yet but -v will do the\
+                    same job for now."
+                }
+                
                 --pipemode {
                     set pipeMode 1
                 }
@@ -864,16 +869,18 @@ foreach element $argv {
              set command [string trimleft $command]
              bugMe "Sending - $command"
              puts $sock $command
-             if { $filename != 0 } {
-                 puts $sock "outFile $filename"
-             }
-             if {$textPending} {
-                 set text "<volume level=\\\"$volume\\\"/> $text"
-                 set text "<pitch absmiddle=\\\"$pitch\\\"/> $text"
-                 set text "<rate absspeed=\\\"$rate\\\"/> $text"     
-                 puts $sock "speakMe $text"
-             } else {
-             }
+         }
+         
+         if { $filename ne 0 } {
+             puts $sock "outFile $filename"
+         }
+         
+         if {$textPending} {
+             set text "<volume level=\\\"$volume\\\"/> $text"
+             set text "<pitch absmiddle=\\\"$pitch\\\"/> $text"
+             set text "<rate absspeed=\\\"$rate\\\"/> $text"     
+             puts $sock "speakMe $text"
+         } else {
          }
      }
  
@@ -885,7 +892,7 @@ foreach element $argv {
              fileevent stdin readable [list stdinRead $sock $text]
              
          } else {
-      #       puts $sock "closeClient"
+           #  puts $sock "closeClient"
          }
      }
 }
