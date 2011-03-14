@@ -126,7 +126,8 @@ usage() {
     echo " wininet       MS wininet.dll (requires Windows license)"
     echo " wmp9          MS Windows Media Player 9 (requires Windows license)"
     echo " wmp10         MS Windows Media Player 10 (requires Windows license)"
-    echo " sapi51        MS Windows Text to Speech engine and free voices"
+    echo " sapi51        MS Windows Text to Speech engine 5.1 and free voices"
+    echo " sapi4         MS Windows Text to speech engine 4 and free voices"
     echo " wsh56         MS Windows Scripting Host 5.6"
     echo " wsh56js       MS Windows scripting 5.6, jscript only, no cscript"
     echo " wsh56vb       MS Windows scripting 5.6, vbscript only, no cscript"
@@ -615,6 +616,13 @@ load_dirac08() {
 
 #----------------------------------------------------------------
 load_sapi51() {
+    download . http://open-sapi.googlecode.com/files/sapi.msi
+    set_winver win2k
+    try $WINE msiexec /i $WINETRICKS_CACHE/sapi.msi
+    unset_winver
+}
+#----------------------------------------------------------------
+load_sapi4() {
     download . http://open-sapi.googlecode.com/files/sapi.msi
     set_winver win2k
     try $WINE msiexec /i $WINETRICKS_CACHE/sapi.msi
