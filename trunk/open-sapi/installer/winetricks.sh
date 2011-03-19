@@ -127,7 +127,9 @@ usage() {
     echo " wmp9          MS Windows Media Player 9 (requires Windows license)"
     echo " wmp10         MS Windows Media Player 10 (requires Windows license)"
     echo " sapi51        MS Windows Text to Speech engine 5.1 and free voices"
-    echo " sapi4         MS Windows Text to speech engine 4 and free voices"
+    echo " sapi4         MS Windows Text to speech engine 4 without voices"
+    echo " sapi4_us_voices L&H US English voices SAPI4"
+    echo " sapi4_uk_voices L&H UK English voices SAPI4"
     echo " wsh56         MS Windows Scripting Host 5.6"
     echo " wsh56js       MS Windows scripting 5.6, jscript only, no cscript"
     echo " wsh56vb       MS Windows scripting 5.6, vbscript only, no cscript"
@@ -623,12 +625,27 @@ load_sapi51() {
 }
 #----------------------------------------------------------------
 load_sapi4() {
-    download . http://open-sapi.googlecode.com/files/sapi.msi
+    download . http://open-sapi.googlecode.com/files/sapi4.exe
     set_winver win2k
-    try $WINE msiexec /i $WINETRICKS_CACHE/sapi.msi
+    try $WINE "$WINETRICKS_CACHE"/sapi4.exe $WINETRICKS_SILENT
     unset_winver
 }
 #----------------------------------------------------------------
+load_sapi4_uk_voices() {
+    download . http://open-sapi.googlecode.com/files/uk_eng_sapi4_voices.exe 
+    set_winver win2k
+    try $WINE "$WINETRICKS_CACHE"/uk_eng_sapi4_voices.exe  $WINETRICKS_SILENT
+    unset_winver
+}
+#----------------------------------------------------------------
+load_sapi4_us_voices() {
+    download . http://open-sapi.googlecode.com/files/us_eng_sapi4_voices.exe 
+    set_winver win2k
+    try $WINE "$WINETRICKS_CACHE"/us_eng_sapi4_voices.exe  $WINETRICKS_SILENT
+    unset_winver
+}
+#----------------------------------------------------------------
+
 load_directx9() {
     # Aug 2008 DirectX 9c User Redistributable
     # http://www.microsoft.com/downloads/details.aspx?familyid=886ACB56-C91A-4A8E-8BB8-9F20F1244A8E&displaylang=en
@@ -1620,6 +1637,9 @@ do
     autohotkey) load_autohotkey;;
     cc580|comctl32) load_cc580;;
     sapi51) load_sapi51;;
+    sapi4) load_sapi4;;
+    sapi4_us_voices) load_sapi4_us_voices;;
+    sapi4_uk_voices) load_sapi4_uk_voices;;
     comctl32.ocx) load_comctl32ocx;;
     colorprofile) load_colorprofile;;
     corefonts) load_corefonts;;
